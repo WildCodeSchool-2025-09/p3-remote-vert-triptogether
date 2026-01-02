@@ -15,14 +15,25 @@ class TripSeeder extends AbstractSeeder {
   run() {
     // Generate and insert fake data into the 'trip' table
     for (let i = 0; i < 10; i += 1) {
-      // Generate fake trip data
+      const startDate = this.faker.date.between({
+        from: "2026-01-01T00:00:00.000Z",
+        to: "2026-12-31T00:00:00.000Z",
+      });
+
+      const endDate = new Date(startDate);
+      endDate.setDate(
+        endDate.getDate() + this.faker.number.int({ min: 1, max: 14 }),
+      );
+
       const fakeTrip = {
-        title: this.faker.lorem.word(), // Generate a fake title using faker library
-        user_id: this.getRef(`user_${i}`).insertId, // Get the insertId of the corresponding user from UserSeeder
+        title: this.faker.lorem.words(3),
+        description: this.faker.lorem.sentence(),
+        start_at: startDate.toISOString().split("T")[0],
+        end_at: endDate.toISOString().split("T")[0],
+        user_id: this.getRef(`user_${i}`).insertId,
       };
 
-      // Insert the fakeTrip data into the 'trip' table
-      this.insert(fakeTrip); // insert into trip(title, user_id) values (?, ?)
+      this.insert(fakeTrip);
     }
   }
 }

@@ -1,19 +1,12 @@
 import AbstractSeeder from "./AbstractSeeder";
-
-// Import seeders that must be executed before this one
-// Follow your foreign keys to find the right order ;)
 import UserSeeder from "./UserSeeder";
 
 class TripSeeder extends AbstractSeeder {
   constructor() {
-    // Call the constructor of the parent class (AbstractSeeder) with appropriate options
     super({ table: "trip", truncate: true, dependencies: [UserSeeder] });
   }
 
-  // The run method - Populate the 'trip' table with fake data
-
   run() {
-    // Generate and insert fake data into the 'trip' table
     for (let i = 0; i < 10; i += 1) {
       const startDate = this.faker.date.between({
         from: "2026-01-01T00:00:00.000Z",
@@ -38,5 +31,4 @@ class TripSeeder extends AbstractSeeder {
   }
 }
 
-// Export the TripSeeder class
 export default TripSeeder;

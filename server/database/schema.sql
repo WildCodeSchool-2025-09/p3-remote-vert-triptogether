@@ -77,11 +77,3 @@ CREATE TABLE vote (
     ON DELETE CASCADE
 );
 
-insert into user(id, firstname, lastname, email, password)
-values
-  (1, "Jack", "DUPONT", "jdoe@mail.com", "123456");
-
-insert into trip(id, title, description, start_at, end_at, user_id)
-values
-  (1, "Venezuela", "vamos a la playa", "2026-04-01", "2026-05-01", 1),
-  (2, "Spring break chez Cindy", "Villa à Antibes", "2026-07-01", "2026-08-01", 1);

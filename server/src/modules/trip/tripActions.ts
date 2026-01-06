@@ -1,16 +1,16 @@
 import type { RequestHandler } from "express";
 
 // Import access to data
-import itemRepository from "./itemRepository";
+import tripRepository from "./tripRepository";
 
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch all items
-    const items = await itemRepository.readAll();
+    // Fetch all trips
+    const trips = await tripRepository.readAll();
 
-    // Respond with the items in JSON format
-    res.json(items);
+    // Respond with the trips in JSON format
+    res.json(trips);
   } catch (err) {
     // Pass any errors to the error-handling middleware
     next(err);
@@ -20,16 +20,16 @@ const browse: RequestHandler = async (req, res, next) => {
 // The R of BREAD - Read operation
 const read: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch a specific item based on the provided ID
-    const itemId = Number(req.params.id);
-    const item = await itemRepository.read(itemId);
+    // Fetch a specific trip based on the provided ID
+    const tripId = Number(req.params.id);
+    const trip = await tripRepository.read(tripId);
 
-    // If the item is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the item in JSON format
-    if (item == null) {
+    // If the trip is not found, respond with HTTP 404 (Not Found)
+    // Otherwise, respond with the trip in JSON format
+    if (trip == null) {
       res.sendStatus(404);
     } else {
-      res.json(item);
+      res.json(trip);
     }
   } catch (err) {
     // Pass any errors to the error-handling middleware
@@ -40,16 +40,19 @@ const read: RequestHandler = async (req, res, next) => {
 // The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
-    // Extract the item data from the request body
-    const newItem = {
+    // Extract the trip data from the request body
+    const newTrip = {
       title: req.body.title,
       user_id: req.body.user_id,
+      description: req.body.description,
+      start_at: req.body.start_at,
+      end_at: req.body.end_at,
     };
 
-    // Create the item
-    const insertId = await itemRepository.create(newItem);
+    // Create the trip
+    const insertId = await tripRepository.create(newTrip);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted item
+    // Respond with HTTP 201 (Created) and the ID of the newly inserted trip
     res.status(201).json({ insertId });
   } catch (err) {
     // Pass any errors to the error-handling middleware

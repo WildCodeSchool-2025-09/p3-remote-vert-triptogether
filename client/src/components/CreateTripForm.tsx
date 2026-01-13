@@ -20,8 +20,7 @@ export default function CreateTrip() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Empêche le rechargement de la page
-
+    e.preventDefault();
     try {
       const response = await fetch("http://localhost:3000/trips", {
         method: "POST",
@@ -36,7 +35,7 @@ export default function CreateTrip() {
       }
 
       alert("Voyage créé avec succès !");
-      navigate(-1); // Retour à la page précédente
+      navigate(-1);
     } catch (error) {
       console.error(error);
       alert("Impossible de créer le voyage. Réessayez.");

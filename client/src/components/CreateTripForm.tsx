@@ -1,4 +1,3 @@
-import "./CreateTrip.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,7 +8,6 @@ export default function CreateTrip() {
     startDate: "",
     endDate: "",
   });
-
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,11 +42,9 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
-      <h1>Créer un nouveau voyage</h1>
-
       <form className="create-trip-form" onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="trip-name">Nom du voyage*</label>
+          <label htmlFor="trip-name">Nom du voyage *</label>
           <input
             type="text"
             id="trip-name"
@@ -61,7 +57,7 @@ export default function CreateTrip() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="destination">Destination principale*</label>
+          <label htmlFor="destination">Destination principale *</label>
           <input
             type="text"
             id="destination"
@@ -75,7 +71,7 @@ export default function CreateTrip() {
 
         <div className="date-container">
           <div className="form-group">
-            <label htmlFor="start-date">Date début*</label>
+            <label htmlFor="start-date">Date de début *</label>
             <input
               type="date"
               id="start-date"
@@ -86,7 +82,7 @@ export default function CreateTrip() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="end-date">Date fin*</label>
+            <label htmlFor="end-date">Date de fin *</label>
             <input
               type="date"
               id="end-date"

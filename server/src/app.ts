@@ -1,45 +1,60 @@
-import express from "express";
+import express, { Request, Response } from "express";
+import cors from "cors";
+import mysql from "mysql2";
 
 const app = express();
 
-import cors from "cors";
+app.use(cors());
+app.use(express.json()); 
 
-if (process.env.CLIENT_URL != null) {
-  app.use(cors({ origin: [process.env.CLIENT_URL] }));
-}
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "12531253",
+  database: "trip_db", 
+});
 
-import router from "./router";
+db.connect((err) => {
+  if (err) {
+    console.error("Erreur de connexion MySQL :", err.message);
+    return;
+  }
+  console.log("Connecté à la base MySQL");
+});
 
-app.use(router);
 
-import fs from "node:fs";
-import path from "node:path";
-
-const publicFolderPath = path.join(__dirname, "../../server/public");
-
-if (fs.existsSync(publicFolderPath)) {
-  app.use(express.static(publicFolderPath));
-}
-
-const clientBuildPath = path.join(__dirname, "../../client/dist");
-
-if (fs.existsSync(clientBuildPath)) {
-  app.use(express.static(clientBuildPath));
-
-  app.get("*", (_, res) => {
-    res.sendFile("index.html", { root: clientBuildPath });
+app.get("/api/trips", (req: Request, res: Response) => {
+  const query = "SELECT * FROM trips";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Erreur lors de la récupération des voyages" });
+    }
+    res.json(results);
   });
-}
+});
 
-import type { ErrorRequestHandler } from "express";
 
-const logErrors: ErrorRequestHandler = (err, req, res, next) => {
+app.post("/api/trips", (req: Request, res: Response) => {
+  const { tripName, destination, startDate, endDate } = req.body;
+
+  if (!tripName || !destination || !startDate || !endDate) {
+    return res.status(400).json({ message: "Toutes les données sont requises" });
+  }
+
+  const query = "INSERT INTO trips (tripName, destination, startDate, endDate) VALUES (?, ?, ?, ?)";
+  db.query(query, [tripName, destination, startDate, endDate], (err, result: any) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: "Erreur lors de la création du voyage" });
+    }
+    res.status(201).json({ message: "Voyage créé avec succès", id: result.insertId });
+  });
+});
+
+app.use((err: any, req: Request, res: Response, next: Function) => {
   console.error(err);
-  console.error("on req:", req.method, req.path);
+  res.status(500).json({ message: "Erreur interne du serveur" });
+});
 
-  next(err);
-};
-
-app.use(logErrors);
-
-export default app;
+export { app, db };

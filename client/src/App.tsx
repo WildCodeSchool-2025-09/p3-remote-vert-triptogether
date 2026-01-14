@@ -1,8 +1,8 @@
-import "./reset.css";
 import "./App.css";
+import AppRouter from "./Router/AppRouter";
 
 function App() {
-  return <></>;
+  return<AppRouter />;
 }
 
 export default App;

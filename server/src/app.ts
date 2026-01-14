@@ -8,9 +8,11 @@ if (process.env.CLIENT_URL != null) {
   app.use(cors({ origin: [process.env.CLIENT_URL] }));
 }
 
-import router from "./router";
+// Import the API router
+const apiRouter = require("./routers/api/router");
 
-app.use(router);
+// Mount the API router under the "/api" endpoint
+app.use("/api", apiRouter);
 
 import fs from "node:fs";
 import path from "node:path";

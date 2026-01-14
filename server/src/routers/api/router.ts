@@ -8,7 +8,10 @@ const router = express.Router();
 /* ************************************************************************* */
 
 // Define trip-related routes
+const invitationRouter = require("../invitation/router");
+
+router.use("/invitation", invitationRouter);
 
 /* ************************************************************************* */
 
-export default router;
+module.exports = router;

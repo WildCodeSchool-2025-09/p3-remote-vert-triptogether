@@ -1,12 +1,8 @@
 import "./App.css";
-import CreateTrip from "./pages/CreateTrip";
+import AppRouter from "./Router/AppRouter";
 
 function App() {
-  return (
-    <>
-      <CreateTrip />
-    </>
-  );
+  return<AppRouter />;
 }
 
 export default App;

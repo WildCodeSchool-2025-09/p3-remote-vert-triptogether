@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function CreateTrip() {
+export default function CreateTripForm() {
   const [formData, setFormData] = useState({
     tripName: "",
     destination: "",
@@ -20,8 +20,8 @@ export default function CreateTrip() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/trips", {
-        method: "POST",
+ const response = await fetch("http://localhost:3310/api/trips", {
+  method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

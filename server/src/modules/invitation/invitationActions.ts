@@ -37,11 +37,14 @@ const read: RequestHandler = async (req, res, next) => {
     // Otherwise, respond with the invitation in JSON format
     if (invitation == null) {
       res.sendStatus(404);
-    } else {
-      res.json(invitation);
     }
+
+    if (invitation.user_id !== 75) {
+      res.sendStatus(403);
+    }
+
+    res.json(invitation);
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };

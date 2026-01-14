@@ -9,6 +9,7 @@ type newinvitation = {
   updated_at: string;
   user_id: number;
   trip_id: number;
+  trip_start: string;
 };
 
 // The B of BREAD - Browse (Read All) operation
@@ -55,6 +56,7 @@ const add: RequestHandler = async (req, res, next) => {
       updated_at: req.body.updated_at,
       user_id: req.body.user_id,
       trip_id: req.body.trip_id,
+      trip_start: req.body.trip_start,
     };
 
     // Create the invitation

@@ -9,6 +9,7 @@ type Invitation = {
   updated_at: string;
   user_id: number;
   trip_id: number;
+  trip_start: string;
 };
 
 class invitationRepository {
@@ -37,6 +38,17 @@ class invitationRepository {
     // Execute the SQL SELECT query to retrieve a specific Invitation by its ID
     const [rows] = await databaseClient.query<Rows>(
       "SELECT * FROM participate WHERE id = ?",
+      [id],
+    );
+
+    // Return the first row of the result, which represents the Invitation
+    return rows[0] as Invitation;
+  }
+
+  async readTrip(id: number) {
+    // Execute the SQL SELECT query to retrieve a specific Invitation by its ID
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT p.*, t.start_at AS trip_start FROM participate p JOIN trip t ON p.trip_id = t.id WHERE p.id = ?",
       [id],
     );
 

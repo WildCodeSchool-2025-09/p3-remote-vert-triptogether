@@ -2,10 +2,14 @@ const express = require("express");
 
 const router = express.Router();
 
-import InvitationActions from "../../modules/invitation/invitationActions";
-import { checkDate } from "../../modules/invitation/invitationService";
+import invitationActions from "../../modules/invitation/invitationActions";
+import invitationServices from "../../modules/invitation/invitationServices";
 
-router.get("/", InvitationActions.browse);
-router.get("/:id", checkDate, InvitationActions.read);
+router.get("/", invitationActions.browse);
+router.get(
+  "/:id",
+  invitationServices.checkExpirationDate,
+  invitationActions.read,
+);
 
 module.exports = router;

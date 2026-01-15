@@ -1,6 +1,5 @@
 import type { RequestHandler } from "express";
 
-// Import access to data
 import InvitationRepository from "./invitationRepository";
 
 type NewInvitation = {
@@ -14,31 +13,28 @@ type NewInvitation = {
 
 const CONNECTED_USER_ID = 2;
 
-// The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch all invitations
     const invitations = await InvitationRepository.readAll();
 
-    // Respond with the invitations in JSON format
     res.json(invitations);
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-// The R of BREAD - Read operation
 const read: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch a specific invitation based on the provided ID
     const invitationId = Number(req.params.id);
     const invitation = await InvitationRepository.readWithDetails(invitationId);
 
-    // If the invitation is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the invitation in JSON format
     if (!invitation) {
-      res.sendStatus(404);
+      res.sendStatus(404).json({ error: "Invitation introuvable" });
+      return;
+    }
+
+    if (invitation.status === "accepted") {
+      res.status(400).json({ error: "Invitation déjà accepté" });
       return;
     }
 
@@ -57,28 +53,74 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-// The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
-    // Extract the invitation data from the request body
     const newinvitation: NewInvitation = {
       status: req.body.status,
       created_at: req.body.created_at,
       updated_at: req.body.updated_at,
       creator_id: req.body.creator_id,
-      invited_id: req.body.user_id,
+      invited_id: req.body.invited_id,
       trip_id: req.body.trip_id,
     };
 
-    // Create the invitation
     const insertId = await InvitationRepository.create(newinvitation);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted invitation
     res.status(201).json({ insertId });
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-export default { browse, read, add };
+const update: RequestHandler = async (req, res, next) => {
+  try {
+    const invitationId = Number(req.params.id);
+    const invitation = await InvitationRepository.readWithDetails(invitationId);
+
+    if (!invitation) {
+      res.status(404).json({ error: "Invitation introuvable" });
+      return;
+    }
+
+    if (invitation.status === "accepted") {
+      res.status(400).json({ error: "Invitation déjà acceptée" });
+      return;
+    }
+
+    if (
+      ![invitation.creator_id, invitation.invited_id].includes(
+        CONNECTED_USER_ID,
+      )
+    ) {
+      res.status(403).json({ error: "Accès non autorisé" });
+      return;
+    }
+
+    if (invitation.creator_id === CONNECTED_USER_ID) {
+      res.status(403).json({ error: "Seul l'invité peut répondre" });
+      return;
+    }
+
+    const newStatus = req.body.status;
+    if (!["accepted", "refused"].includes(newStatus)) {
+      res
+        .status(400)
+        .json({ error: "Status doit être 'accepted' ou 'refused'" });
+      return;
+    }
+
+    const success = await InvitationRepository.update(invitationId, {
+      status: newStatus,
+    });
+
+    if (!success) {
+      res.status(500).json({ error: "Erreur mise à jour" });
+      return;
+    }
+
+    res.status(200).json({ message: `Invitation ${newStatus}` });
+  } catch (err) {
+    next(err);
+  }
+};
+export default { browse, read, add, update };

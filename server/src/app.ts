@@ -8,10 +8,10 @@ if (process.env.CLIENT_URL != null) {
   app.use(cors({ origin: [process.env.CLIENT_URL] }));
 }
 
-// Import the API router
+app.use(express.json());
+
 const apiRouter = require("./routers/api/router");
 
-// Mount the API router under the "/api" endpoint
 app.use("/api", apiRouter);
 
 import fs from "node:fs";

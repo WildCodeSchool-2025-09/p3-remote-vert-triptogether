@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import "../styles/CreateTrip.css";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function CreateTrip() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,23 @@ export default function CreateTrip() {
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const departureDate = new Date(formData.start_at);
+    const returnDate = new Date(formData.end_at);
+
+    if (departureDate < today) {
+      toast.error("La date de départ ne peut pas être dans le passé");
+      return;
+    }
+
+    if (returnDate < departureDate) {
+      toast.error("La date de retour doit être après la date de départ");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:3310/api/trip", {
         method: "POST",
@@ -33,11 +51,14 @@ export default function CreateTrip() {
         throw new Error(errorText);
       }
 
-      alert("Voyage créé avec succès !");
-      navigate(-1); // rediriger ensuite vers la page du voyage
+      toast.success("Voyage créé avec succès !");
+
+      setTimeout(() => {
+        navigate(-1);
+      }, 500); // rediriger ensuite vers la page du voyage
     } catch (error) {
       console.error(error);
-      alert("Impossible de créer le voyage. Réessayez.");
+      toast.error("Impossible de créer le voyage. Réessayez.");
     }
   };
 

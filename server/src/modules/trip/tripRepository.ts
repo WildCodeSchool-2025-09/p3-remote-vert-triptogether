@@ -14,7 +14,7 @@ type Trip = {
 class TripRepository {
   async create(trip: Omit<Trip, "id">) {
     const [result] = await databaseClient.query<Result>(
-      "insert into trip (title, description, start_at, end_at, user_id) values (?, ?, ?, ?, ?)",
+      "INSERT INTO trip (title, description, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?)",
       [trip.title, trip.description, trip.start_at, trip.end_at, trip.user_id],
     );
 
@@ -23,7 +23,7 @@ class TripRepository {
 
   async read(id: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "select * from trip where id = ?",
+      "SELECT * FROM trip WHERE id = ?",
       [id],
     );
 
@@ -31,7 +31,7 @@ class TripRepository {
   }
 
   async readAll() {
-    const [rows] = await databaseClient.query<Rows>("select * from trip");
+    const [rows] = await databaseClient.query<Rows>("SELECT * FROM trip");
 
     return rows as Trip[];
   }

@@ -56,6 +56,24 @@ const add: RequestHandler = async (req, res, next) => {
         .json({ message: "Toutes les données sont requises" });
     }
 
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(newTrip.start_at);
+    const endDate = new Date(newTrip.end_at);
+
+    if (startDate < today) {
+      return res
+        .status(400)
+        .json({ message: "La date de départ ne peut pas être dans le passé" });
+    }
+
+    if (endDate < startDate) {
+      return res.status(400).json({
+        message: "La date de retour doit être après la date de départ",
+      });
+    }
+
     const insertId = await tripRepository.create(newTrip);
 
     res.status(201).json({ insertId });

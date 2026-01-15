@@ -10,6 +10,16 @@ export const checkDate = async (
     const invitationId = Number(req.params.id);
     const invitation = await invitationRepository.readTrip(invitationId);
 
+    if (
+      invitation &&
+      invitation.status === "pending" &&
+      invitation.trip_start
+    ) {
+      if (new Date() > new Date(invitation.trip_start)) {
+        return res.status(400).json({ error: "Invitation expirée" });
+      }
+    }
+
     if (!invitation) {
       return res.status(404).json({ error: "Invitation introuvable" });
     }
@@ -18,11 +28,11 @@ export const checkDate = async (
       return res.status(400).json({ error: "Invitation déjà accepté" });
     }
 
-    const now = new Date();
-    const start_at = new Date(invitation.trip_start);
-    if (start_at < now) {
-      return res.status(400).json({ error: "Cette invitation a expiré" });
-    }
+    //const now = new Date();
+    //const start_at = new Date(invitation.trip_start);
+    //if (start_at < now) {
+    //  return res.status(400).json({ error: "Cette invitation a expiré" });
+    //}
 
     next();
   } catch (err) {

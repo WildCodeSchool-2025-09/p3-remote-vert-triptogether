@@ -3,14 +3,16 @@ import type { RequestHandler } from "express";
 // Import access to data
 import InvitationRepository from "./invitationRepository";
 
-type newinvitation = {
+type NewInvitation = {
   status: string;
   created_at: string;
   updated_at: string;
-  user_id: number;
+  creator_id: number;
+  invited_id: number;
   trip_id: number;
-  trip_start: string;
 };
+
+const CONNECTED_USER_ID = 2;
 
 // The B of BREAD - Browse (Read All) operation
 const browse: RequestHandler = async (req, res, next) => {
@@ -31,16 +33,22 @@ const read: RequestHandler = async (req, res, next) => {
   try {
     // Fetch a specific invitation based on the provided ID
     const invitationId = Number(req.params.id);
-    const invitation = await InvitationRepository.read(invitationId);
+    const invitation = await InvitationRepository.readWithDetails(invitationId);
 
     // If the invitation is not found, respond with HTTP 404 (Not Found)
     // Otherwise, respond with the invitation in JSON format
-    if (invitation == null) {
+    if (!invitation) {
       res.sendStatus(404);
+      return;
     }
 
-    if (invitation.user_id !== 75) {
-      res.sendStatus(403);
+    if (
+      ![invitation.creator_id, invitation.invited_id].includes(
+        CONNECTED_USER_ID,
+      )
+    ) {
+      res.status(403).json({ error: "Accès non autorisé" });
+      return;
     }
 
     res.json(invitation);
@@ -53,13 +61,13 @@ const read: RequestHandler = async (req, res, next) => {
 const add: RequestHandler = async (req, res, next) => {
   try {
     // Extract the invitation data from the request body
-    const newinvitation: newinvitation = {
+    const newinvitation: NewInvitation = {
       status: req.body.status,
       created_at: req.body.created_at,
       updated_at: req.body.updated_at,
-      user_id: req.body.user_id,
+      creator_id: req.body.creator_id,
+      invited_id: req.body.user_id,
       trip_id: req.body.trip_id,
-      trip_start: req.body.trip_start,
     };
 
     // Create the invitation

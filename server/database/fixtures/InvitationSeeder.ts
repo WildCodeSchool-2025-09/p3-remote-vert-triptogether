@@ -18,12 +18,21 @@ class InvitationSeeder extends AbstractSeeder {
         to: "2026-12-31T00:00:00.000Z",
       });
 
+      const creatorRef = `user_${i % 5}`;
+      const invitedRef = `user_${(i + 1) % 5 || 1}`;
+      const tripRef = `trip_${i % 3}`;
+
       const fakeInvitation = {
-        status: "pending",
+        status: this.faker.helpers.arrayElement([
+          "pending",
+          "accepted",
+          "declined",
+        ]),
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
-        user_id: this.getRef(`user_${i}`).insertId,
-        trip_id: this.getRef(`trip_${i}`).insertId,
+        creator_id: this.getRef(creatorRef).insertId,
+        invited_id: this.getRef(invitedRef).insertId,
+        trip_id: this.getRef(tripRef).insertId,
       };
 
       this.insert(fakeInvitation);

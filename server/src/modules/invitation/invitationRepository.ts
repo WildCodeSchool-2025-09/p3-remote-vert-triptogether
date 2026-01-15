@@ -7,9 +7,22 @@ type Invitation = {
   status: string;
   created_at: string;
   updated_at: string;
-  user_id: number;
+  creator_id: number;
+  invited_id: number;
   trip_id: number;
-  trip_start: string;
+};
+
+type InvitationWithTrip = Invitation & {
+  trip_start: string | null;
+};
+
+type InvitationWithDetails = Invitation & {
+  trip_start: string | null;
+  trip_title: string;
+  creator_firstname: string;
+  creator_lastname: string;
+  invited_firstname: string;
+  invited_lastname: string;
 };
 
 class invitationRepository {
@@ -18,18 +31,19 @@ class invitationRepository {
   async create(invitation: Omit<Invitation, "id">) {
     // Execute the SQL INSERT query to add a new Invitation to the "Invitation" table
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO participate (title, description, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO participate (status, created_at, updated_at, creator_id, invited_id, trip_id) VALUES (?, ?, ?, ?, ?, ?)",
       [
         invitation.status,
         invitation.created_at,
         invitation.updated_at,
-        invitation.user_id,
+        invitation.creator_id,
+        invitation.invited_id,
         invitation.trip_id,
       ],
     );
 
     // Return the ID of the newly inserted Invitation
-    return result.insertId;
+    return Number(result.insertId);
   }
 
   // The Rs of CRUD - Read operations
@@ -53,13 +67,52 @@ class invitationRepository {
     );
 
     // Return the first row of the result, which represents the Invitation
-    return rows[0] as Invitation;
+    return rows[0] as InvitationWithTrip | null;
+  }
+  async readWithDetails(id: number): Promise<InvitationWithDetails | null> {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+      SELECT 
+        p.*, 
+        t.title AS trip_title, t.start_at AS trip_start,
+        c.firstname AS creator_firstname, c.lastname AS creator_lastname,
+        i.firstname AS invited_firstname, i.lastname AS invited_lastname
+      FROM participate p
+      JOIN trip t ON p.trip_id = t.id
+      JOIN user c ON p.creator_id = c.id
+      JOIN user i ON p.invited_id = i.id
+      WHERE p.id = ?
+    `,
+      [id],
+    );
+    return rows[0] as InvitationWithDetails | null;
+  }
+
+  // READ ALL pour un user (ses invites envoyées/reçues)
+  async readAllForUser(userId: number): Promise<InvitationWithDetails[]> {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+      SELECT 
+        p.*, 
+        t.title AS trip_title, t.start_at AS trip_start,
+        c.firstname AS creator_firstname, c.lastname AS creator_lastname,
+        i.firstname AS invited_firstname, i.lastname AS invited_lastname
+      FROM participate p
+      JOIN trip t ON p.trip_id = t.id
+      JOIN user c ON p.creator_id = c.id
+      JOIN user i ON p.invited_id = i.id
+      WHERE p.creator_id = ? OR p.invited_id = ?
+      ORDER BY p.created_at DESC
+    `,
+      [userId, userId],
+    );
+    return rows as InvitationWithDetails[];
   }
 
   async readAll() {
     // Execute the SQL SELECT query to retrieve all Invitations from the "Invitation" table
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM participate",
+      "SELECT * FROM participate ORDER BY created_at DESC",
     );
 
     // Return the array of Invitations
@@ -67,18 +120,30 @@ class invitationRepository {
   }
 
   // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing Invitation
+  async update(
+    id: number,
+    updates: Partial<Omit<Invitation, "id">>,
+  ): Promise<boolean> {
+    const setClause = Object.keys(updates)
+      .map((key) => `${key} = ?`)
+      .join(", ");
+    const values = [...Object.values(updates), id];
 
-  // async update(Invitation: Invitation) {
-  //   ...
-  // }
+    const [result] = await databaseClient.query<Result>(
+      `UPDATE participate SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+      values,
+    );
+    return result.affectedRows === 1;
+  }
 
   // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an Invitation by its ID
-
-  // async delete(id: number) {
-  //   ...
-  // }
+  async delete(id: number): Promise<boolean> {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM participate WHERE id = ?",
+      [id],
+    );
+    return result.affectedRows === 1;
+  }
 }
 
 export default new invitationRepository();

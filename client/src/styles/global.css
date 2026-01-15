@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "SourceSans3";
+  src: url("../assets/fonts/SourceSans3/SourceSans3-VariableFont_wght.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PlayfairDisplay";
+  src: url("../assets/fonts/PlayfairDisplay/PlayfairDisplay-VariableFont_wght.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --background-color: #f2f2f2;
+  --boxes-color: #ffffff;
+  --primary-button-color: #1b5e1d;
+  --secondary-button-color: #247c28;
+  --secondary-button-color: #ffffff;
+  --status-color: #fbecc3;
+  --primary-font-color: #0d1117;
+  --secondary-font-color: #f8f9fb;
+  --tertiary-font-color: #999999;
+  --primary-title-font: "source sans 3";
+  --secondary-title-font: "Playfair Display";
+  --text-font: "source sans 3";
+}

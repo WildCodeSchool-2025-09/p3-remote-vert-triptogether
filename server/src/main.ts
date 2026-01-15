@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { app } from "./app";
+import app from "./app";
+import "../database/checkConnection";
 
 const port = process.env.APP_PORT || 3310;
 

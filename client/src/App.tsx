@@ -1,8 +1,12 @@
+import { Outlet } from "react-router";
 import "./App.css";
-import AppRouter from "./Router/AppRouter";
 
 function App() {
-  return<AppRouter />;
+  return (
+    <main>
+      <Outlet />
+    </main>
+  );
 }
 
 export default App;

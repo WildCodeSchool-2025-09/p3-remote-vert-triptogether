@@ -106,18 +106,13 @@ class invitationRepository {
     return rows as Invitation[];
   }
 
-  async update(
+  async updateStatus(
     id: number,
-    updates: Partial<Omit<Invitation, "id">>,
+    status: "accepted" | "refused",
   ): Promise<boolean> {
-    const setClause = Object.keys(updates)
-      .map((key) => `${key} = ?`)
-      .join(", ");
-    const values = [...Object.values(updates), id];
-
     const [result] = await databaseClient.query<Result>(
-      `UPDATE invitation SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
-      values,
+      "UPDATE invitation SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [status, id],
     );
     return result.affectedRows === 1;
   }

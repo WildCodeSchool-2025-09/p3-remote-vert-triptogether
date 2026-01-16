@@ -72,11 +72,15 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-const update: RequestHandler = async (req, res, next) => {
+const accept: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const invitation = await InvitationRepository.readWithDetails(invitationId);
+    if (Number.isNaN(invitationId)) {
+      res.status(400).json({ error: "ID invalide" });
+      return;
+    }
 
+    const invitation = await InvitationRepository.readWithDetails(invitationId);
     if (!invitation) {
       res.status(404).json({ error: "Invitation introuvable" });
       return;
@@ -97,30 +101,73 @@ const update: RequestHandler = async (req, res, next) => {
     }
 
     if (invitation.creator_id === CONNECTED_USER_ID) {
-      res.status(403).json({ error: "Seul l'invité peut répondre" });
+      res.status(403).json({ error: "Seul l'invité peut accepter" });
       return;
     }
 
-    const newStatus = req.body.status;
-    if (!["accepted", "refused"].includes(newStatus)) {
-      res
-        .status(400)
-        .json({ error: "Status doit être 'accepted' ou 'refused'" });
-      return;
-    }
-
-    const success = await InvitationRepository.update(invitationId, {
-      status: newStatus,
-    });
+    const success = await InvitationRepository.updateStatus(
+      invitationId,
+      "accepted",
+    );
 
     if (!success) {
       res.status(500).json({ error: "Erreur mise à jour" });
       return;
     }
 
-    res.status(200).json({ message: `Invitation ${newStatus}` });
+    res.status(200).json({ message: "Invitation acceptée" });
   } catch (err) {
     next(err);
   }
 };
-export default { browse, read, add, update };
+
+const refuse: RequestHandler = async (req, res, next) => {
+  try {
+    const invitationId = Number(req.params.id);
+    if (Number.isNaN(invitationId)) {
+      res.status(400).json({ error: "ID invalide" });
+      return;
+    }
+
+    const invitation = await InvitationRepository.readWithDetails(invitationId);
+    if (!invitation) {
+      res.status(404).json({ error: "Invitation introuvable" });
+      return;
+    }
+
+    if (invitation.status === "accepted") {
+      res.status(400).json({ error: "Invitation déjà acceptée" });
+      return;
+    }
+
+    if (
+      ![invitation.creator_id, invitation.invited_id].includes(
+        CONNECTED_USER_ID,
+      )
+    ) {
+      res.status(403).json({ error: "Accès non autorisé" });
+      return;
+    }
+
+    if (invitation.creator_id === CONNECTED_USER_ID) {
+      res.status(403).json({ error: "Seul l'invité peut refuser" });
+      return;
+    }
+
+    const success = await InvitationRepository.updateStatus(
+      invitationId,
+      "refused",
+    );
+
+    if (!success) {
+      res.status(500).json({ error: "Erreur mise à jour" });
+      return;
+    }
+
+    res.status(200).json({ message: "Invitation refusée" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { browse, read, add, accept, refuse };

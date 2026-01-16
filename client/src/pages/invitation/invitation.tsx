@@ -1,9 +1,7 @@
-//import { useEffect, useState } from "react";
-//import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 function Invitation() {
-  /*  
-
   const [invitation, setInvitation] = useState([]);
   const { id } = useParams<{ id: string }>();
 
@@ -11,8 +9,10 @@ function Invitation() {
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
       .then((response) => response.json())
       .then((data) => setInvitation(data));
-  }, []);
-*/
+  }, [id]);
+
+  console.log(invitation);
+
   return (
     <main>
       <header>Trip Together</header>

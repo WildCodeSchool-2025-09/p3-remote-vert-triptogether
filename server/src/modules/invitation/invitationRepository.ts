@@ -26,12 +26,9 @@ type InvitationWithDetails = Invitation & {
 };
 
 class invitationRepository {
-  // The C of CRUD - Create operation
-
   async create(invitation: Omit<Invitation, "id">) {
-    // Execute the SQL INSERT query to add a new Invitation to the "Invitation" table
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO participate (status, created_at, updated_at, creator_id, invited_id, trip_id) VALUES (?, ?, ?, ?, ?, ?)",
+      "INSERT INTO invitation (status, created_at, updated_at, creator_id, invited_id, trip_id) VALUES (?, ?, ?, ?, ?, ?)",
       [
         invitation.status,
         invitation.created_at,
@@ -42,31 +39,24 @@ class invitationRepository {
       ],
     );
 
-    // Return the ID of the newly inserted Invitation
     return Number(result.insertId);
   }
 
-  // The Rs of CRUD - Read operations
-
   async read(id: number) {
-    // Execute the SQL SELECT query to retrieve a specific Invitation by its ID
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM participate WHERE id = ?",
+      "SELECT * FROM invitation WHERE id = ?",
       [id],
     );
 
-    // Return the first row of the result, which represents the Invitation
     return rows[0] as Invitation;
   }
 
   async readTrip(id: number) {
-    // Execute the SQL SELECT query to retrieve a specific Invitation by its ID
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT p.*, t.start_at AS trip_start FROM participate p JOIN trip t ON p.trip_id = t.id WHERE p.id = ?",
+      "SELECT p.*, t.start_at AS trip_start FROM invitation p JOIN trip t ON p.trip_id = t.id WHERE p.id = ?",
       [id],
     );
 
-    // Return the first row of the result, which represents the Invitation
     return rows[0] as InvitationWithTrip | null;
   }
   async readWithDetails(id: number): Promise<InvitationWithDetails | null> {
@@ -77,7 +67,7 @@ class invitationRepository {
         t.title AS trip_title, t.start_at AS trip_start,
         c.firstname AS creator_firstname, c.lastname AS creator_lastname,
         i.firstname AS invited_firstname, i.lastname AS invited_lastname
-      FROM participate p
+      FROM invitation p
       JOIN trip t ON p.trip_id = t.id
       JOIN user c ON p.creator_id = c.id
       JOIN user i ON p.invited_id = i.id
@@ -88,7 +78,6 @@ class invitationRepository {
     return rows[0] as InvitationWithDetails | null;
   }
 
-  // READ ALL pour un user (ses invites envoyées/reçues)
   async readAllForUser(userId: number): Promise<InvitationWithDetails[]> {
     const [rows] = await databaseClient.query<Rows>(
       `
@@ -97,7 +86,7 @@ class invitationRepository {
         t.title AS trip_title, t.start_at AS trip_start,
         c.firstname AS creator_firstname, c.lastname AS creator_lastname,
         i.firstname AS invited_firstname, i.lastname AS invited_lastname
-      FROM participate p
+      FROM invitation p
       JOIN trip t ON p.trip_id = t.id
       JOIN user c ON p.creator_id = c.id
       JOIN user i ON p.invited_id = i.id
@@ -110,16 +99,13 @@ class invitationRepository {
   }
 
   async readAll() {
-    // Execute the SQL SELECT query to retrieve all Invitations from the "Invitation" table
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM participate ORDER BY created_at DESC",
+      "SELECT * FROM invitation ORDER BY created_at DESC",
     );
 
-    // Return the array of Invitations
     return rows as Invitation[];
   }
 
-  // The U of CRUD - Update operation
   async update(
     id: number,
     updates: Partial<Omit<Invitation, "id">>,
@@ -130,16 +116,15 @@ class invitationRepository {
     const values = [...Object.values(updates), id];
 
     const [result] = await databaseClient.query<Result>(
-      `UPDATE participate SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
+      `UPDATE invitation SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE id = ?`,
       values,
     );
     return result.affectedRows === 1;
   }
 
-  // The D of CRUD - Delete operation
   async delete(id: number): Promise<boolean> {
     const [result] = await databaseClient.query<Result>(
-      "DELETE FROM participate WHERE id = ?",
+      "DELETE FROM invitation WHERE id = ?",
       [id],
     );
     return result.affectedRows === 1;

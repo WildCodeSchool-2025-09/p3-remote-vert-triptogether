@@ -12,4 +12,7 @@ router.get(
   invitationActions.read,
 );
 
+router.post("/", invitationActions.add);
+router.patch("/:id", invitationActions.update);
+
 module.exports = router;

@@ -19,14 +19,6 @@ const checkExpirationDate = async (
         return res.status(400).json({ error: "Invitation expirée" });
       }
     }
-    //remove
-    if (!invitation) {
-      return res.status(404).json({ error: "Invitation introuvable" });
-    }
-
-    if (invitation.status === "accepted") {
-      return res.status(400).json({ error: "Invitation déjà accepté" });
-    }
 
     next();
   } catch (err) {

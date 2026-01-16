@@ -5,7 +5,7 @@ import UserSeeder from "./UserSeeder";
 class InvitationSeeder extends AbstractSeeder {
   constructor() {
     super({
-      table: "participate",
+      table: "invitation",
       truncate: true,
       dependencies: [UserSeeder, TripSeeder],
     });

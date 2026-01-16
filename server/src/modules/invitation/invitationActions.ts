@@ -11,7 +11,7 @@ type NewInvitation = {
   trip_id: number;
 };
 
-const CONNECTED_USER_ID = 2;
+const CONNECTED_USER_ID = 13;
 
 const browse: RequestHandler = async (req, res, next) => {
   try {

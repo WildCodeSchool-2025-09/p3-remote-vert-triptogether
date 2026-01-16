@@ -13,7 +13,7 @@ router.get(
 );
 
 router.post("/", invitationActions.add);
-router.patch("/:id/accept", invitationActions.accept);
-router.patch("/:id/refuse", invitationActions.refuse);
+router.patch("/:id/accepted", invitationActions.accept);
+router.patch("/:id/refused", invitationActions.refuse);
 
 module.exports = router;

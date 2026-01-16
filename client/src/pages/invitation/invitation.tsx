@@ -1,18 +1,41 @@
-//import { useEffect, useState } from "react";
-//import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 function Invitation() {
-  /*  
-
   const [invitation, setInvitation] = useState([]);
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
+    console.log(import.meta.env.VITE_API_URL);
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
       .then((response) => response.json())
       .then((data) => setInvitation(data));
-  }, []);
-*/
+  }, [id]);
+
+  console.log(invitation);
+
+  function invitationAccepted() {
+    try {
+      fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}/accepted`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  function invitationRefused() {
+    try {
+      fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}/refused`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <main>
       <header>Trip Together</header>
@@ -44,8 +67,12 @@ function Invitation() {
           <img src="npc3.jpg" alt="" /> <br />
           <strong>Marie Dupont</strong>
         </p>
-        <button type="button">Accepter</button>
-        <button type="button">Refuser</button>
+        <button type="button" onClick={invitationAccepted}>
+          Accepter
+        </button>
+        <button type="button" onClick={invitationRefused}>
+          Refuser
+        </button>
       </section>
     </main>
   );

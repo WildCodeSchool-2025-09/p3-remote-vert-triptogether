@@ -1,5 +1,5 @@
-import "./App.css";
 import CreateTrip from "./pages/CreateTrip";
+import "./App.css";
 
 function App() {
   return (

@@ -1,0 +1,164 @@
+@media (max-width: 768px) {
+  html,
+  body {
+    overflow: visible;
+  }
+
+  .button-back-arrow {
+    display: none;
+  }
+
+  .back-arrow {
+    display: none;
+  }
+
+  .create-trip-main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 16vh;
+  }
+
+  .header-create-new-trip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .create-trip-page h1 {
+    font-family: var(--body-text);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--black);
+    margin-top: 7rem;
+  }
+
+  .create-trip-main-content p {
+    text-align: center;
+    margin-top: 1rem;
+    font-family: var(--body-text);
+    color: var(--grey);
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+
+  .voyage-vert {
+    color: var(--primary-button);
+  }
+
+  .create-trip-form {
+    width: 25rem;
+    background-color: #ffffff;
+    border-radius: 22px;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    margin-top: 3.5rem;
+    border: 1px solid black;
+    border-radius: 22px;
+    width: 25rem;
+    height: 115.2vh;
+    background-color: #ffffff;
+  }
+
+  .form-section p {
+    font-family: var(--body-text);
+    color: var(--black);
+    opacity: 0.76px;
+    max-width: 53vw;
+  }
+
+  .logo-airplane {
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .form-group label {
+    font-family: var(--body-text);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--black);
+  }
+
+  .form-dates {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .form-group input {
+    height: 5vh;
+    border-radius: 12px;
+    font-family: var(--body-text);
+    font-size: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .trip-name {
+    width: 23rem;
+  }
+
+  .trip-destination {
+    width: 23rem;
+  }
+
+  .input-date {
+    width: 23rem;
+  }
+
+  .astuces-container {
+    width: 20.5rem;
+    height: 18vh;
+    background-color: rgba(217, 217, 217, 0.3);
+    border: 1px solid rgba(217, 217, 217, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    margin-top: 3.5rem;
+    margin-left: 0.5rem;
+    font-family: var(--body-text);
+    font-size: 1rem;
+    color: var(--black);
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .cancel-button {
+    width: 11vw;
+    height: 6vh;
+    border-radius: 8px;
+    font-family: var(--body-text);
+    font-size: 2rem;
+    color: var(--black);
+  }
+
+  .create-trip-button {
+    width: 21vw;
+    height: 6vh;
+    border-radius: 8px;
+    background-color: var(--primary-button);
+    font-family: var(--body-text);
+    font-size: 2rem;
+    color: var(--background);
+  }
+}

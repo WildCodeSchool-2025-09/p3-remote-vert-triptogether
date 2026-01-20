@@ -13,14 +13,32 @@ export default function CreateTrip() {
         onClick={() => navigate(-1)}
       >
         <img
+          className="back-arrow"
           src="../src/assets/images/back-arrow-logo.png"
           alt="flèche de retour arrière"
         />
       </button>
-      <img src="/logos/logo-airplane.png" alt="logo-avion" />
-      <h1>Créer un nouveau voyage</h1>
-      <p>Commencez par définir les bases de votre aventure</p>
-      <CreateTripForm />
+      <div className="create-trip-main-content">
+        <div className="header-create-new-trip">
+          <img
+            className="logo-airplane"
+            src="/logos/logo-airplane.png"
+            alt="logo-avion"
+          />
+          <h1>
+            Créer un nouveau <span className="voyage-vert">voyage</span>
+          </h1>
+          <p>Commencez par définir les bases de votre aventure</p>
+        </div>
+
+        <div className="form-section">
+          <CreateTripForm />
+        </div>
+      </div>
     </div>
   );
 }
+
+const pets = ["dog", "cat", "turtle", "bat"];
+
+console.log(pets.length);

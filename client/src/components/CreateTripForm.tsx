@@ -46,6 +46,7 @@ export default function CreateTrip() {
         <div className="form-group">
           <label htmlFor="trip-name">Nom du voyage *</label>
           <input
+            className="trip-name"
             type="text"
             id="trip-name"
             name="tripName"
@@ -59,6 +60,7 @@ export default function CreateTrip() {
         <div className="form-group">
           <label htmlFor="destination">Destination principale *</label>
           <input
+            className="trip-destination"
             type="text"
             id="destination"
             name="destination"
@@ -68,11 +70,11 @@ export default function CreateTrip() {
             required
           />
         </div>
-
-        <div className="date-container">
+        <div className="form-dates">
           <div className="form-group">
             <label htmlFor="start-date">Date de début *</label>
             <input
+              className="input-date"
               type="date"
               id="start-date"
               name="startDate"
@@ -84,6 +86,7 @@ export default function CreateTrip() {
           <div className="form-group">
             <label htmlFor="end-date">Date de fin *</label>
             <input
+              className="input-date"
               type="date"
               id="end-date"
               name="endDate"

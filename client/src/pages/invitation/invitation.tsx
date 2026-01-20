@@ -46,13 +46,9 @@ function Invitation() {
 
         let body: InvitationResponseBody = null;
 
-        try {
-          body = text
-            ? (JSON.parse(text) as Invitation | InvitationErrorBody)
-            : null;
-        } catch {
-          console.log("pas du json");
-        }
+        body = text
+          ? (JSON.parse(text) as Invitation | InvitationErrorBody)
+          : null;
 
         if (!response.ok) {
           const errorBody = (body || {}) as InvitationErrorBody;
@@ -67,12 +63,16 @@ function Invitation() {
               toast.info(
                 "Invitation déjà acceptée, redirection vers le voyage...",
               );
-              navigate(`/trip/${tripId}`);
+
+              setStatus("success");
+              setInvitation({
+                ...(body as Invitation),
+                trip_id: tripId,
+              } as Invitation);
             } else {
-              navigate("/");
+              setStatus("error");
             }
 
-            setStatus("success");
             return;
           }
 
@@ -80,8 +80,9 @@ function Invitation() {
             response.status === 400 &&
             errorBody.error === "Invitation expirée"
           ) {
+            toast.error("Invitation expirée");
             setStatus("expired");
-            navigate("/");
+            return;
           }
 
           setStatus("error");
@@ -98,7 +99,25 @@ function Invitation() {
         console.error("ERREUR :", err);
         setStatus("error");
       });
-  }, [id, navigate]);
+  }, [id]);
+
+  useEffect(() => {
+    if (status === "success" && invitation) {
+      const timer = setTimeout(() => {
+        navigate(`/trip/${invitation.trip_id}`);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (status === "refused" || status === "error" || status === "expired") {
+      const timer = setTimeout(() => {
+        navigate("/");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [status, invitation, navigate]);
 
   async function invitationAccepted() {
     if (!id || !invitation) return;
@@ -114,10 +133,10 @@ function Invitation() {
       if (!response.ok) throw new Error("Erreur accept");
       toast.success("OK TU AS ACCEPTÉ ! WELCOME BRO");
       setStatus("success");
-      navigate(`/trip/${invitation.trip_id}`);
     } catch (err) {
       console.error(err);
       toast.error("Erreur lors de l'acceptation");
+      setStatus("error");
     }
   }
 
@@ -135,10 +154,10 @@ function Invitation() {
       if (!response.ok) throw new Error("Erreur refus");
       toast.error("MAIS WHAT POURQUOI ???? TU VA NOUS MANQUER BRO !!!");
       setStatus("refused");
-      navigate("/");
     } catch (err) {
       console.error(err);
       toast.error("Erreur lors du refus");
+      setStatus("error");
     }
   }
 
@@ -151,11 +170,14 @@ function Invitation() {
     );
   }
 
-  if (status === "error" || !invitation) {
+  if (!invitation && (status === "error" || status === "expired")) {
     return (
       <main>
         <ToastContainer />
-        <p>Invitation {id} introuvable ou tu n'as pas accès à ce voyage.</p>
+        <p>
+          Invitation {id} introuvable, expirée ou tu n&apos;as pas accès à ce
+          voyage. Tu vas être redirigé dans 3 secondes...
+        </p>
       </main>
     );
   }
@@ -166,22 +188,16 @@ function Invitation() {
         <nav>Trip Together</nav>
       </header>
       <main>
-        <article id="trip-infos" className="card">
-          {
-            // Composant trip infos
-          }
-        </article>
+        <section id="trip-infos" className="card">
+          {/* Composant trip infos */}
+        </section>
         <section className="other-informations">
           <article id="budget" className="card">
-            {
-              // Composant budget autre US
-            }
+            {/* Composant budget autre US */}
           </article>
 
           <article id="participants" className="card">
-            {
-              // Composant participants
-            }
+            {/* Composant participants */}
           </article>
         </section>
         <article id="invitation" className="card invitation-card">
@@ -200,7 +216,7 @@ function Invitation() {
           <p className="invitation-text">Vous avez été invité·e par</p>
           <img src="npc3.jpg" alt="" className="inviter-avatar" />
           <p className="inviter-name">
-            {`${invitation.creator_firstname} ${invitation.creator_lastname}`}
+            {`${invitation?.creator_firstname} ${invitation?.creator_lastname}`}
           </p>
 
           {status === "null" && (
@@ -222,8 +238,12 @@ function Invitation() {
             </div>
           )}
 
-          {status === "success" && <p>Invitation acceptée.</p>}
-          {status === "refused" && <p>Invitation refusée.</p>}
+          {status === "success" && (
+            <p>Invitation acceptée, redirection dans 3 secondes...</p>
+          )}
+          {status === "refused" && (
+            <p>Invitation refusée, redirection dans 3 secondes...</p>
+          )}
         </article>
         <footer>{/*footer */}</footer>
       </main>

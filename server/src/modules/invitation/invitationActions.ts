@@ -34,7 +34,10 @@ const read: RequestHandler = async (req, res, next) => {
     }
 
     if (invitation.status === "accepted") {
-      res.status(400).json({ error: "Invitation déjà accepté" });
+      res.status(400).json({
+        error: "Invitation déjà accepté",
+        trip_id: invitation.trip_id,
+      });
       return;
     }
 

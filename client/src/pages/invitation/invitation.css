@@ -1,0 +1,76 @@
+body {
+  background-color: #f2f2f2;
+}
+
+header {
+  text-align: center;
+  font-size: var(--font-size-XL);
+  background-color: blueviolet;
+  height: 40vh;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#trip-infos {
+  border: solid 3px purple;
+  height: 200px;
+  width: 80%;
+  text-align: center;
+  align-items: center;
+}
+
+#trip-infos::after {
+  content: "composant détail-voyage";
+  position: absolute;
+  top: 10;
+  left: 10;
+}
+
+.other-informations {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 100px;
+  padding: 40px 0 40px 0;
+}
+
+#budget {
+  background-color: rgb(69, 215, 120);
+  height: 200px;
+  width: 800px;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 5px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+#budget::after {
+  content: "Budget";
+}
+
+#participants {
+  background-color: blue;
+  height: 200px;
+  width: 300px;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 5px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+#participants::after {
+  content: "Participants";
+}
+
+#invitation {
+  height: 200px;
+  width: 100px;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 5px;
+  border-radius: 10px;
+}

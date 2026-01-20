@@ -4,6 +4,10 @@
     overflow: visible;
   }
 
+  .create-trip-page {
+    background-color: var(--background);
+  }
+
   .button-back-arrow {
     display: none;
   }
@@ -16,7 +20,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 16vh;
+    margin-top: 7.55vh;
   }
 
   .header-create-new-trip {
@@ -30,7 +34,7 @@
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--black);
-    margin-top: 7rem;
+    margin-top: 1vh;
   }
 
   .create-trip-main-content p {
@@ -38,7 +42,7 @@
     margin-top: 1rem;
     font-family: var(--body-text);
     color: var(--grey);
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 400;
   }
 
@@ -53,6 +57,7 @@
   }
 
   .form-section {
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,11 +66,12 @@
     border: 1px solid black;
     border-radius: 22px;
     width: 25rem;
-    height: 115.2vh;
+    height: 60rem;
     background-color: #ffffff;
   }
 
   .form-section p {
+    justify-content: center;
     font-family: var(--body-text);
     color: var(--black);
     opacity: 0.76px;
@@ -78,10 +84,10 @@
   }
 
   .form-group {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
     margin-top: 2rem;
   }
 
@@ -90,6 +96,7 @@
     font-weight: 400;
     font-size: 1.5rem;
     color: var(--black);
+    margin-left: 0.5rem;
   }
 
   .form-dates {
@@ -105,7 +112,8 @@
     border-radius: 12px;
     font-family: var(--body-text);
     font-size: 1.25rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
+    border: 2px solid rgba(0, 0, 0, 0.3);
   }
 
   .trip-name {
@@ -121,15 +129,14 @@
   }
 
   .astuces-container {
+    display: block;
     width: 20.5rem;
-    height: 18vh;
+    height: 10.5vh;
     background-color: rgba(217, 217, 217, 0.3);
     border: 1px solid rgba(217, 217, 217, 0.5);
     border-radius: 8px;
     padding: 1rem;
-    margin: 1rem 0;
-    margin-top: 3.5rem;
-    margin-left: 0.5rem;
+    margin: 3.5rem auto 0;
     font-family: var(--body-text);
     font-size: 1rem;
     color: var(--black);
@@ -137,28 +144,31 @@
 
   .button-container {
     display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
     gap: 1.5rem;
     margin-top: 3.5rem;
   }
 
   .cancel-button {
-    width: 11vw;
-    height: 6vh;
+    width: 8rem;
+    height: 4rem;
     border-radius: 8px;
     font-family: var(--body-text);
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--black);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
   .create-trip-button {
-    width: 21vw;
-    height: 6vh;
+    width: 16.75rem;
+    height: 5rem;
     border-radius: 8px;
     background-color: var(--primary-button);
     font-family: var(--body-text);
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--background);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 }

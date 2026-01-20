@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router";
 import CreateTripForm from "../components/CreateTripForm";
 import "../styles/CreateTrip.css";
+import "../styles/mobile.css";
 
 export default function CreateTrip() {
   const navigate = useNavigate();

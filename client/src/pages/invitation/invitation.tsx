@@ -28,7 +28,7 @@ function Invitation() {
   const id = params.id;
   const [invitation, setInvitation] = useState<Invitation | null>(null);
   const [status, setStatus] = useState<
-    "success" | "refused" | "error" | "loading" | "null"
+    "success" | "refused" | "expired" | "error" | "loading" | "null"
   >("null");
   const navigate = useNavigate();
 
@@ -61,7 +61,7 @@ function Invitation() {
             response.status === 400 &&
             errorBody.error === "Invitation déjà accepté"
           ) {
-            const tripId = errorBody.trip_id;
+            const tripId = Number(errorBody.trip_id);
 
             if (tripId) {
               toast.info(
@@ -76,7 +76,16 @@ function Invitation() {
             return;
           }
 
-          throw new Error(`HTTP ${response.status}: ${text}`);
+          if (
+            response.status === 400 &&
+            errorBody.error === "Invitation expirée"
+          ) {
+            setStatus("expired");
+            navigate("/");
+          }
+
+          setStatus("error");
+          return;
         }
 
         const voyage = body as Invitation;
@@ -157,25 +166,25 @@ function Invitation() {
         <nav>Trip Together</nav>
       </header>
       <main>
-        <article id="trip-infos">
+        <article id="trip-infos" className="card">
           {
             // Composant trip infos
           }
         </article>
         <section className="other-informations">
-          <article id="budget">
+          <article id="budget" className="card">
             {
               // Composant budget autre US
             }
           </article>
 
-          <article id="participants">
+          <article id="participants" className="card">
             {
               // Composant participants
             }
           </article>
         </section>
-        <article id="invitation">
+        <article id="invitation" className="card invitation-card">
           <ToastContainer
             position="top-center"
             autoClose={5000}
@@ -188,31 +197,29 @@ function Invitation() {
             pauseOnHover
             theme="light"
           />
-          <p id="text">
-            Vous avez été invité·es par
-            <img src="../../../public/profilepic.png" alt="" width={59} />{" "}
-            <strong>
-              {`${invitation.creator_firstname} ${invitation.creator_lastname}`}
-            </strong>
+          <p className="invitation-text">Vous avez été invité·e par</p>
+          <img src="npc3.jpg" alt="" className="inviter-avatar" />
+          <p className="inviter-name">
+            {`${invitation.creator_firstname} ${invitation.creator_lastname}`}
           </p>
 
           {status === "null" && (
-            <p id="btn">
+            <div className="invitation-actions">
               <button
                 type="button"
+                className="btn btn-primary"
                 onClick={invitationAccepted}
-                id="btn-accepted"
               >
                 Accepter
               </button>
               <button
                 type="button"
+                className="btn btn-outline"
                 onClick={invitationRefused}
-                id="btn-refused"
               >
                 Refuser
               </button>
-            </p>
+            </div>
           )}
 
           {status === "success" && <p>Invitation acceptée.</p>}

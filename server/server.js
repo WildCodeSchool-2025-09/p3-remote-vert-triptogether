@@ -3,16 +3,16 @@ const mysql = require("mysql2");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "harry",
-  password: "potter",
-  database: "trips_db",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
@@ -24,7 +24,7 @@ db.connect((err) => {
 });
 
 app.get("/api/trips", (req, res) => {
-  const query = "SELECT * FROM trips";
+  const query = "SELECT * FROM trip";
 
   db.query(query, (err, results) => {
     if (err) {

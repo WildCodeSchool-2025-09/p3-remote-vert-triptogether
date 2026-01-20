@@ -1,61 +1,84 @@
 import type { RequestHandler } from "express";
 
-// Import access to data
 import tripRepository from "./tripRepository";
 
-// The B of BREAD - Browse (Read All) operation
+type NewTrip = {
+  title: string;
+  description: string;
+  start_at: string;
+  end_at: string;
+  user_id: number;
+};
+
 const browse: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch all trips
     const trips = await tripRepository.readAll();
 
-    // Respond with the trips in JSON format
     res.json(trips);
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-// The R of BREAD - Read operation
 const read: RequestHandler = async (req, res, next) => {
   try {
-    // Fetch a specific trip based on the provided ID
     const tripId = Number(req.params.id);
     const trip = await tripRepository.read(tripId);
 
-    // If the trip is not found, respond with HTTP 404 (Not Found)
-    // Otherwise, respond with the trip in JSON format
     if (trip == null) {
       res.sendStatus(404);
     } else {
       res.json(trip);
     }
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };
 
-// The A of BREAD - Add (Create) operation
 const add: RequestHandler = async (req, res, next) => {
   try {
-    // Extract the trip data from the request body
-    const newTrip = {
+    const newTrip: NewTrip = {
       title: req.body.title,
-      user_id: req.body.user_id,
       description: req.body.description,
       start_at: req.body.start_at,
       end_at: req.body.end_at,
+      user_id: req.body.user_id || 1,
     };
 
-    // Create the trip
+    if (
+      !newTrip.title ||
+      !newTrip.description ||
+      !newTrip.start_at ||
+      !newTrip.end_at
+    ) {
+      res.status(400).json({ message: "Toutes les données sont requises" });
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const startDate = new Date(newTrip.start_at);
+    const endDate = new Date(newTrip.end_at);
+
+    if (startDate < today) {
+      res
+        .status(400)
+        .json({ message: "La date de départ ne peut pas être dans le passé" });
+      return;
+    }
+
+    if (endDate < startDate) {
+      res.status(400).json({
+        message: "La date de retour doit être après la date de départ",
+      });
+      return;
+    }
+
     const insertId = await tripRepository.create(newTrip);
 
-    // Respond with HTTP 201 (Created) and the ID of the newly inserted trip
     res.status(201).json({ insertId });
   } catch (err) {
-    // Pass any errors to the error-handling middleware
     next(err);
   }
 };

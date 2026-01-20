@@ -1,13 +1,13 @@
 import "dotenv/config";
-import "../database/checkConnection";
 import app from "./app";
+import "../database/checkConnection";
 
-const port = process.env.APP_PORT;
+const port = process.env.APP_PORT || 3310;
 
 app
   .listen(port, () => {
     console.info(`Server is listening on port ${port}`);
   })
   .on("error", (err: Error) => {
-    console.error("Error:", err.message);
+    console.error("Erreur du serveur :", err.message);
   });

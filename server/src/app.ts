@@ -4,13 +4,15 @@ const app = express();
 
 import cors from "cors";
 
+app.use(express.json());
+
 if (process.env.CLIENT_URL != null) {
   app.use(cors({ origin: [process.env.CLIENT_URL] }));
 }
 
-import router from "./router";
+const apiRouter = require("./routers/api/router");
 
-app.use(router);
+app.use("/api", apiRouter);
 
 import fs from "node:fs";
 import path from "node:path";

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import "./invitation.css";
 
 interface Invitation {
   id: number;
@@ -78,10 +79,10 @@ function Invitation() {
           throw new Error(`HTTP ${response.status}: ${text}`);
         }
 
-        const data = body as Invitation;
-        setInvitation(data);
-        if (data.status === "accepted") setStatus("success");
-        else if (data.status === "refused") setStatus("refused");
+        const voyage = body as Invitation;
+        setInvitation(voyage);
+        if (voyage.status === "accepted") setStatus("success");
+        else if (voyage.status === "refused") setStatus("refused");
         else setStatus("null");
       })
       .catch((err) => {
@@ -151,66 +152,75 @@ function Invitation() {
   }
 
   return (
-    <main>
-      <header>Trip Together</header>
+    <>
+      <header>
+        <nav>Trip Together</nav>
+      </header>
+      <main>
+        <article id="trip-infos">
+          {
+            // Composant trip infos
+          }
+        </article>
+        <section className="other-informations">
+          <article id="budget">
+            {
+              // Composant budget autre US
+            }
+          </article>
 
-      <section>
-        <img src="cover.jpg" alt="" />
-      </section>
-      <section>
-        <h1>{invitation.trip_title || "Eté à Barcelone"}</h1>
-        <p>Ville, Pays</p>
-        <p>15 Juillet - 23 Aout 2025</p>
-        <p>2 participants</p>
-      </section>
+          <article id="participants">
+            {
+              // Composant participants
+            }
+          </article>
+        </section>
+        <article id="invitation">
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <p id="text">
+            Vous avez été invité·es par
+            <img src="../../../public/profilepic.png" alt="" width={59} />{" "}
+            <strong>
+              {`${invitation.creator_firstname} ${invitation.creator_lastname}`}
+            </strong>
+          </p>
 
-      <section>
-        <h1>Budget</h1>
+          {status === "null" && (
+            <p id="btn">
+              <button
+                type="button"
+                onClick={invitationAccepted}
+                id="btn-accepted"
+              >
+                Accepter
+              </button>
+              <button
+                type="button"
+                onClick={invitationRefused}
+                id="btn-refused"
+              >
+                Refuser
+              </button>
+            </p>
+          )}
 
-        <h1>Participants</h1>
-        <p>2 membres</p>
-        <img src="npc.jpg" alt="" />
-        <img src="npc.jpg" alt="" />
-      </section>
-
-      <section>
-        <ToastContainer
-          position="top-center"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={false}
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        <p>
-          Vous avez été invité·es <br />
-          par
-          <img src="npc3.jpg" alt="" /> <br />
-          <strong>
-            {`${invitation.creator_firstname} ${invitation.creator_lastname}`}
-          </strong>
-        </p>
-
-        {status === "null" && (
-          <>
-            <button type="button" onClick={invitationAccepted}>
-              Accepter
-            </button>
-            <button type="button" onClick={invitationRefused}>
-              Refuser
-            </button>
-          </>
-        )}
-
-        {status === "success" && <p>Invitation acceptée.</p>}
-        {status === "refused" && <p>Invitation refusée.</p>}
-      </section>
-      <ToastContainer />
-    </main>
+          {status === "success" && <p>Invitation acceptée.</p>}
+          {status === "refused" && <p>Invitation refusée.</p>}
+        </article>
+        <footer>{/*footer */}</footer>
+      </main>
+    </>
   );
 }
 

@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  background-color: #f2f2f2;
+  font-size: 32px;
+}
+
+header {
+  background-image: url(../../../public/Raffles-City\ 1.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  font-size: var(--font-size-XL);
+  height: 80vh;
+}
+
+header > nav {
+  background-color: white;
+  height: 15vh;
+}
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 1170px;
+  margin: -4rem auto 3rem;
+  padding: 0 16px 40px;
+}
+
+#trip-infos {
+  background-color: #ffffff;
+  border: solid 3px #ffffff;
+  min-height: 361px;
+  width: 100%;
+  text-align: center;
+  align-items: center;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 15px;
+  border-radius: 40px;
+}
+
+#trip-infos::after {
+  content: "composant détail-voyage";
+  position: absolute;
+  top: 10;
+  left: 10;
+}
+
+.other-informations {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  padding: 4rem 0 4rem 0;
+}
+
+#budget {
+  background-color: rgb(255 255 255);
+  min-height: 333px;
+  width: 699px;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 10px;
+  border-radius: 40px;
+  text-align: center;
+}
+
+#budget::after {
+  content: "Budget";
+}
+
+#participants {
+  background-color: #ffffff;
+  height: 333px;
+  width: 333px;
+  border: 1px solid lightgray;
+  box-shadow: 1px 1px 10px;
+  border-radius: 40px;
+  text-align: center;
+}
+
+#participants::after {
+  content: "Participants";
+}
+
+#invitation {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  gap: 50px;
+  height: 369px;
+  width: 495px;
+}
+
+#invitation > #text {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: center;
+}
+
+#btn {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+}
+
+#btn-accepted {
+  background-color: #1b5e1d;
+  font-size: 32px;
+  color: white;
+  font-weight: 600;
+  width: 205px;
+  height: 80px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 50px;
+}
+
+#btn-refused {
+  background-color: #ffffff;
+  font-size: 32px;
+  width: 205px;
+  height: 80px;
+  border-radius: 10px;
+}
+
+footer {
+  height: 40vh;
+}

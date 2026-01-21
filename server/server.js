@@ -5,8 +5,16 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
 app.use(express.json());
+
+app.use(
+  corscors({
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,

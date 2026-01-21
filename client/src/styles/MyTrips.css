@@ -1,0 +1,167 @@
+
+.mytripsheader {
+  background-image: url("/images/pexels-julius-silver-240301-753325.jpg");
+  background-position: top;
+  background-size: cover;
+  width: 100%;
+  height: min(80vh, 600px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3rem;
+  padding: 0 1rem;
+  color: white;
+  text-align: center;
+}
+
+.mytripsheader h1 {
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.mytripsheader p {
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.mytripsheader input {
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  width: min(90%, 350px);
+  border-radius: 20px;
+  border: none;
+    outline: none;
+  background-color: white;
+}
+
+
+.tripstate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.tripstate button {
+  background-color: rgb(203, 197, 197);
+  color: black;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+  font-size: 0.95rem;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.tripstate button:hover {
+  background-color: black;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+.tripstate button.active {
+  background-color: #4caf50;
+  color: white;
+  box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+
+.tripstate button:active {
+  transform: scale(0.97);
+}
+
+
+.tripcards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(180px, 1fr)); 
+  justify-content: center; 
+  gap: 2rem;
+  padding: 0 1rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tripcard {
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px; 
+}
+
+.tripcard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+}
+
+
+.trip-image {
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column-reverse;
+  color: white;
+}
+
+.trip-image h2 {
+  align-self: flex-start;
+  display: inline-block;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  line-height: 1.3;
+}
+
+
+.trip-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; 
+}
+
+.trip-info img {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+
+@media (max-width: 1024px) {
+  .tripcards {
+    grid-template-columns: repeat(3, minmax(180px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .tripcards {
+    grid-template-columns: repeat(2, minmax(160px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tripcards {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+}

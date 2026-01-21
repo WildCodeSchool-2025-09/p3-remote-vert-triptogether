@@ -5,7 +5,7 @@ body {
 }
 
 header {
-  background-image: url(../../../public/Raffles-City\ 1.png);
+  background-image: url(../../../public/header-background-city.png);
   background-repeat: no-repeat;
   background-size: cover;
   font-size: var(--font-size-XL);
@@ -16,6 +16,7 @@ header > nav {
   background-color: white;
   height: 15vh;
 }
+
 main {
   max-width: 1160px;
   margin: -60px auto 50px;
@@ -28,6 +29,7 @@ main {
   margin: -4rem auto 3rem;
   padding: 0 16px 40px;
 }
+
 .card {
   background-color: #ffffff;
   border-radius: 16px;
@@ -91,6 +93,7 @@ main {
   margin-bottom: 8px;
   color: #4b5563;
 }
+
 .btn {
   border-radius: 8px;
   padding: 8px 16px;

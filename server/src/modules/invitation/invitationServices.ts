@@ -8,7 +8,7 @@ const checkExpirationDate = async (
 ) => {
   try {
     const invitationId = Number(req.params.id);
-    const invitation = await invitationRepository.readTrip(invitationId);
+    const invitation = await invitationRepository.read(invitationId);
 
     if (
       invitation &&

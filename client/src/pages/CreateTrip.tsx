@@ -55,7 +55,7 @@ export default function CreateTrip() {
 
       setTimeout(() => {
         navigate(-1);
-      }, 500); 
+      }, 500);
     } catch (error) {
       console.error(error);
       toast.error("Impossible de créer le voyage. Réessayez.");

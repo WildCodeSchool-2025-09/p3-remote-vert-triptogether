@@ -56,7 +56,7 @@ export default function CreateTrip() {
 
       setTimeout(() => {
         navigate(-1);
-      }, 500); // rediriger ensuite vers la page du voyage
+      }, 500);
     } catch (error) {
       console.error(error);
       toast.error("Impossible de créer le voyage. Réessayez.");
@@ -65,8 +65,23 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
+      <div>
+        <button
+          type="button"
+          className="button-back-arrow"
+          onClick={() => navigate(-1)}
+        />
+        <img
+          className="back-arrow"
+          src="../src/assets/images/back-arrow-logo.png"
+          alt="flèche de retour arrière"
+        />
+      </div>
+
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
-      <h1>Créer un nouveau voyage</h1>
+      <h1>
+        Créer un nouveau <span>voyage</span>
+      </h1>
       <p>Commencez par définir les bases de votre aventure</p>
       <form className="create-trip-form" onSubmit={handleSubmit}>
         <div className="form-group">
@@ -100,7 +115,6 @@ export default function CreateTrip() {
             <label htmlFor="start-date">Date de début *</label>
             <input
               type="date"
-              id="start-date"
               name="start_at"
               value={formData.start_at}
               onChange={handleChange}
@@ -111,7 +125,6 @@ export default function CreateTrip() {
             <label htmlFor="end-date">Date de fin *</label>
             <input
               type="date"
-              id="end-date"
               name="end_at"
               value={formData.end_at}
               onChange={handleChange}
@@ -143,7 +156,3 @@ export default function CreateTrip() {
     </div>
   );
 }
-
-const pets = ["dog", "cat", "turtle", "bat"];
-
-console.log(pets.length);

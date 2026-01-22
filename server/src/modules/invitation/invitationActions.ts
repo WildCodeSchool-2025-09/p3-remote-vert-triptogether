@@ -13,9 +13,17 @@ const read: RequestHandler = async (req, res, next) => {
       return;
     }
 
+    if (
+      ![invitation.creator_id, invitation.invited_id].includes(
+        CONNECTED_USER_ID,
+      )
+    ) {
+      res.status(403).json({ error: "Accès non autorisé" });
+      return;
+    }
+
     if (invitation.status === "accepted") {
-      res.status(200).json({
-        status: "already_accepted",
+      res.status(409).json({
         message: "Invitation déjà acceptée",
         trip_id: invitation.trip_id,
       });
@@ -23,19 +31,9 @@ const read: RequestHandler = async (req, res, next) => {
     }
 
     if (invitation.status === "refused") {
-      res.status(200).json({
-        status: "already_refused",
+      res.status(410).json({
         message: "Invitation déjà refusée",
       });
-      return;
-    }
-
-    if (
-      ![invitation.creator_id, invitation.invited_id].includes(
-        CONNECTED_USER_ID,
-      )
-    ) {
-      res.status(403).json({ error: "Accès non autorisé" });
       return;
     }
 

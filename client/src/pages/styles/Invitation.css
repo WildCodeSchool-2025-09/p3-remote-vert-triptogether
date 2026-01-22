@@ -5,42 +5,46 @@ body {
 }
 
 header {
-  background-image: url(../../../public/header-background-city.png);
+  background-image: url(../../../header-background-city.png);
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
+  height: 400px;
   font-size: var(--font-size-XL);
-  height: 80vh;
 }
 
 header > nav {
   background-color: white;
-  height: 15vh;
+  height: 80px;
 }
 
 main {
   max-width: 1160px;
-  margin: -60px auto 50px;
-  padding: 0 16px 40px;
+  margin: 0 auto;
+  padding: 0 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 1170px;
-  margin: -4rem auto 3rem;
-  padding: 0 16px 40px;
+  margin-top: -80px;
+  position: relative;
+  z-index: 10;
+  padding-bottom: 80px;
 }
 
 .card {
+  gap: 50px;
   background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
-  padding: 20px 24px;
-  box-sizing: border-box;
+  border-radius: 20px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
+  padding: 32px;
+  margin-bottom: 24px;
 }
 
 #trip-infos {
-  height: 200px;
-  width: 80%;
+  height: 361px;
+  width: 100%;
   text-align: center;
   align-items: center;
   margin-bottom: 24px;
@@ -59,13 +63,16 @@ main {
 
 .other-informations {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  margin-bottom: 100px;
 }
 
-#budget {
-  min-height: 220px;
+#budget,
+#participants {
+  min-height: 300px;
+  display: flex;
+  flex-direction: columns;
 }
 
 #budget::after {
@@ -73,10 +80,6 @@ main {
   display: block;
   text-align: center;
   margin-top: 80px;
-}
-
-#participants {
-  min-height: 220px;
 }
 
 #participants::after {
@@ -87,6 +90,9 @@ main {
 }
 
 #invitation {
+  border: none;
+  background-color: #f2f2f2;
+  box-shadow: 0 0 0;
   text-align: center;
   padding-top: 24px;
   padding-bottom: 24px;
@@ -97,6 +103,7 @@ main {
 .btn {
   border-radius: 8px;
   padding: 8px 16px;
+  margin: 20px 15px 0 15px;
   font-size: 0.9rem;
   cursor: pointer;
   border: 1px solid transparent;
@@ -145,4 +152,24 @@ main {
 
 footer {
   height: 40vh;
+}
+
+@media (max-width: 900px) {
+  header {
+    height: 550px;
+  }
+
+  main {
+    margin-top: -40px;
+    padding: 0 16px 40px;
+  }
+
+  .other-informations {
+    grid-template-columns: 1fr;
+  }
+
+  .invitation-actions .btn {
+    width: 100%;
+    padding: 14px;
+  }
 }

@@ -10,7 +10,7 @@ type Invitation = {
   creator_id: number;
   invited_id: number;
   trip_id: number;
-  trip_start?: string | null;
+  start_at?: string | null;
   trip_title?: string;
   creator_firstname?: string;
   creator_lastname?: string;
@@ -21,11 +21,11 @@ type Invitation = {
 class invitationRepository {
   async read(id: number) {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT i.*, t.start_at AS trip_start FROM invitation i JOIN trip t ON i.trip_id = t.id WHERE i.id = ?",
+      "SELECT i.*, t.start_at AS start_at FROM invitation i JOIN trip t ON i.trip_id = t.id WHERE i.id = ?",
       [id],
     );
 
-    return this.select(id);
+    return rows[0] as Invitation;
   }
 
   async select(id: number): Promise<Invitation | null> {

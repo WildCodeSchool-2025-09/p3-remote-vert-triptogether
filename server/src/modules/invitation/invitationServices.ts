@@ -10,12 +10,8 @@ const checkExpirationDate = async (
     const invitationId = Number(req.params.id);
     const invitation = await invitationRepository.read(invitationId);
 
-    if (
-      invitation &&
-      invitation.status === "pending" &&
-      invitation.trip_start
-    ) {
-      if (new Date() > new Date(invitation.trip_start)) {
+    if (invitation && invitation.status === "pending" && invitation.start_at) {
+      if (new Date() > new Date(invitation.start_at)) {
         return res.status(400).json({ error: "Invitation expirée" });
       }
     }

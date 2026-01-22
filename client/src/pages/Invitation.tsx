@@ -24,14 +24,14 @@ function Invitation() {
 
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
       .then(async (response) => {
-        const data = await response.json();
+        const invitation = await response.json();
 
         if (response.status === 400) {
           navigate("/", {
             state: {
               toast: {
                 type: "error",
-                message: data.message,
+                message: invitation.message,
               },
             },
           });
@@ -42,7 +42,7 @@ function Invitation() {
             state: {
               toast: {
                 type: "error",
-                message: data.message,
+                message: invitation.message,
               },
             },
           });
@@ -53,18 +53,18 @@ function Invitation() {
             state: {
               toast: {
                 type: "error",
-                message: data.message,
+                message: invitation.message,
               },
             },
           });
         }
 
         if (response.status === 409) {
-          navigate(`/trip/${data.trip_id}`, {
+          navigate(`/trip/${invitation.trip_id}`, {
             state: {
               toast: {
                 type: "error",
-                message: data.message,
+                message: invitation.message,
               },
             },
           });
@@ -75,13 +75,13 @@ function Invitation() {
             state: {
               toast: {
                 type: "error",
-                message: data.message,
+                message: invitation.message,
               },
             },
           });
         }
 
-        setInvitation(data);
+        setInvitation(invitation);
       })
       .catch(() => {
         navigate("/", {

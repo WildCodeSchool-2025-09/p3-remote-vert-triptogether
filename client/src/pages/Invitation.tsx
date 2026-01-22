@@ -7,56 +7,71 @@ import type { invitationType } from "../types/invitationType";
 function Invitation() {
   const { id } = useParams<{ id: string }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
-  const [errorStatus, setErrorStatus] = useState<"error" | "success" | "null">(
-    "null",
-  );
-  const [invitationStatus, setInvitationStatus] = useState<
-    "accepted" | "refused" | "expired" | "null"
-  >("null");
+
   const navigate = useNavigate();
+
+  // ToDo : Afficher le toast côté page redirigée
+
+  // const location = useLocation();
+
+  // useEffect(() => {
+  //   if (location.state?.toast) {
+  //     const { type, message } = location.state.toast;
+  //     toast[type](message);
+  //   }
+  // }, [location]);
 
   useEffect(() => {
     if (!id) {
-      setErrorStatus("error");
-      setInvitationStatus("expired");
-      return;
+      navigate("/", {
+        state: {
+          toast: {
+            type: "error",
+            message: "Invitation invalide",
+          },
+        },
+      });
     }
 
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (response.status === 409) {
+          navigate(`/trip/${data.trip_id}`, {
+            state: {
+              toast: {
+                type: "error",
+                message: data.message,
+              },
+            },
+          });
         }
-        return response.json() as Promise<invitationType>;
-      })
-      .then((data) => {
+
+        if (response.status === 410) {
+          navigate(`/trip/${data.trip_id}`, {
+            state: {
+              toast: {
+                type: "error",
+                message: data.message,
+              },
+            },
+          });
+        }
+
         setInvitation(data);
-        setErrorStatus("null");
-
-        if (data.status === "accepted" || data.status === "already_accepted") {
-          toast.info("Invitation déjà acceptée");
-          setInvitationStatus("accepted");
-          setTimeout(() => navigate(`/trip/${data.trip_id}`), 3000);
-          return;
-        }
-
-        if (data.status === "refused" || data.status === "already_refused") {
-          toast.info("Invitation déjà refusée");
-          setInvitationStatus("refused");
-          setTimeout(() => navigate("/"), 3000);
-          return;
-        }
-
-        setInvitationStatus("null");
       })
-      .catch((err) => {
-        console.error(err);
-        setErrorStatus("error");
-        setInvitationStatus("expired");
-        toast.error("Invitation introuvable");
-        setTimeout(() => navigate("/"), 3000);
+      .catch(() => {
+        navigate("/", {
+          state: {
+            toast: {
+              type: "error",
+              message: "Invitation introuvable ou accès non autorisé",
+            },
+          },
+        });
       });
-  }, [id, navigate]);
+  }, [navigate, id]);
 
   async function invitationResponded(status: "accepted" | "refused") {
     if (!id) return;
@@ -75,8 +90,6 @@ function Invitation() {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      setInvitationStatus(status);
-
       if (status === "accepted") {
         toast.success("Invitation acceptée");
         setTimeout(() => {
@@ -89,16 +102,11 @@ function Invitation() {
         }, 3000);
       }
     } catch (err) {
-      console.error(err);
       toast.error("Erreur lors du traitement de l'invitation");
-      setErrorStatus("error");
     }
   }
 
-  if (
-    !invitation &&
-    (errorStatus === "error" || invitationStatus === "expired")
-  ) {
+  if (!invitation) {
     return (
       <main>
         <ToastContainer />
@@ -149,31 +157,22 @@ function Invitation() {
             }`}
           </p>
 
-          {invitationStatus === "null" && (
-            <div className="invitation-actions">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => invitationResponded("accepted")}
-              >
-                Accepter
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline"
-                onClick={() => invitationResponded("refused")}
-              >
-                Refuser
-              </button>
-            </div>
-          )}
-
-          {invitationStatus === "accepted" && (
-            <p>Invitation acceptée, redirection dans 3 secondes...</p>
-          )}
-          {invitationStatus === "refused" && (
-            <p>Invitation refusée, redirection dans 3 secondes...</p>
-          )}
+          <div className="invitation-actions">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => invitationResponded("accepted")}
+            >
+              Accepter
+            </button>
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={() => invitationResponded("refused")}
+            >
+              Refuser
+            </button>
+          </div>
         </article>
         <footer>{/*footer */}</footer>
       </main>

@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 3;
+const CONNECTED_USER_ID = 2;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -61,7 +61,6 @@ const edit: RequestHandler = async (req, res, next) => {
 
     if (updateInvitation?.status === "accepted") {
       res.status(200).json({
-        status: "already_accepted",
         message: "Invitation déjà acceptée",
         trip_id: invitation.trip_id,
       });

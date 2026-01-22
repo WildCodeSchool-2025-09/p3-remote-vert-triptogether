@@ -10,17 +10,6 @@ function Invitation() {
 
   const navigate = useNavigate();
 
-  // ToDo : Afficher le toast côté page redirigée
-
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   if (location.state?.toast) {
-  //     const { type, message } = location.state.toast;
-  //     toast[type](message);
-  //   }
-  // }, [location]);
-
   useEffect(() => {
     if (!id) {
       navigate("/", {
@@ -37,6 +26,39 @@ function Invitation() {
       .then(async (response) => {
         const data = await response.json();
 
+        if (response.status === 400) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: data.message,
+              },
+            },
+          });
+        }
+
+        if (response.status === 403) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: data.message,
+              },
+            },
+          });
+        }
+
+        if (response.status === 404) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: data.message,
+              },
+            },
+          });
+        }
+
         if (response.status === 409) {
           navigate(`/trip/${data.trip_id}`, {
             state: {
@@ -49,7 +71,7 @@ function Invitation() {
         }
 
         if (response.status === 410) {
-          navigate(`/trip/${data.trip_id}`, {
+          navigate("/", {
             state: {
               toast: {
                 type: "error",
@@ -91,31 +113,27 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        toast.success("Invitation acceptée");
-        setTimeout(() => {
-          navigate(`/trip/${invitation?.trip_id}`);
-        }, 3000);
+        navigate(`/trip/${invitation?.trip_id}`, {
+          state: {
+            toast: {
+              type: "success",
+              message: "Invitation acceptée",
+            },
+          },
+        });
       } else {
-        toast.error("Invitation refusée");
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
+        navigate("/", {
+          state: {
+            toast: {
+              type: "error",
+              message: "Invitation refusée",
+            },
+          },
+        });
       }
     } catch (err) {
       toast.error("Erreur lors du traitement de l'invitation");
     }
-  }
-
-  if (!invitation) {
-    return (
-      <main>
-        <ToastContainer />
-        <p>
-          Invitation {id} introuvable, expirée ou tu n&apos;as pas accès à ce
-          voyage. Tu vas être redirigé dans 3 secondes...
-        </p>
-      </main>
-    );
   }
 
   return (

@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 2;
+const CONNECTED_USER_ID = 3;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -46,24 +46,16 @@ const read: RequestHandler = async (req, res, next) => {
 const edit: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const invitation = await InvitationRepository.select(invitationId);
+    const updateInvitation = await InvitationRepository.select(invitationId);
 
     if (Number.isNaN(invitationId)) {
       res.status(400).json({ error: "ID invalide" });
       return;
     }
 
-    const updateInvitation = await InvitationRepository.select(invitationId);
-    if (!invitation) {
+    if (!updateInvitation) {
       res.status(404).json({ error: "Invitation introuvable" });
       return;
-    }
-
-    if (updateInvitation?.status === "accepted") {
-      res.status(200).json({
-        message: "Invitation déjà acceptée",
-        trip_id: invitation.trip_id,
-      });
     }
 
     if (
@@ -90,10 +82,7 @@ const edit: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    res.status(200).json({
-      message: "Mise à jour de l'invitation effectuée",
-      trip_id: invitation.trip_id,
-    });
+    res.status(200).json();
   } catch (err) {
     next(err);
   }

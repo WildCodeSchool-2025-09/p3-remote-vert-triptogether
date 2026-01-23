@@ -5,7 +5,7 @@ class UserSeeder extends AbstractSeeder {
     super({ table: "user", truncate: true });
   }
 
-  run() {
+  async run() {
     for (let i = 0; i < 10; i += 1) {
       const fakeUser = {
         firstname: this.faker.person.firstName(),

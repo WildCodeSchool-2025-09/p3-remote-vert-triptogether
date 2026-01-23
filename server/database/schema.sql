@@ -49,17 +49,21 @@ CREATE TABLE budget (
     ON DELETE RESTRICT
 );
 
-CREATE TABLE participate (
+CREATE TABLE invitation (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status VARCHAR(10) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  user_id INT NOT NULL,
+  creator_id INT NOT NULL,
+  invited_id INT NOT NULL,
   trip_id INT NOT NULL,
-  CONSTRAINT fk_participate_user
-    FOREIGN KEY (user_id) REFERENCES user(id)
+  CONSTRAINT fk_inviation_creator
+    FOREIGN KEY (creator_id) REFERENCES user(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_participate_trip
+  CONSTRAINT fk_invation_invited
+    FOREIGN KEY (invited_id) REFERENCES user(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_invitation_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
     ON DELETE CASCADE
 );

@@ -68,7 +68,7 @@ const add: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (endDate < startDate) {
+    if (endDate <= startDate) {
       res.status(400).json({
         message: "La date de retour doit être après la date de départ",
       });

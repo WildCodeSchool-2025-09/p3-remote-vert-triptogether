@@ -1,6 +1,6 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import "../styles/CreateTrip.css";
 import "../styles/mobile.css";
 
@@ -19,11 +19,14 @@ export default function CreateTrip() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todayString = today.toLocaleDateString("fr-CA").split("T")[0];
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
     const departureDate = new Date(formData.start_at);
     const returnDate = new Date(formData.end_at);
@@ -33,7 +36,7 @@ export default function CreateTrip() {
       return;
     }
 
-    if (returnDate < departureDate) {
+    if (returnDate <= departureDate) {
       toast.error("La date de retour doit être après la date de départ");
       return;
     }
@@ -65,17 +68,19 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
-      <div>
+      <div className="container-back-arrow">
         <button
           type="button"
           className="button-back-arrow"
           onClick={() => navigate(-1)}
-        />
-        <img
-          className="back-arrow"
-          src="../src/assets/images/back-arrow-logo.png"
-          alt="flèche de retour arrière"
-        />
+          aria-label="Retour"
+        >
+          <img
+            className="back-arrow"
+            src="../src/assets/images/back-arrow-logo.png"
+            alt=""
+          />
+        </button>
       </div>
 
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
@@ -116,6 +121,7 @@ export default function CreateTrip() {
             <input
               type="date"
               name="start_at"
+              min={todayString}
               value={formData.start_at}
               onChange={handleChange}
               required
@@ -126,6 +132,7 @@ export default function CreateTrip() {
             <input
               type="date"
               name="end_at"
+              min={formData.start_at || todayString}
               value={formData.end_at}
               onChange={handleChange}
               required

@@ -69,11 +69,15 @@ CREATE TABLE vote (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   user_id INT NOT NULL,
   destination_id INT NOT NULL,
+  vote BOOLEAN NOT NULL,
+  comment TEXT NULL,
   CONSTRAINT fk_vote_user
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_vote_destination
     FOREIGN KEY (destination_id) REFERENCES destination(id)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT unique_user_vote_destination
+    UNIQUE (user_id, destination_id)
 );
 

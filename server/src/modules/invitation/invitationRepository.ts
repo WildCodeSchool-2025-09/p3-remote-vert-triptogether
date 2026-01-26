@@ -57,6 +57,14 @@ class invitationRepository {
     );
     return result.affectedRows === 1;
   }
+
+  async create(tripId: number, email: string, creator_id: number) {
+    const [result] = await databaseClient.query<Result>(
+      "INSERT INTO invitation (trip_id, email, status, creator_id, user_id) VALUES (?, ?, 'pending', ?, null)",
+      [tripId, email, creator_id],
+    );
+    return result;
+  }
 }
 
 export default new invitationRepository();

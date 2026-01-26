@@ -9,8 +9,10 @@ const router = express.Router();
 
 // Define trip-related routes
 const invitationRouter = require("../invitation/router");
+const tripRouter = require("../trip/router");
 
 router.use("/invitation", invitationRouter);
+router.use("/trips", tripRouter);
 
 /* ************************************************************************* */
 

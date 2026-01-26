@@ -88,4 +88,39 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read };
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+    const { email } = req.body;
+
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID du voyage invalide" });
+      return;
+    }
+
+    if (!email) {
+      res.status(400).json({ error: "Email requis" });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ error: "Format email invalide" });
+      return;
+    }
+
+    const creator_id = CONNECTED_USER_ID;
+
+    const inviteMemberToTrip = await InvitationRepository.create(
+      tripId,
+      email,
+      creator_id,
+    );
+
+    res.status(201).json({ message: "Invitation envoyée" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { edit, read, add };

@@ -167,6 +167,8 @@ function Membres() {
 
         <Onglets />
 
+        {/* TODO Ajouter un membre : Autre US*/}
+
         <section id="member-list">
           {loading && <p>Chargement des membres...</p>}
           {error && <p className="error">{error}</p>}

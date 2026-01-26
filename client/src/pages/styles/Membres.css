@@ -146,3 +146,53 @@ li:last-child {
   background-color: #e5e7eb;
   color: #111827;
 }
+
+@media (max-width: 640px) {
+  #member-list {
+    margin-top: 10px;
+  }
+
+  article {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  li {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 12px;
+    gap: 8px;
+  }
+
+  .left-side {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .right-side {
+    width: 100%;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .name {
+    font-size: 14px;
+  }
+
+  .date {
+    font-size: 12px;
+  }
+
+  .badge {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .btn-primary,
+  .btn-danger,
+  .btn-role {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}

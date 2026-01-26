@@ -57,6 +57,27 @@ class invitationRepository {
     );
     return result.affectedRows === 1;
   }
+
+  async findByTripId(tripId: number): Promise<Invitation[]> {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+      SELECT 
+        i.*, 
+        t.title AS trip_title, t.start_at AS trip_start,
+        c.firstname AS creator_firstname, c.lastname AS creator_lastname,
+        u.firstname AS invited_firstname, u.lastname AS invited_lastname
+      FROM invitation i
+      JOIN trip t ON i.trip_id = t.id
+      JOIN user c ON i.creator_id = c.id
+      JOIN user u ON i.invited_id = u.id
+      WHERE i.trip_id = ?
+      ORDER BY i.created_at ASC
+    `,
+      [tripId],
+    );
+
+    return rows as Invitation[];
+  }
 }
 
 export default new invitationRepository();

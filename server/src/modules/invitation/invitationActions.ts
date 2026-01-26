@@ -88,4 +88,38 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read };
+const listByTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.tripId);
+
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID de voyage invalide" });
+      return;
+    }
+
+    const invitations = await InvitationRepository.findByTripId(tripId);
+
+    if (invitations.length === 0) {
+      res.status(404).json({ error: "Aucune invitation pour ce voyage" });
+      return;
+    }
+
+    const isAllowed = invitations.some(
+      (invitation) =>
+        invitation.creator_id === CONNECTED_USER_ID ||
+        (invitation.invited_id === CONNECTED_USER_ID &&
+          invitation.status === "accepted"),
+    );
+
+    if (!isAllowed) {
+      res.sendStatus(403);
+      return;
+    }
+
+    res.json(invitations);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { edit, read, listByTrip };

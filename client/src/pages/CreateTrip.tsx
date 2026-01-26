@@ -1,35 +1,41 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/CreateTrip.css";
 import "../styles/mobile.css";
+import backArrowLogo from "../src/assets/images/back-arrow-logo.png";
 
 export default function CreateTrip() {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    start_at: "",
-    end_at: "",
-  });
-  const navigate = useNavigate();
+  const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const titleRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
+  const startAtRef = useRef<HTMLInputElement>(null);
+
+  const navigate = useNavigate();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const todayString = today.toLocaleDateString("fr-CA").split("T")[0];
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const departureDate = new Date(formData.start_at);
-    const returnDate = new Date(formData.end_at);
+    if (!titleRef.current || !descriptionRef.current || !startAtRef.current) {
+      toast.error("Formulaire incomplet");
+      return;
+    }
+
+    const newTrip = {
+      title: titleRef.current.value,
+      description: descriptionRef.current.value,
+      start_at: startAtRef.current.value,
+      end_at: endOfTrip.end_at,
+    };
+
+    const departureDate = new Date(startAtRef.current.value);
+    const returnDate = new Date(endOfTrip.end_at);
 
     if (departureDate < today) {
       toast.error("La date de départ ne peut pas être dans le passé");
@@ -47,7 +53,7 @@ export default function CreateTrip() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(newTrip),
       });
 
       if (!response.ok) {
@@ -75,11 +81,7 @@ export default function CreateTrip() {
           onClick={() => navigate(-1)}
           aria-label="Retour"
         >
-          <img
-            className="back-arrow"
-            src="../src/assets/images/back-arrow-logo.png"
-            alt=""
-          />
+          <img className="back-arrow" src={backArrowLogo} alt="" />
         </button>
       </div>
 
@@ -88,7 +90,7 @@ export default function CreateTrip() {
         Créer un nouveau <span>voyage</span>
       </h1>
       <p>Commencez par définir les bases de votre aventure</p>
-      <form className="create-trip-form" onSubmit={handleSubmit}>
+      <form className="create-trip-form" onSubmit={submitCreateTrip}>
         <div className="form-group">
           <label htmlFor="trip-name">Nom du voyage *</label>
           <input
@@ -96,8 +98,7 @@ export default function CreateTrip() {
             id="trip-name"
             name="title"
             placeholder="Entrez le nom du voyage"
-            value={formData.title}
-            onChange={handleChange}
+            ref={titleRef}
             required
           />
         </div>
@@ -109,8 +110,7 @@ export default function CreateTrip() {
             id="description"
             name="description"
             placeholder="Entrez la description"
-            value={formData.description}
-            onChange={handleChange}
+            ref={descriptionRef}
             required
           />
         </div>
@@ -122,8 +122,7 @@ export default function CreateTrip() {
               type="date"
               name="start_at"
               min={todayString}
-              value={formData.start_at}
-              onChange={handleChange}
+              ref={startAtRef}
               required
             />
           </div>
@@ -132,9 +131,11 @@ export default function CreateTrip() {
             <input
               type="date"
               name="end_at"
-              min={formData.start_at || todayString}
-              value={formData.end_at}
-              onChange={handleChange}
+              min={todayString}
+              value={endOfTrip.end_at}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEndOfTrip({ end_at: e.target.value })
+              }
               required
             />
           </div>

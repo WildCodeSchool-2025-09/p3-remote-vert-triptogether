@@ -3,9 +3,18 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/CreateTrip.css";
 import "../styles/mobile.css";
+import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
 export default function CreateTrip() {
+  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("France");
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
+    libraries: ["places"],
+  });
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -32,6 +41,8 @@ export default function CreateTrip() {
       description: descriptionRef.current.value,
       start_at: startAtRef.current.value,
       end_at: endOfTrip.end_at,
+      city,
+      country,
     };
 
     const departureDate = new Date(startAtRef.current.value);
@@ -114,7 +125,56 @@ export default function CreateTrip() {
             required
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="city">Ville *</label>
+          {isLoaded && (
+            <Autocomplete
+              onLoad={(autocomplete) => {
+                autocompleteRef.current = autocomplete;
+              }}
+              onPlaceChanged={() => {
+                const place = autocompleteRef.current?.getPlace();
+                if (!place) return;
 
+                const cityName = place.name || "";
+
+                const countryComp = place.address_components?.find((comp) =>
+                  comp.types.includes("country"),
+                );
+                const countryName = countryComp?.long_name;
+
+                setCity(cityName);
+                if (countryName) setCountry(countryName);
+              }}
+            >
+              <input
+                type="text"
+                id="city"
+                placeholder="Recherchez une destination"
+                name="city"
+                value={city}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                }}
+                required
+              />
+            </Autocomplete>
+          )}
+        </div>
+
+        {city && (
+          <div className="form-group country">
+            <label htmlFor="country">Pays*</label>
+            <input
+              type="text"
+              id="country"
+              value={country}
+              name="country"
+              readOnly
+              placeholder="Le pays sera rempli automatiquement"
+            />
+          </div>
+        )}
         <div className="date-container">
           <div className="form-group">
             <label htmlFor="start-date">Date de début *</label>

@@ -32,6 +32,8 @@ const add: RequestHandler = async (req, res, next) => {
     const newTrip: Trip = {
       title: req.body.title,
       description: req.body.description,
+      city: req.body.city,
+      country: req.body.country,
       start_at: req.body.start_at,
       end_at: req.body.end_at,
       user_id: req.body.user_id || 1,
@@ -40,6 +42,8 @@ const add: RequestHandler = async (req, res, next) => {
     if (
       !newTrip.title ||
       !newTrip.description ||
+      !newTrip.city ||
+      !newTrip.country ||
       !newTrip.start_at ||
       !newTrip.end_at
     ) {

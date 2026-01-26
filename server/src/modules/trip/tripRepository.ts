@@ -1,21 +1,20 @@
 import databaseClient from "../../../database/client";
-
 import type { Result, Rows } from "../../../database/client";
-
-type Trip = {
-  id: number;
-  title: string;
-  description: string;
-  start_at: string;
-  end_at: string;
-  user_id: number;
-};
+import type { Trip } from "../../types/tripType";
 
 class TripRepository {
   async create(trip: Omit<Trip, "id">) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO trip (title, description, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?)",
-      [trip.title, trip.description, trip.start_at, trip.end_at, trip.user_id],
+      "INSERT INTO trip (title, description,city, country, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        trip.title,
+        trip.description,
+        trip.city,
+        trip.country,
+        trip.start_at,
+        trip.end_at,
+        trip.user_id,
+      ],
     );
 
     return result.insertId;

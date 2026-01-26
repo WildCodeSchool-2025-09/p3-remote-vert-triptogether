@@ -88,6 +88,10 @@ body {
   flex: 1;
 }
 
+.country {
+  display: none;
+}
+
 .form-group label {
   font-family: var(--body-text);
   font-weight: 400;

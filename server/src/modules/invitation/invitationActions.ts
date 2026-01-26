@@ -82,7 +82,7 @@ const edit: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }

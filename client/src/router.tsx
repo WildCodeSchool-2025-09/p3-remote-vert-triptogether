@@ -7,11 +7,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [
-      {
-        path: "/create-trip",
-        element: <CreateTrip />,
-      },
-    ],
   },
-]);
+  {
+    path: "/create-trip",
+    element: <CreateTrip />,
+  },
+] as const);

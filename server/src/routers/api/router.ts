@@ -4,6 +4,6 @@ const router = express.Router();
 
 const tripRouter = require("../trip/router");
 
-router.use("/trip", tripRouter);
+router.use("/trips", tripRouter);
 
 module.exports = router;

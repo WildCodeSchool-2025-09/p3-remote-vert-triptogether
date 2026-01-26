@@ -1,14 +1,6 @@
 import type { RequestHandler } from "express";
-
+import type { Trip } from "../../types/tripType";
 import tripRepository from "./tripRepository";
-
-type NewTrip = {
-  title: string;
-  description: string;
-  start_at: string;
-  end_at: string;
-  user_id: number;
-};
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
@@ -37,7 +29,7 @@ const read: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const newTrip: NewTrip = {
+    const newTrip: Trip = {
       title: req.body.title,
       description: req.body.description,
       start_at: req.body.start_at,
@@ -51,7 +43,7 @@ const add: RequestHandler = async (req, res, next) => {
       !newTrip.start_at ||
       !newTrip.end_at
     ) {
-      res.status(400).json({ message: "Toutes les données sont requises" });
+      res.status(400).json({ error: "Toutes les données sont requises" });
       return;
     }
 
@@ -64,13 +56,13 @@ const add: RequestHandler = async (req, res, next) => {
     if (startDate < today) {
       res
         .status(400)
-        .json({ message: "La date de départ ne peut pas être dans le passé" });
+        .json({ error: "La date de départ ne peut pas être dans le passé" });
       return;
     }
 
     if (endDate <= startDate) {
       res.status(400).json({
-        message: "La date de retour doit être après la date de départ",
+        error: "La date de retour doit être après la date de départ",
       });
       return;
     }

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/CreateTrip.css";
 import "../styles/mobile.css";
-import backArrowLogo from "../src/assets/images/back-arrow-logo.png";
+import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
 export default function CreateTrip() {
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
@@ -17,7 +17,7 @@ export default function CreateTrip() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const todayString = today.toLocaleDateString("fr-CA").split("T")[0];
+  const todayString = today.toLocaleDateString("fr-CA");
 
   const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -48,7 +48,7 @@ export default function CreateTrip() {
     }
 
     try {
-      const response = await fetch("http://localhost:3310/api/trip", {
+      const response = await fetch("http://localhost:3310/api/trips", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,17 +57,17 @@ export default function CreateTrip() {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
+        const result = await response.json();
+        toast.error(result.error);
+        return;
       }
 
-      toast.success("Voyage créé avec succès !");
+      const result = await response.json();
+      const tripId = result.insertId;
 
-      setTimeout(() => {
-        navigate(-1);
-      }, 3000);
+      navigate(`/trips/${tripId}`);
+      // toast.success("Voyage créé avec succès !"); à ajouter ds le composant du voyage créé avec un useEffect
     } catch (error) {
-      console.error(error);
       toast.error("Impossible de créer le voyage. Réessayez.");
     }
   };

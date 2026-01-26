@@ -57,10 +57,10 @@ CREATE TABLE invitation (
   creator_id INT NOT NULL,
   invited_id INT NOT NULL,
   trip_id INT NOT NULL,
-  CONSTRAINT fk_inviation_creator
+  CONSTRAINT fk_invitation_creator
     FOREIGN KEY (creator_id) REFERENCES user(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_invation_invited
+  CONSTRAINT fk_invitation_invited
     FOREIGN KEY (invited_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_invitation_trip

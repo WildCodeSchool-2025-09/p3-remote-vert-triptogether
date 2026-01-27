@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
 import "../styles/CreateTrip.css";
-import { useEffect, useState, useRef } from "react";
+import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 
 export default function CreateTrip() {
   const [city, setCity] = useState("");
@@ -115,7 +115,7 @@ export default function CreateTrip() {
                 const cityName = place.name || "";
 
                 const countryComp = place.address_components?.find((comp) =>
-                  comp.types.includes("country")
+                  comp.types.includes("country"),
                 );
                 const countryName = countryComp?.long_name;
 
@@ -144,18 +144,18 @@ export default function CreateTrip() {
           )}
         </div>
 
- {city && (
-  <div className="form-group">
-    <label htmlFor="country">Pays*</label>
-    <input
-      type="text"
-      id="country"
-      value={country}
-      readOnly
-      placeholder="Le pays sera rempli automatiquement"
-    />
-  </div>
-)}
+        {city && (
+          <div className="form-group">
+            <label htmlFor="country">Pays*</label>
+            <input
+              type="text"
+              id="country"
+              value={country}
+              readOnly
+              placeholder="Le pays sera rempli automatiquement"
+            />
+          </div>
+        )}
 
         <div className="date-container">
           <div className="form-group">
@@ -185,8 +185,8 @@ export default function CreateTrip() {
 
         <div className="astuces-container">
           <label htmlFor="tips">
-            💡 Vous pourrez inviter des membres et ajouter des destinations
-            une fois le voyage créé. Un voyage nécessite au minimum 2 participants.
+            💡 Vous pourrez inviter des membres et ajouter des destinations une
+            fois le voyage créé. Un voyage nécessite au minimum 2 participants.
           </label>
         </div>
 

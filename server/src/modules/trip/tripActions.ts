@@ -1,14 +1,6 @@
 import type { RequestHandler } from "express";
-
+import type { Trip } from "../../types/tripType";
 import tripRepository from "./tripRepository";
-
-type NewTrip = {
-  title: string;
-  description: string;
-  start_at: string;
-  end_at: string;
-  user_id: number;
-};
 
 const browse: RequestHandler = async (req, res, next) => {
   try {
@@ -37,9 +29,11 @@ const read: RequestHandler = async (req, res, next) => {
 
 const add: RequestHandler = async (req, res, next) => {
   try {
-    const newTrip: NewTrip = {
+    const newTrip: Trip = {
       title: req.body.title,
       description: req.body.description,
+      city: req.body.city,
+      country: req.body.country,
       start_at: req.body.start_at,
       end_at: req.body.end_at,
       user_id: req.body.user_id || 1,
@@ -48,12 +42,13 @@ const add: RequestHandler = async (req, res, next) => {
     if (
       !newTrip.title ||
       !newTrip.description ||
+      !newTrip.city ||
+      !newTrip.country ||
       !newTrip.start_at ||
       !newTrip.end_at
     ) {
-      return res
-        .status(400)
-        .json({ message: "Toutes les données sont requises" });
+      res.status(400).json({ error: "Toutes les données sont requises" });
+      return;
     }
 
     const today = new Date();
@@ -63,15 +58,17 @@ const add: RequestHandler = async (req, res, next) => {
     const endDate = new Date(newTrip.end_at);
 
     if (startDate < today) {
-      return res
+      res
         .status(400)
-        .json({ message: "La date de départ ne peut pas être dans le passé" });
+        .json({ error: "La date de départ ne peut pas être dans le passé" });
+      return;
     }
 
-    if (endDate < startDate) {
-      return res.status(400).json({
-        message: "La date de retour doit être après la date de départ",
+    if (endDate <= startDate) {
+      res.status(400).json({
+        error: "La date de retour doit être après la date de départ",
       });
+      return;
     }
 
     const insertId = await tripRepository.create(newTrip);

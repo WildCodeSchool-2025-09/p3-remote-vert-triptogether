@@ -4,11 +4,11 @@ const app = express();
 
 import cors from "cors";
 
-app.use(express.json());
-
 if (process.env.CLIENT_URL != null) {
   app.use(cors({ origin: [process.env.CLIENT_URL] }));
 }
+
+app.use(express.json());
 
 const apiRouter = require("./routers/api/router");
 

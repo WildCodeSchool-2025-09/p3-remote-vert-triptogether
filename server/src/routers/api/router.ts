@@ -4,14 +4,9 @@ import express from "express";
 const router = express.Router();
 
 const tripRouter = require("../trip/router");
+const invitationRouter = require("../invitation/router");
 
-router.use("/trip", tripRouter);
-router.use("/countries", tripRouter);
-router.get("/future", (req, res) => {
-  res.json([]);
-});
-router.get("/past", (req, res) => {
-  res.json([]);
-});
+router.use("/trips", tripRouter);
+router.use("/invitation", invitationRouter);
 
 module.exports = router;

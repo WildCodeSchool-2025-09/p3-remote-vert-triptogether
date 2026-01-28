@@ -1,7 +1,9 @@
 import "./styles/Membres.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 import Onglets from "../components/Onglet/Onglet";
+
 type InviteState = "en-attente" | "refuse";
 
 type MemberBase = {
@@ -48,6 +50,10 @@ function Membres() {
   const [invites, setInvites] = useState<Invite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [memberToRemove, setMemberToRemove] = useState<Participant | null>(
+    null,
+  );
+  const [isRemoving, setIsRemoving] = useState(false);
 
   const navigate = useNavigate();
 
@@ -155,6 +161,44 @@ function Membres() {
       });
   }, [tripId, navigate]);
 
+  const removeParticipant = (userId: number) => {
+    setIsRemoving(true);
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/trip/${tripId}/membres/${userId}`,
+      {
+        method: "DELETE",
+      },
+    )
+      .then(async (response) => {
+        const deleted = await response.json();
+        if (deleted.status === 400) {
+          toast.error("Requête invalide");
+        }
+
+        if (response.status === 403) {
+          toast.error("Accès non autorisé");
+        }
+
+        if (response.status === 404) {
+          toast.error("Membre introuvable");
+        }
+
+        setParticipants((prev) =>
+          prev.filter((participant) => participant.id !== userId),
+        );
+
+        toast.success("Membre retiré du voyage.");
+      })
+      .catch(() => {
+        toast.error("Erreur réseau lors du retrait du membre.");
+      })
+      .finally(() => {
+        setIsRemoving(false);
+        setMemberToRemove(null);
+      });
+  };
+
   return (
     <>
       <header>
@@ -207,11 +251,50 @@ function Membres() {
                             Organisateur
                           </span>
                         ) : (
-                          <button type="button" className="btn-role">
-                            Membre {/* TO DO autre US supprimé le membre */}
+                          <button
+                            type="button"
+                            className="btn-role"
+                            onClick={() => setMemberToRemove(member)}
+                          >
+                            Retirer
                           </button>
                         )}
                       </div>
+                      {memberToRemove && (
+                        <div className="modal-backdrop">
+                          <div className="modal">
+                            <h4>Retirer ce membre ?</h4>
+                            <p>
+                              Voulez-vous vraiment retirer{" "}
+                              <strong>{memberToRemove.name}</strong> de ce
+                              voyage ?
+                            </p>
+
+                            <div className="modal-actions">
+                              <button
+                                type="button"
+                                className="btn-role"
+                                onClick={() => setMemberToRemove(null)}
+                                disabled={isRemoving}
+                              >
+                                Annuler
+                              </button>
+                              <button
+                                type="button"
+                                className="btn-danger"
+                                onClick={() =>
+                                  removeParticipant(memberToRemove.id)
+                                }
+                                disabled={isRemoving}
+                              >
+                                {isRemoving
+                                  ? "Suppression..."
+                                  : "Confirmer le retrait"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -274,6 +357,18 @@ function Membres() {
           )}
         </section>
       </main>
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

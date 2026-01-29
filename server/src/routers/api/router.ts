@@ -1,17 +1,11 @@
 import express from "express";
-import type { RequestHandler } from "express";
 
 const router = express.Router();
 
-/* ************************************************************************* */
-// Define Your API Routes Here
-/* ************************************************************************* */
-
-// Define trip-related routes
+const tripRouter = require("../trip/router");
 const invitationRouter = require("../invitation/router");
 
+router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
-
-/* ************************************************************************* */
 
 module.exports = router;

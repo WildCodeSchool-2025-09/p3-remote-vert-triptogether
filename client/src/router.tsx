@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
+import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import Membres from "./pages/Members";
 import { Trip } from "./pages/Trip";
@@ -22,5 +23,13 @@ export const router = createBrowserRouter([
         element: <Membres />,
       },
     ],
+  },
+  {
+    path: "/create-trip",
+    element: <CreateTrip />,
+  },
+  {
+    path: "/invitation/:id",
+    element: <Invitation />,
   },
 ] as const);

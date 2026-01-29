@@ -5,6 +5,12 @@ import invitationRepository from "./invitationRepository";
 const read: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
+
+    if (Number.isNaN(invitationId)) {
+      res.status(400).json({ error: "ID invalide" });
+      return;
+    }
+
     const invitation = await invitationRepository.select(invitationId);
 
     if (!invitation) {
@@ -84,7 +90,7 @@ export const selectInvitationsByTrip: RequestHandler = async (
       return;
     }
 
-    const invitations = await invitationRepository.selectByTripId(tripId);
+    const invitations = await invitationRepository.selectByTrip(tripId);
 
     res.json({
       trip: {

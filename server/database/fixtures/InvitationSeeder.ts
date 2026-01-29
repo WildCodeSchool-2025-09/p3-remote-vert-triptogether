@@ -29,7 +29,7 @@ class InvitationSeeder extends AbstractSeeder {
         ]),
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
-        invited_id: this.getRef(invitedRef).insertId,
+        user_id: this.getRef(invitedRef).insertId,
         trip_id: this.getRef(tripRef).insertId,
       };
 

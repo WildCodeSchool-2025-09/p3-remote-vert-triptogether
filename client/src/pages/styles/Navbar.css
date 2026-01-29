@@ -1,0 +1,15 @@
+body {
+  height: 100vh;
+}
+
+main {
+  background-color: aqua;
+}
+
+header {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  width: 100vw;
+  justify-items: center;
+  align-items: center;
+}

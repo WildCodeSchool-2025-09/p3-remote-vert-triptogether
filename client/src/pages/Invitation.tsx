@@ -6,7 +6,7 @@ import type { invitationType } from "../types/invitationType";
 
 function Invitation() {
   const { id } = useParams<{ id: string }>();
-  const [invitation, setInvitation] = useState<invitationType | null>(null);
+  const [invitation] = useState<invitationType | null>(null);
 
   const navigate = useNavigate();
 
@@ -22,77 +22,77 @@ function Invitation() {
       });
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
-      .then(async (response) => {
-        const invitation = await response.json();
+    // fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
+    //   .then(async (response) => {
+    //     const invitation = await response.json();
 
-        if (response.status === 400) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
-        }
+    //     if (response.status === 400) {
+    //       navigate("/", {
+    //         state: {
+    //           toast: {
+    //             type: "error",
+    //             message: invitation.message,
+    //           },
+    //         },
+    //       });
+    //     }
 
-        if (response.status === 403) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
-        }
+    //   if (response.status === 403) {
+    //     navigate("/", {
+    //       state: {
+    //         toast: {
+    //           type: "error",
+    //           message: invitation.message,
+    //         },
+    //       },
+    //     });
+    //   }
 
-        if (response.status === 404) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
-        }
+    //   if (response.status === 404) {
+    //     navigate("/", {
+    //       state: {
+    //         toast: {
+    //           type: "error",
+    //           message: invitation.message,
+    //         },
+    //       },
+    //     });
+    //   }
 
-        if (response.status === 409) {
-          navigate(`/trip/${invitation.trip_id}`, {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
-        }
+    //   if (response.status === 409) {
+    //     navigate(`/trip/${invitation.trip_id}`, {
+    //       state: {
+    //         toast: {
+    //           type: "error",
+    //           message: invitation.message,
+    //         },
+    //       },
+    //     });
+    //   }
 
-        if (response.status === 410) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
-        }
+    //   if (response.status === 410) {
+    //     navigate("/", {
+    //       state: {
+    //         toast: {
+    //           type: "error",
+    //           message: invitation.message,
+    //         },
+    //       },
+    //     });
+    //   }
 
-        setInvitation(invitation);
-      })
-      .catch(() => {
-        navigate("/", {
-          state: {
-            toast: {
-              type: "error",
-              message: "Invitation introuvable ou accès non autorisé",
-            },
-          },
-        });
-      });
+    //   setInvitation(invitation);
+    // })
+    // .catch(() => {
+    //   navigate("/", {
+    //     state: {
+    //       toast: {
+    //         type: "error",
+    //         message: "Invitation introuvable ou accès non autorisé",
+    //       },
+    //     },
+    //   });
+    // });
   }, [navigate, id]);
 
   async function invitationResponded(status: "accepted" | "refused") {

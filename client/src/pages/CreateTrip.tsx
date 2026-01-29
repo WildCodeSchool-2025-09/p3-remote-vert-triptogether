@@ -77,7 +77,6 @@ export default function CreateTrip() {
       const tripId = result.insertId;
 
       navigate(`/trips/${tripId}`);
-      // toast.success("Voyage créé avec succès !"); à ajouter ds le composant du voyage créé avec un useEffect
     } catch (error) {
       toast.error("Impossible de créer le voyage. Réessayez.");
     }

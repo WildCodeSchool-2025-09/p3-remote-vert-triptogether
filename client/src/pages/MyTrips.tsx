@@ -12,23 +12,15 @@ interface Trip {
 }
 
 export default function MyTrips() {
-  const [status, setStatus] = useState("en_cours");
-  const [trips, setTrips] = useState<Trip[]>([]);
 
-  useEffect(() => {
-    let url = "";
-    if (status === "en_cours") {
-      url = "http://localhost:3310/api/trip";
-    } else if (status === "a_venir") {
-      url = "http://localhost:3310/api/future";
-    } else if (status === "passes") {
-      url = "http://localhost:3310/api/past";
-    }
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => setTrips(data))
-      .catch((error) => console.error("Error fetching trips:", error));
-  }, [status]);
+const [activeTab, setActiveTab] = useState<'futur' | 'current' | 'past'>('futur');
+const [trips, setTrips] = useState([])
+     useEffect(() => {
+  fetch(`http://localhost:3310/api/trips?status=${activeTab}`)
+    .then(res => res.json())
+    .then(data => setTrips(data))
+    .catch(err => console.error('Error fetching trips:', err));
+}, [activeTab]);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -55,22 +47,22 @@ export default function MyTrips() {
       <div className="tripstate">
         <button
           type="button"
-          className={status === "en_cours" ? "active" : ""}
-          onClick={() => setStatus("en_cours")}
+          className={activeTab === "current" ? "active" : ""}
+          onClick={() => setActiveTab("current")}
         >
           En cours
         </button>
         <button
           type="button"
-          className={status === "a_venir" ? "active" : ""}
-          onClick={() => setStatus("a_venir")}
+          className={activeTab === "futur" ? "active" : ""}
+          onClick={() => setActiveTab("futur")}
         >
           A venir
         </button>
         <button
           type="button"
-          className={status === "passes" ? "active" : ""}
-          onClick={() => setStatus("passes")}
+          className={activeTab === "past" ? "active" : ""}
+          onClick={() => setActiveTab("past")}
         >
           {" "}
           Passés

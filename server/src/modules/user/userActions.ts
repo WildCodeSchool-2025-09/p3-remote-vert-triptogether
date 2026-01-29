@@ -42,10 +42,8 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     // Extract the user data from the request body
     const newUser = {
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
       email: req.body.email,
-      password: req.body.password,
+      password: req.body.hashed_password,
     };
 
     // Create the user

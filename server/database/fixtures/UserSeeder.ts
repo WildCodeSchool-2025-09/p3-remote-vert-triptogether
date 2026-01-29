@@ -11,7 +11,7 @@ class UserSeeder extends AbstractSeeder {
         firstname: this.faker.person.firstName(),
         lastname: this.faker.person.lastName(),
         email: this.faker.internet.email(),
-        password: this.faker.internet.password({ length: 20 }),
+        password: this.faker.internet.password({ length: 64 }),
         refName: `user_${i}`,
       };
 

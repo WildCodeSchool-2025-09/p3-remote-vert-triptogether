@@ -1,9 +1,9 @@
 CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstname VARCHAR(50) NOT NULL,
-  lastname VARCHAR(75) NOT NULL,
+  firstname VARCHAR(50) DEFAULT NULL,
+  lastname VARCHAR(75) DEFAULT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(50) NOT NULL
+  password VARCHAR(255) NOT NULL
 );
 
 
@@ -57,13 +57,15 @@ CREATE TABLE invitation (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   creator_id INT NOT NULL,
-  invited_id INT NOT NULL,
+  user_id INT NOT NULL,
   trip_id INT NOT NULL,
+  trip_status ENUM('futur', 'current', 'past') DEFAULT 'futur',
+
   CONSTRAINT fk_inviation_creator
     FOREIGN KEY (creator_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_invation_invited
-    FOREIGN KEY (invited_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_invitation_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)

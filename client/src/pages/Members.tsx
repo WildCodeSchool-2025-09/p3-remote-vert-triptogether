@@ -1,7 +1,7 @@
 import "./styles/Membres.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import Onglets from "../components/Onglet/Onglet";
+import NavTabs from "../components/navTabs/NavTabs";
 type InviteState = "en-attente" | "refuse";
 
 type MemberBase = {
@@ -40,7 +40,7 @@ type RouteParams = {
   id: string;
 };
 
-function Membres() {
+function Members() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
 
@@ -165,7 +165,7 @@ function Membres() {
           {/* Composant trip infos */}
         </section>
 
-        <Onglets />
+        <NavTabs />
 
         {/* TODO Ajouter un membre : Autre US*/}
 
@@ -278,4 +278,4 @@ function Membres() {
   );
 }
 
-export default Membres;
+export default Members;

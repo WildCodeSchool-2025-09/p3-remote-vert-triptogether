@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import Onglets from "../components/Onglet/Onglet";
 
-type InviteState = "en-attente" | "refuse";
+type InviteState = "en-attente" | "refusé" | "supprimé";
 
 type MemberBase = {
   id: number;
@@ -24,7 +24,7 @@ type Invite = MemberBase & {
 
 type ApiInvitation = {
   id: number;
-  status: "pending" | "accepted" | "refused";
+  status: "pending" | "accepted" | "refused" | "removed";
   created_at: string;
   updated_at: string;
   creator_id: number;
@@ -139,13 +139,23 @@ function Membres() {
         }
 
         const invitesList: Invite[] = invitations
-          .filter((inv) => inv.status === "pending" || inv.status === "refused")
+          .filter(
+            (inv) =>
+              inv.status === "pending" ||
+              inv.status === "refused" ||
+              inv.status === "removed",
+          )
           .map((inv) => ({
             id: inv.invited_id,
             name: `${inv.invited_firstname} ${inv.invited_lastname}`,
             avatarUrl: null, // TODO: photo de profil
             addedAt: inv.created_at,
-            inviteState: inv.status === "refused" ? "refuse" : "en-attente",
+            inviteState:
+              inv.status === "refused"
+                ? "refusé"
+                : inv.status === "removed"
+                  ? "supprimé"
+                  : "en-attente",
             lastReminderAt: null,
           }));
 
@@ -164,24 +174,28 @@ function Membres() {
   const removeParticipant = (userId: number) => {
     setIsRemoving(true);
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/trip/${tripId}/membres/${userId}`,
-      {
-        method: "DELETE",
-      },
-    )
+    fetch(`${import.meta.env.VITE_API_URL}/api/trip/${tripId}/${userId}`, {
+      method: "DELETE",
+    })
       .then(async (response) => {
-        const deleted = await response.json();
-        if (deleted.status === 400) {
+        if (response.status === 400) {
           toast.error("Requête invalide");
+          return;
         }
 
         if (response.status === 403) {
           toast.error("Accès non autorisé");
+          return;
         }
 
         if (response.status === 404) {
           toast.error("Membre introuvable");
+          return;
+        }
+
+        if (!response.ok) {
+          toast.error("Erreur serveur.");
+          return;
         }
 
         setParticipants((prev) =>
@@ -191,7 +205,7 @@ function Membres() {
         toast.success("Membre retiré du voyage.");
       })
       .catch(() => {
-        toast.error("Erreur réseau lors du retrait du membre.");
+        toast.error("Erreur serveur.");
       })
       .finally(() => {
         setIsRemoving(false);
@@ -329,7 +343,7 @@ function Membres() {
                       </div>
 
                       <div className="right-side">
-                        {member.inviteState === "refuse" ? (
+                        {member.inviteState === "refusé" ? (
                           <>
                             <span className="badge badge-refuse">Refusé</span>
                             <button type="button" className="btn-danger">

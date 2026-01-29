@@ -1,7 +1,8 @@
 import type { RequestHandler } from "express";
+import tripRepository from "../trip/tripRepository";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 3;
+const CONNECTED_USER_ID = 4;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -122,4 +123,37 @@ const listByTrip: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read, listByTrip };
+const removeMember: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.tripId);
+    const userId = Number(req.params.userId);
+
+    if (Number.isNaN(tripId) || Number.isNaN(userId)) {
+      res.status(400).json({ message: "Paramètres invalides" });
+      return;
+    }
+
+    const isOwner = await tripRepository.isOwner(tripId, CONNECTED_USER_ID);
+
+    if (!isOwner) {
+      res.sendStatus(403);
+      return;
+    }
+
+    const success = await InvitationRepository.removeMemberFromTrip(
+      tripId,
+      userId,
+    );
+
+    if (!success) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { edit, read, listByTrip, removeMember };

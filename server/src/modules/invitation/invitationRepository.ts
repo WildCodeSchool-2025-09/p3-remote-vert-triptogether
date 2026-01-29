@@ -39,7 +39,7 @@ class invitationRepository {
       FROM invitation i
       JOIN trip t ON i.trip_id = t.id
       JOIN user c ON i.creator_id = c.id
-      JOIN user u ON i.invited_id = u.id
+      JOIN user u ON i.user_id = u.id
       WHERE i.id = ?
     `,
       [id],
@@ -69,7 +69,7 @@ class invitationRepository {
       FROM invitation i
       JOIN trip t ON i.trip_id = t.id
       JOIN user c ON i.creator_id = c.id
-      JOIN user u ON i.invited_id = u.id
+      JOIN user u ON i.user_id = u.id
       WHERE i.trip_id = ?
       ORDER BY i.created_at ASC
     `,
@@ -77,6 +77,19 @@ class invitationRepository {
     );
 
     return rows as Invitation[];
+  }
+
+  async removeMemberFromTrip(tripId: number, userId: number): Promise<boolean> {
+    const [result] = await databaseClient.query<Result>(
+      `
+      UPDATE invitation
+      SET status = 'removed', updated_at = CURRENT_TIMESTAMP
+      WHERE trip_id = ? AND user_id = ? AND status = 'accepted'
+      `,
+      [tripId, userId],
+    );
+
+    return result.affectedRows === 1;
   }
 }
 

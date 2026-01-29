@@ -26,12 +26,12 @@ class InvitationSeeder extends AbstractSeeder {
         status: this.faker.helpers.arrayElement([
           "pending",
           "accepted",
-          "declined",
+          "refused",
         ]),
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
         creator_id: this.getRef(creatorRef).insertId,
-        invited_id: this.getRef(invitedRef).insertId,
+        user_id: this.getRef(invitedRef).insertId,
         trip_id: this.getRef(tripRef).insertId,
       };
 

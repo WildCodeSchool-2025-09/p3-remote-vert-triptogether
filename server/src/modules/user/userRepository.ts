@@ -12,7 +12,7 @@ type User = {
 class UserRepository {
   // The C of CRUD - Create operation
 
-  async create(user: Omit<User, "id" | "firstname"| "lastname">) {
+  async create(user: Omit<User, "id" | "firstname" | "lastname">) {
     // Execute the SQL INSERT query to add a new user to the "user" table
     const [result] = await databaseClient.query<Result>(
       "insert into user (email, password) values (?, ?)",

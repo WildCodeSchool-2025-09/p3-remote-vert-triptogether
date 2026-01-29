@@ -18,10 +18,7 @@ const login: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const verified = await argon2.verify(
-      user.password,
-      req.body.password,
-    );
+    const verified = await argon2.verify(user.password, req.body.password);
 
     if (verified) {
       // Respond with the user and a signed token in JSON format (but without the hashed password)
@@ -52,7 +49,6 @@ const login: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
-
 
 const hashingOptions = {
   type: argon2.argon2id,

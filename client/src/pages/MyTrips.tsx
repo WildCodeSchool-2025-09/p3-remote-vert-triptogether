@@ -12,15 +12,16 @@ interface Trip {
 }
 
 export default function MyTrips() {
-
-const [activeTab, setActiveTab] = useState<'futur' | 'current' | 'past'>('futur');
-const [trips, setTrips] = useState([])
-     useEffect(() => {
-  fetch(`http://localhost:3310/api/trips?status=${activeTab}`)
-    .then(res => res.json())
-    .then(data => setTrips(data))
-    .catch(err => console.error('Error fetching trips:', err));
-}, [activeTab]);
+  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">(
+    "futur",
+  );
+  const [trips, setTrips] = useState([]);
+  useEffect(() => {
+    fetch(`http://localhost:3310/api/trips?status=${activeTab}`)
+      .then((res) => res.json())
+      .then((data) => setTrips(data))
+      .catch((err) => console.error("Error fetching trips:", err));
+  }, [activeTab]);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {

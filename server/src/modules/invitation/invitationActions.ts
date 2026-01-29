@@ -1,24 +1,14 @@
 import type { RequestHandler } from "express";
-import InvitationRepository from "./invitationRepository";
-
-const CONNECTED_USER_ID = 3;
+import tripRepository from "../trip/tripRepository";
+import invitationRepository from "./invitationRepository";
 
 const read: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const invitation = await InvitationRepository.select(invitationId);
+    const invitation = await invitationRepository.select(invitationId);
 
     if (!invitation) {
       res.status(404).json({ error: "Invitation introuvable" });
-      return;
-    }
-
-    if (
-      ![invitation.creator_id, invitation.invited_id].includes(
-        CONNECTED_USER_ID,
-      )
-    ) {
-      res.status(403).json({ error: "Accès non autorisé" });
       return;
     }
 
@@ -46,7 +36,7 @@ const read: RequestHandler = async (req, res, next) => {
 const edit: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const updateInvitation = await InvitationRepository.select(invitationId);
+    const updateInvitation = await invitationRepository.select(invitationId);
 
     if (Number.isNaN(invitationId)) {
       res.status(400).json({ error: "ID invalide" });
@@ -58,21 +48,7 @@ const edit: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (
-      ![updateInvitation?.creator_id, updateInvitation?.invited_id].includes(
-        CONNECTED_USER_ID,
-      )
-    ) {
-      res.status(403).json({ error: "Accès non autorisé" });
-      return;
-    }
-
-    if (updateInvitation?.creator_id === CONNECTED_USER_ID) {
-      res.status(403).json({ error: "Seul l'invité peut accepter" });
-      return;
-    }
-
-    const success = await InvitationRepository.updateStatus(
+    const success = await invitationRepository.updateStatus(
       invitationId,
       req.body.status,
     );
@@ -88,38 +64,43 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-const listByTrip: RequestHandler = async (req, res, next) => {
+export const selectInvitationsByTrip: RequestHandler = async (
+  req,
+  res,
+  next,
+) => {
   try {
-    const tripId = Number(req.params.tripId);
+    const tripId = Number(req.params.id);
 
     if (Number.isNaN(tripId)) {
       res.status(400).json({ error: "ID de voyage invalide" });
       return;
     }
 
-    const invitations = await InvitationRepository.findByTripId(tripId);
+    const trip = await tripRepository.read(tripId);
 
-    if (invitations.length === 0) {
-      res.status(404).json({ error: "Aucune invitation pour ce voyage" });
+    if (!trip) {
+      res.status(404).json({ error: "Voyage introuvable" });
       return;
     }
 
-    const isAllowed = invitations.some(
-      (invitation) =>
-        invitation.creator_id === CONNECTED_USER_ID ||
-        (invitation.invited_id === CONNECTED_USER_ID &&
-          invitation.status === "accepted"),
-    );
+    const invitations = await invitationRepository.selectByTripId(tripId);
 
-    if (!isAllowed) {
-      res.sendStatus(403);
-      return;
-    }
-
-    res.json(invitations);
+    res.json({
+      trip: {
+        id: trip.id,
+        title: trip.title,
+        description: trip.description,
+        start_at: trip.start_at,
+        end_at: trip.end_at,
+        user_id: trip.user_id,
+        owner_firstname: trip.owner_firstname,
+        owner_lastname: trip.owner_lastname,
+      },
+      invitations,
+    });
   } catch (err) {
     next(err);
   }
 };
-
-export default { edit, read, listByTrip };
+export default { edit, read, selectInvitationsByTrip };

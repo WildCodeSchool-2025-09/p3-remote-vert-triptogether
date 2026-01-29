@@ -1,5 +1,5 @@
 import { NavLink, useParams } from "react-router";
-import "./tab.css";
+import "./NavTabs.css";
 
 const NavTabs = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,7 +19,7 @@ const NavTabs = () => {
       </NavLink>
 
       <NavLink
-        to={id ? `/trip/${id}/membres` : "/"}
+        to={id ? `/trip/${id}/invitations` : "/"}
         className={({ isActive }) => `tab ${isActive ? "active" : ""}`}
       >
         <svg viewBox="0 0 24 24" fill="currentColor" className="tab-icon">

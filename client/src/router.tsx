@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 import App from "./App";
 import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
-import Membres from "./pages/Members";
+import Invitations from "./pages/Invitations";
 import { Trip } from "./pages/Trip";
 
 export const router = createBrowserRouter([
@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       {
-        path: "/trip/:id/invitation",
+        path: "/trip/:tripId/invitation/:invitationId",
         element: <Invitation />,
       },
       {
@@ -19,17 +19,13 @@ export const router = createBrowserRouter([
         element: <Trip />,
       },
       {
-        path: "/trip/:id/membres",
-        element: <Membres />,
+        path: "/trip/:id/invitations",
+        element: <Invitations />,
+      },
+      {
+        path: "/create-trip",
+        element: <CreateTrip />,
       },
     ],
-  },
-  {
-    path: "/create-trip",
-    element: <CreateTrip />,
-  },
-  {
-    path: "/invitation/:id",
-    element: <Invitation />,
   },
 ] as const);

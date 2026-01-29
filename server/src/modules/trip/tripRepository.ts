@@ -20,11 +20,21 @@ class TripRepository {
     return result.insertId;
   }
 
-  async read(id: number) {
+  async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM trip WHERE id = ?",
+      `
+      SELECT 
+        t.*,
+        u.firstname AS owner_firstname,
+        u.lastname  AS owner_lastname
+      FROM trip t
+      JOIN user u ON u.id = t.user_id
+      WHERE t.id = ?
+      `,
       [id],
     );
+
+    if (rows.length === 0) return null;
 
     return rows[0] as Trip;
   }

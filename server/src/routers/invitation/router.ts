@@ -12,4 +12,4 @@ router.get(
 );
 router.patch("/:id", invitationActions.edit);
 
-module.exports = router;
+export default router;

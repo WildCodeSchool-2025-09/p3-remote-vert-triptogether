@@ -6,8 +6,25 @@ import "../styles/mobile.css";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
+interface User {
+  id: number;
+  email: string;
+  is_admin: boolean;
+}
+
+interface Auth {
+  user: User;
+  token: string;
+}
+
+interface AuthContextType {
+  auth: Auth | null;
+  setAuth: (auth: Auth | null) => void;
+}
+
 export default function CreateTrip() {
-  const { auth } = useOutletContext() as { auth: any };
+  const { auth } = useOutletContext() as AuthContextType;
+
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
@@ -33,7 +50,7 @@ export default function CreateTrip() {
 
     const cityName = place.name || "";
     const countryComp = place.address_components?.find((comp) =>
-      comp.types.includes("country")
+      comp.types.includes("country"),
     );
     const countryName = countryComp?.long_name;
 
@@ -43,6 +60,8 @@ export default function CreateTrip() {
 
   const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // On vérifie le token dans le localStorage ou le state
     const token = localStorage.getItem("token") || auth?.token;
 
     if (!token) {
@@ -60,14 +79,17 @@ export default function CreateTrip() {
     };
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/trips`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(newTrip),
         },
-        body: JSON.stringify(newTrip),
-      });
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -103,19 +125,33 @@ export default function CreateTrip() {
       <form className="create-trip-form" onSubmit={submitCreateTrip}>
         <div className="form-group">
           <label htmlFor="trip-name">Nom du voyage *</label>
-          <input type="text" id="trip-name" ref={titleRef} placeholder="Nom du voyage" required />
+          <input
+            type="text"
+            id="trip-name"
+            ref={titleRef}
+            placeholder="Nom du voyage"
+            required
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="description">Description *</label>
-          <input type="text" id="description" ref={descriptionRef} placeholder="Description" required />
+          <input
+            type="text"
+            id="description"
+            ref={descriptionRef}
+            placeholder="Description"
+            required
+          />
         </div>
 
         <div className="form-group">
           <label htmlFor="city">Ville *</label>
           {isLoaded && (
             <Autocomplete
-              onLoad={(a) => (autocompleteRef.current = a)}
+              onLoad={(a) => {
+                autocompleteRef.current = a;
+              }}
               onPlaceChanged={onPlaceChanged}
             >
               <input
@@ -133,14 +169,26 @@ export default function CreateTrip() {
         {city && (
           <div className="form-group country">
             <label htmlFor="country">Pays*</label>
-            <input type="text" id="country" value={country} readOnly placeholder="Pays automatiquement" />
+            <input
+              type="text"
+              id="country"
+              value={country}
+              readOnly
+              placeholder="Pays automatiquement"
+            />
           </div>
         )}
 
         <div className="date-container">
           <div className="form-group">
             <label htmlFor="start-date">Date de début *</label>
-            <input type="date" id="start-date" ref={startAtRef} min={todayString} required />
+            <input
+              type="date"
+              id="start-date"
+              ref={startAtRef}
+              min={todayString}
+              required
+            />
           </div>
 
           <div className="form-group">
@@ -157,7 +205,9 @@ export default function CreateTrip() {
         </div>
 
         <div className="button-container">
-          <button type="button" onClick={() => navigate(-1)}>Annuler</button>
+          <button type="button" onClick={() => navigate(-1)}>
+            Annuler
+          </button>
           <button type="submit">Créer le voyage</button>
         </div>
       </form>

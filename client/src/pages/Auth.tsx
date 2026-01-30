@@ -8,27 +8,32 @@ type Auth = { user: User; token: string };
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { setAuth } = useOutletContext() as { setAuth: (auth: Auth | null) => void };
+  const { setAuth } = useOutletContext() as {
+    setAuth: (auth: Auth | null) => void;
+  };
   const navigate = useNavigate();
 
   const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
-        method: "post",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: emailRef.current?.value,
-          password: passwordRef.current?.value,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/login`,
+        {
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: emailRef.current?.value,
+            password: passwordRef.current?.value,
+          }),
+        },
+      );
 
       if (response.status === 200) {
         const data = await response.json();
         // SAUVEGARDE DOUBLE : State + LocalStorage
         setAuth(data);
         localStorage.setItem("token", data.token);
-        localStorage.setItem("auth", JSON.stringify(data)); 
+        localStorage.setItem("auth", JSON.stringify(data));
         navigate("/");
       }
     } catch (err) {
@@ -39,7 +44,12 @@ function Login() {
   return (
     <form onSubmit={handleSubmit}>
       <input ref={emailRef} type="email" placeholder="Email" required />
-      <input ref={passwordRef} type="password" placeholder="Password" required />
+      <input
+        ref={passwordRef}
+        type="password"
+        placeholder="Password"
+        required
+      />
       <button type="submit">Send</button>
     </form>
   );

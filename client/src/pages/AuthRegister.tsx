@@ -8,11 +8,15 @@ function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handlePasswordChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     setPassword(event.target.value);
   };
 
-  const handleConfirmPasswordChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleConfirmPasswordChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     setConfirmPassword(event.target.value);
   };
 
@@ -70,7 +74,10 @@ function Register() {
         />
         {password === confirmPassword && password !== "" ? "✅" : "❌"}
       </div>
-      <button type="submit" disabled={password !== confirmPassword || password.length < 8}>
+      <button
+        type="submit"
+        disabled={password !== confirmPassword || password.length < 8}
+      >
         Send
       </button>
     </form>

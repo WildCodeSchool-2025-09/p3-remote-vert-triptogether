@@ -2,13 +2,12 @@ import type { Request, RequestHandler } from "express";
 import type { Trip } from "../../types/tripType";
 import tripRepository from "./tripRepository";
 
-// Interface étendue pour l'authentification
-interface AuthRequest extends Request {
-  auth?: {
+type AuthRequest = Request & {
+  auth: {
     sub: string;
     isAdmin: boolean;
   };
-}
+};
 
 // Browse all trips
 export const browse: RequestHandler = async (_req, res, next) => {
@@ -72,12 +71,16 @@ export const add: RequestHandler = async (req, res, next) => {
     const endDate = new Date(newTrip.end_at);
 
     if (startDate < today) {
-      res.status(400).json({ error: "La date de départ ne peut pas être dans le passé" });
+      res
+        .status(400)
+        .json({ error: "La date de départ ne peut pas être dans le passé" });
       return;
     }
 
     if (endDate <= startDate) {
-      res.status(400).json({ error: "La date de retour doit être après la date de départ" });
+      res
+        .status(400)
+        .json({ error: "La date de retour doit être après la date de départ" });
       return;
     }
 

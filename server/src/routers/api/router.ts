@@ -1,11 +1,28 @@
-import express from "express";
-import { login, hashPassword, verifyToken } from "../../modules/auth/authActions";
-import { browse as browseUsers, read as readUser, add as addUser } from "../../modules/user/userActions";
+import express, { type Request } from "express";
+import {
+  hashPassword,
+  login,
+  verifyToken,
+} from "../../modules/auth/authActions";
+import {
+  add as addUser,
+  browse as browseUsers,
+  read as readUser,
+} from "../../modules/user/userActions";
 
-const tripRouter = require("../trip/router");
-const invitationRouter = require("../invitation/router");
+import invitationRouter from "../invitation/router";
+import tripRouter from "../trip/router";
+
+// Type local pour la route protégée
+type RequestWithAuth = Request & {
+  auth: { sub: string; isAdmin: boolean };
+};
 
 const router = express.Router();
+
+// --- ROUTES PUBLIQUES ---
+router.post("/login", login);
+router.post("/users", hashPassword, addUser);
 
 // Sous-routeurs
 router.use("/trips", tripRouter);
@@ -13,13 +30,16 @@ router.use("/invitation", invitationRouter);
 
 router.get("/users", browseUsers);
 router.get("/users/:id", readUser);
-router.post("/users", hashPassword, addUser);
 
-router.post("/login", login);
-
+// --- MIDDLEWARE DE PROTECTION ---
 router.use(verifyToken);
 
 router.get("/protected", (req, res) => {
-  res.json({ message: "Vous êtes connecté !", userId: (req as any).auth?.sub });
+  const authReq = req as RequestWithAuth;
+  res.json({
+    message: "Vous êtes connecté !",
+    userId: authReq.auth.sub,
+  });
 });
-module.exports = router;
+
+export default router;

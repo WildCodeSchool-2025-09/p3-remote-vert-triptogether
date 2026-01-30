@@ -30,16 +30,28 @@ function App() {
     <>
       <nav>
         <ul>
-          <li><Link to="/">Home</Link></li>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
           {auth == null ? (
             <>
-              <li><Link to="/login">Login</Link></li>
-              <li><Link to="/register">Register</Link></li>
+              <li>
+                <Link to="/login">Login</Link>
+              </li>
+              <li>
+                <Link to="/register">Register</Link>
+              </li>
             </>
           ) : (
             <>
-              <li><Link to="/create-trip">Créer un voyage</Link></li>
-              <li><button type="button" onClick={handleLogout}>Logout</button></li>
+              <li>
+                <Link to="/create-trip">Créer un voyage</Link>
+              </li>
+              <li>
+                <button type="button" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
             </>
           )}
         </ul>

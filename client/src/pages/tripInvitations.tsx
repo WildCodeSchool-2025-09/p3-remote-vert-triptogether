@@ -47,6 +47,7 @@ function ContactForm() {
         const data = await response.json();
         console.log("Invitation envoyée avec succès :", data);
       }
+      setInvitationForm({ email: "", message: "" });
     } catch (err) {
       console.error(err);
     }

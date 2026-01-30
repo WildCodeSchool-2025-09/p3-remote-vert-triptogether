@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "./styles/Invitation.css";
 import { useParams } from "react-router";
+import "./styles/TripInvitation.css";
 
 type InvitationForm = {
   email: string;
@@ -55,46 +55,82 @@ function ContactForm() {
 
   return (
     <>
-      <header>
-        <nav>Inviter un participant</nav>
-        <p>Invitez une personne à rejoindre ce voyage par email</p>
-      </header>
-      <section id="trip-infos" className="card">
-        {/* Composant trip infos */}
-      </section>
+      <nav className="tripinvitation-navbar">
+        <ul className="tripinvitation-navbar-list">
+          <li>
+            {" "}
+            <img src="../../public/logo.png" alt="" width={50} />
+            <h1 className="tripinvitation-title">Trip Together</h1>
+          </li>
+          <li> Mes voyages</li>
+          <li>
+            <button type="button" className="tripinvitation-btn-navbar">
+              {" "}
+              C'est parti !
+            </button>
+            <img src="../../public/profile-pic-logo.png" alt="" width={50} />
+          </li>
+        </ul>
+      </nav>
 
-      <form onSubmit={sendInvitation}>
-        <label>
-          Email
-          <input
-            type="email"
-            name="email"
-            value={invitationForm.email}
-            onChange={updateInvitationForm}
-            required
-          />
-        </label>
+      <main className="tripinvitation-main">
+        <section className="tripinvitation-invitation-form">
+          <article className="tripinvitation-head">
+            <p>
+              <img src="../../public/letter-picture.png" alt="" width={80} />
+              Inviter un participant
+            </p>
+            <p>Invitez une personne à rejoindre ce voyage par email</p>
+          </article>
+          <article className="tripinvitation-bg-image" />
+          <article className="tripinvitation-trip-infos">
+            <h2 className="tripinvitation-trip-infos-title">Été à Barcelone</h2>
+            <p>15 juillet -23 août 2026</p>
+            <p>2 participants</p>
+          </article>
+          <form
+            onSubmit={sendInvitation}
+            className="tripinvitation-form-inputs"
+          >
+            <label className="tripinvitation-email-form">
+              Adresse email*
+              <input
+                type="email"
+                name="email"
+                value={invitationForm.email}
+                onChange={updateInvitationForm}
+                required
+                placeholder="janedoe@outlook.com"
+              />
+            </label>
 
-        <label>
-          Message
-          <textarea
-            name="message"
-            value={invitationForm.message}
-            onChange={updateInvitationForm}
-            required
-          />
-        </label>
-        <button
-          type="button"
-          className="btn btn-outline"
-          onClick={cancelInvitation}
-        >
-          Annuler
-        </button>
-        <button type="submit" className="btn btn-primary">
-          Envoyer l'invitation
-        </button>
-      </form>
+            <label className="tripinvitation-message-form">
+              Message
+              <textarea
+                name="message"
+                value={invitationForm.message}
+                onChange={updateInvitationForm}
+                required
+                placeholder="Type your message here"
+              />
+            </label>
+            <button
+              type="submit"
+              className="tripinvitation-btn-send-invitation"
+            >
+              Envoyer l'invitation
+            </button>
+            <button
+              type="button"
+              className="tripinvitation-btn-cancel-invitation"
+              onClick={cancelInvitation}
+            >
+              Annuler
+            </button>
+          </form>
+        </section>
+        <footer />
+      </main>
     </>
   );
 }

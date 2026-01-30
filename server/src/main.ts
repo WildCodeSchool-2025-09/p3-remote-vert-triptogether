@@ -2,7 +2,7 @@ import "dotenv/config";
 import app from "./app";
 import "../database/checkConnection";
 
-const port = process.env.APP_PORT || 3310;
+const port = process.env.APP_PORT;
 
 app
   .listen(port, () => {

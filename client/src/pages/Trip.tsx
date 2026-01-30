@@ -1,10 +1,23 @@
-// ToDo : récupérer le toast de l'invitation
+import { ToastContainer } from "react-toastify";
+import { useToast } from "../hooks/useToast";
 
-// const location = useLocation();
+export function Trip() {
+  useToast();
 
-// useEffect(() => {
-//   if (location.state?.toast) {
-//     const { type, message } = location.state.toast;
-//     toast[type](message);
-//   }
-// }, [location]);
+  return (
+    <>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+    </>
+  );
+}

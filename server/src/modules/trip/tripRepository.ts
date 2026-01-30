@@ -1,31 +1,40 @@
 import databaseClient from "../../../database/client";
-
 import type { Result, Rows } from "../../../database/client";
-
-type Trip = {
-  id: number;
-  title: string;
-  description: string;
-  start_at: string;
-  end_at: string;
-  user_id: number;
-};
+import type { Trip } from "../../types/tripType";
 
 class TripRepository {
   async create(trip: Omit<Trip, "id">) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO trip (title, description, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?)",
-      [trip.title, trip.description, trip.start_at, trip.end_at, trip.user_id],
+      "INSERT INTO trip (title, description,city, country, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      [
+        trip.title,
+        trip.description,
+        trip.city,
+        trip.country,
+        trip.start_at,
+        trip.end_at,
+        trip.user_id,
+      ],
     );
 
     return result.insertId;
   }
 
-  async read(id: number) {
+  async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
-      "SELECT * FROM trip WHERE id = ?",
+      `
+      SELECT 
+        t.*,
+        u.firstname AS owner_firstname,
+        u.lastname  AS owner_lastname
+      FROM trip t
+      JOIN user u ON u.id = t.user_id
+      WHERE t.id = ?
+      `,
       [id],
     );
+
+    if (rows.length === 0) return null;
 
     return rows[0] as Trip;
   }

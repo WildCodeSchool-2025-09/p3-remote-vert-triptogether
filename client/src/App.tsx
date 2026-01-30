@@ -1,11 +1,22 @@
 import { Outlet } from "react-router";
 import "./App.css";
-import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <main>
-      <Toaster />
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Outlet />
     </main>
   );

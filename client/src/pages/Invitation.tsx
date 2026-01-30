@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
-import "./styles/Invitation.css";
+import "./styles/invitation.css";
 import type { invitationType } from "../types/invitationType";
 
 function Invitation() {
-  const { id } = useParams<{ id: string }>();
+  const { tripId, invitationId } = useParams<{
+    tripId: string;
+    invitationId: string;
+  }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!id) {
+    if (!invitationId) {
       navigate("/", {
         state: {
           toast: {
@@ -22,7 +25,7 @@ function Invitation() {
       });
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`)
       .then(async (response) => {
         const invitation = await response.json();
 
@@ -93,14 +96,14 @@ function Invitation() {
           },
         });
       });
-  }, [navigate, id]);
+  }, [navigate, invitationId]);
 
   async function invitationResponded(status: "accepted" | "refused") {
-    if (!id) return;
+    if (!invitationId) return;
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/invitation/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -113,7 +116,7 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        navigate(`/trip/${invitation?.trip_id}`, {
+        navigate(`/trip/${tripId ?? invitation?.trip_id}`, {
           state: {
             toast: {
               type: "success",

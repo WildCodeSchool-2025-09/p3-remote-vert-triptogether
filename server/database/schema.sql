@@ -66,6 +66,7 @@ CREATE TABLE invitation (
     ON DELETE CASCADE,
   CONSTRAINT fk_invation_invited
     FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_invitation_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)

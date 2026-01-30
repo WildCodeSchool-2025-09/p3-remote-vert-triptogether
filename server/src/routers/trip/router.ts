@@ -9,4 +9,6 @@ router.get("/countries", TripActions.browse);
 router.get("/:id", TripActions.read);
 router.post("/", verifyToken, TripActions.add);
 
+router.post("/", TripActions.add);
+
 export default router;

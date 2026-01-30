@@ -18,7 +18,6 @@ class InvitationSeeder extends AbstractSeeder {
         to: "2026-12-31T00:00:00.000Z",
       });
 
-      const creatorRef = `user_${i % 5}`;
       const invitedRef = `user_${(i + 1) % 5 || 1}`;
       const tripRef = `trip_${i % 3}`;
 

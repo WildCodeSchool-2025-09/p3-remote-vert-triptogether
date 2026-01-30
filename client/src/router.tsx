@@ -5,6 +5,8 @@ import Register from "./pages/AuthRegister";
 import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import MyTrips from "./pages/MyTrips";
+import Invitations from "./pages/Invitations";
+import { Trip } from "./pages/Trip";
 
 export const router = createBrowserRouter([
   {
@@ -13,9 +15,23 @@ export const router = createBrowserRouter([
     children: [
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
-      { path: "create-trip", element: <CreateTrip /> },
       { path: "invitation/:id", element: <Invitation /> },
       { path: "my-trips", element: <MyTrips /> },
+      {  path: "/trip/:tripId/invitation/:invitationId",
+        element: <Invitation />,
+      },
+      {
+        path: "/trip/:id",
+        element: <Trip />,
+      },
+      {
+        path: "/trip/:id/invitations",
+        element: <Invitations />,
+      },
+      {
+        path: "/create-trip",
+        element: <CreateTrip />,
+      },
     ],
   },
 ] as const);

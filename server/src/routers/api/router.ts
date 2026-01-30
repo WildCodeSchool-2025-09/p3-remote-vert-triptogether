@@ -1,3 +1,4 @@
+import myTripActions from "../../modules/mytrip/mytripActions";
 import express, { type Request } from "express";
 import {
   hashPassword,
@@ -20,24 +21,28 @@ type RequestWithAuth = Request & {
 
 const router = express.Router();
 
-// --- ROUTES PUBLIQUES ---
+// --- 1. ROUTES PUBLIQUES (Login, Inscription) ---
 router.post("/login", login);
 router.post("/users", hashPassword, addUser);
 
-// Sous-routeurs
+// --- 2. MIDDLEWARE DE PROTECTION GLOBAL ---
+// Tout ce qui est écrit APRÈS cette ligne aura besoin d'un token
+router.use(verifyToken);
+
+// --- 3. ROUTES PROTÉGÉES ---
+router.get("/my-trips", myTripActions.browse); // Plus besoin de remettre verifyToken ici
+
+// Tes sous-routeurs (eux aussi seront protégés maintenant !)
 router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
 
 router.get("/users", browseUsers);
 router.get("/users/:id", readUser);
 
-// --- MIDDLEWARE DE PROTECTION ---
-router.use(verifyToken);
-
 router.get("/protected", (req, res) => {
   const authReq = req as RequestWithAuth;
   res.json({
-    message: "Vous êtes connecté !",
+    message: "Connecté !",
     userId: authReq.auth.sub,
   });
 });

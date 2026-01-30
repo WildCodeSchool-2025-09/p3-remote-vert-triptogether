@@ -9,6 +9,8 @@ interface Trip {
   description: string;
   image_url: string;
   start_at: string;
+  city: string;
+  country: string;
   end_at: string;
 }
 
@@ -21,8 +23,10 @@ interface AuthContextType {
 
 export default function MyTrips() {
   const { auth } = useOutletContext() as AuthContextType;
-  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">("futur");
-  
+  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">(
+    "futur",
+  );
+
   const [trips, setTrips] = useState<Trip[]>([]);
 
   useEffect(() => {
@@ -30,10 +34,10 @@ export default function MyTrips() {
 
     if (!token) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips?status=${activeTab}`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/my-trips?status=${activeTab}`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
@@ -43,7 +47,7 @@ export default function MyTrips() {
       })
       .then((data) => setTrips(data))
       .catch((err) => console.error("Error fetching trips:", err));
-  }, [activeTab, auth]); 
+  }, [activeTab, auth]);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -68,7 +72,7 @@ export default function MyTrips() {
         <h1>Mes voyages</h1>
         <input type="text" placeholder="Rechercher un voyage ..." />
       </div>
-      
+
       <div className="tripstate">
         <button
           type="button"
@@ -108,7 +112,7 @@ export default function MyTrips() {
               <div className="trip-info">
                 <p>
                   <img src="/images/Icône localisation.png" alt="" />
-                  {trip.description}
+                  {trip.city}, {trip.country}
                 </p>
                 <p>
                   <img src="/images/Icône calendrier 1.png" alt="" />

@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+import userRepository from "../user/userRepository";
 import InvitationRepository from "./invitationRepository";
 
 const CONNECTED_USER_ID = 1;
@@ -90,6 +91,9 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
     const { email, message } = req.body;
+    const existingUser = await userRepository.findByEmail(email);
+
+    const user_id = existingUser ? existingUser.id : null;
 
     if (Number.isNaN(tripId)) {
       res.status(400).json({ error: "ID du voyage invalide" });
@@ -109,11 +113,12 @@ const add: RequestHandler = async (req, res, next) => {
 
     const creator_id = CONNECTED_USER_ID;
 
-    const inviteMemberToTrip = await InvitationRepository.create(
+    const newInvitation = await InvitationRepository.create(
       tripId,
       email,
       message,
       creator_id,
+      user_id,
     );
 
     res.status(201).json({ message: "Invitation envoyée" });

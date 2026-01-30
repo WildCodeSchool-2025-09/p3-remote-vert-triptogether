@@ -2,7 +2,7 @@ import type { RequestHandler } from "express";
 import userRepository from "../user/userRepository";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 3;
+const CONNECTED_USER_ID = 11;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -90,7 +90,7 @@ const edit: RequestHandler = async (req, res, next) => {
 const add: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
-    const { email } = req.body;
+    const { email, message } = req.body;
     const existingUser = await userRepository.findByEmail(email);
 
     const user_id = existingUser ? existingUser.id : null;
@@ -100,8 +100,8 @@ const add: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (!email) {
-      res.status(400).json({ error: "Email requis" });
+    if (!email || !message) {
+      res.status(400).json({ error: "Email et message requis" });
       return;
     }
 
@@ -116,6 +116,7 @@ const add: RequestHandler = async (req, res, next) => {
     const newInvitation = await InvitationRepository.create(
       tripId,
       email,
+      message,
       creator_id,
       user_id,
     );

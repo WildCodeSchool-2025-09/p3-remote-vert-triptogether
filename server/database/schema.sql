@@ -53,6 +53,7 @@ CREATE TABLE invitation (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status VARCHAR(10) NOT NULL,
   email VARCHAR(100) NOT NULL,
+  message TEXT NOT NULL,
   creator_id INT NOT NULL,
   user_id INT DEFAULT NULL,
   trip_id INT NOT NULL,

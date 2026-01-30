@@ -1,28 +1,25 @@
-import { tr } from "@faker-js/faker/.";
 import express from "express";
-
-const router = express.Router();
+import { login, hashPassword, verifyToken } from "../../modules/auth/authActions";
+import { browse as browseUsers, read as readUser, add as addUser } from "../../modules/user/userActions";
 
 const tripRouter = require("../trip/router");
 const invitationRouter = require("../invitation/router");
 
+const router = express.Router();
+
+// Sous-routeurs
 router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
 
-// Define user-related routes
-import userActions from "../../modules/user/userActions";
+router.get("/users", browseUsers);
+router.get("/users/:id", readUser);
+router.post("/users", hashPassword, addUser);
 
-router.get("/users", userActions.browse);
-router.get("/users/:id", userActions.read);
+router.post("/login", login);
 
-// Define auth-related routes
-import authActions from "../../modules/auth/authActions";
+router.use(verifyToken);
 
-router.post("/login", authActions.login);
-
-router.post("/users", authActions.hashPassword, userActions.add);
-
-// Authentication wall
-router.use(authActions.verifyToken);
-
+router.get("/protected", (req, res) => {
+  res.json({ message: "Vous êtes connecté !", userId: (req as any).auth?.sub });
+});
 module.exports = router;

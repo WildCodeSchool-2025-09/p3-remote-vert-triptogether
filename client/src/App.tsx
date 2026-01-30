@@ -15,35 +15,32 @@ type Auth = {
 };
 
 function App() {
-  const [auth, setAuth] = useState(null as Auth | null);
+  const [auth, setAuth] = useState<Auth | null>(() => {
+    const savedAuth = localStorage.getItem("auth");
+    return savedAuth ? JSON.parse(savedAuth) : null;
+  });
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("auth");
+    setAuth(null);
+  };
 
   return (
     <>
       <nav>
         <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
+          <li><Link to="/">Home</Link></li>
           {auth == null ? (
             <>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/register">Register</Link></li>
             </>
           ) : (
-            <li>
-              <button
-                type="button"
-                onClick={() => {
-                  setAuth(null);
-                }}
-              >
-                Logout
-              </button>
-            </li>
+            <>
+              <li><Link to="/create-trip">Créer un voyage</Link></li>
+              <li><button type="button" onClick={handleLogout}>Logout</button></li>
+            </>
           )}
         </ul>
       </nav>
@@ -51,18 +48,7 @@ function App() {
       <main>
         <Outlet context={{ auth, setAuth }} />
       </main>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer position="top-center" autoClose={5000} theme="light" />
     </>
   );
 }

@@ -8,7 +8,7 @@ type Invitation = {
   created_at: string;
   updated_at: string;
   creator_id: number;
-  invited_id: number;
+  user_id: number;
   trip_id: number;
   start_at?: string | null;
   trip_title?: string;
@@ -39,7 +39,7 @@ class invitationRepository {
       FROM invitation i
       JOIN trip t ON i.trip_id = t.id
       JOIN user c ON i.creator_id = c.id
-      JOIN user u ON i.invited_id = u.id
+      JOIN user u ON i.user_id = u.id
       WHERE i.id = ?
     `,
       [id],
@@ -58,10 +58,15 @@ class invitationRepository {
     return result.affectedRows === 1;
   }
 
-  async create(tripId: number, email: string, creator_id: number) {
+  async create(
+    tripId: number,
+    email: string,
+    creator_id: number,
+    user_id: number | null,
+  ) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO invitation (trip_id, email, status, creator_id, user_id) VALUES (?, ?, 'pending', ?, null)",
-      [tripId, email, creator_id],
+      "INSERT INTO invitation (trip_id, email, status, creator_id, user_id) VALUES (?, ?, 'pending', ?, ?)",
+      [tripId, email, creator_id, user_id],
     );
     return result;
   }

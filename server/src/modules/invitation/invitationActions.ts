@@ -1,4 +1,5 @@
 import type { RequestHandler } from "express";
+import userRepository from "../user/userRepository";
 import InvitationRepository from "./invitationRepository";
 
 const CONNECTED_USER_ID = 3;
@@ -14,9 +15,7 @@ const read: RequestHandler = async (req, res, next) => {
     }
 
     if (
-      ![invitation.creator_id, invitation.invited_id].includes(
-        CONNECTED_USER_ID,
-      )
+      ![invitation.creator_id, invitation.user_id].includes(CONNECTED_USER_ID)
     ) {
       res.status(403).json({ error: "Accès non autorisé" });
       return;
@@ -59,7 +58,7 @@ const edit: RequestHandler = async (req, res, next) => {
     }
 
     if (
-      ![updateInvitation?.creator_id, updateInvitation?.invited_id].includes(
+      ![updateInvitation?.creator_id, updateInvitation?.user_id].includes(
         CONNECTED_USER_ID,
       )
     ) {
@@ -92,6 +91,9 @@ const add: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
     const { email } = req.body;
+    const existingUser = await userRepository.findByEmail(email);
+
+    const user_id = existingUser ? existingUser.id : null;
 
     if (Number.isNaN(tripId)) {
       res.status(400).json({ error: "ID du voyage invalide" });
@@ -111,10 +113,11 @@ const add: RequestHandler = async (req, res, next) => {
 
     const creator_id = CONNECTED_USER_ID;
 
-    const inviteMemberToTrip = await InvitationRepository.create(
+    const newInvitation = await InvitationRepository.create(
       tripId,
       email,
       creator_id,
+      user_id,
     );
 
     res.status(201).json({ message: "Invitation envoyée" });

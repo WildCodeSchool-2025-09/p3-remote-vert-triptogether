@@ -19,12 +19,12 @@ CREATE TABLE trip (
     ON DELETE CASCADE
 );
 
-CREATE TABLE destination (
+CREATE TABLE step (
   id INT PRIMARY KEY AUTO_INCREMENT,
   city VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   trip_id INT NOT NULL,
-  CONSTRAINT fk_destination_trip
+  CONSTRAINT fk_step_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
     ON DELETE CASCADE
 );
@@ -72,16 +72,16 @@ CREATE TABLE vote (
   id INT PRIMARY KEY AUTO_INCREMENT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   user_id INT NOT NULL,
-  destination_id INT NOT NULL,
+  step_id INT NOT NULL,
   vote BOOLEAN NOT NULL,
   comment TEXT NULL,
   CONSTRAINT fk_vote_user
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_vote_destination
-    FOREIGN KEY (destination_id) REFERENCES destination(id)
+  CONSTRAINT fk_vote_step
+    FOREIGN KEY (step_id) REFERENCES step(id)
     ON DELETE CASCADE,
-  CONSTRAINT unique_user_vote_destination
-    UNIQUE (user_id, destination_id)
+  CONSTRAINT unique_user_vote_step
+    UNIQUE (user_id, step_id)
 );
 

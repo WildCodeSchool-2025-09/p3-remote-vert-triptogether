@@ -10,8 +10,7 @@ router.get("/:id", TripActions.read);
 
 router.post("/", TripActions.add);
 
-router.post("/destinations/:id/votes", VoteActions.add);
-
-// router.get("/destinations/:id/votes", VoteActions.read);
+router.post("/steps/:id/votes", VoteActions.add);
+router.get("/steps/:id/votes", VoteActions.browse);
 
 module.exports = router;

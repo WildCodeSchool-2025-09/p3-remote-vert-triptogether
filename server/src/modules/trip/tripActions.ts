@@ -68,7 +68,7 @@ const add: RequestHandler = async (req, res, next) => {
         .json({ message: "La date de départ ne peut pas être dans le passé" });
     }
 
-    if (endDate < startDate) {
+    if (endDate <= startDate) {
       return res.status(400).json({
         message: "La date de retour doit être après la date de départ",
       });

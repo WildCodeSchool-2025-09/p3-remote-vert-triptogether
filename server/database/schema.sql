@@ -11,6 +11,8 @@ CREATE TABLE trip (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(255),
+  city VARCHAR(100) NOT NULL,
+  country VARCHAR(100) NOT NULL,
   start_at DATE,
   end_at DATE,
   user_id INT NOT NULL,
@@ -54,12 +56,8 @@ CREATE TABLE invitation (
   status VARCHAR(10) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  creator_id INT NOT NULL,
   user_id INT NOT NULL,
   trip_id INT NOT NULL,
-  CONSTRAINT fk_inviation_creator
-    FOREIGN KEY (creator_id) REFERENCES user(id)
-    ON DELETE CASCADE,
   CONSTRAINT fk_invation_invited
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,

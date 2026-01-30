@@ -1,4 +1,4 @@
-#onglets {
+#tabs {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,7 +8,7 @@
   border-bottom: 1px solid #e2e8f0;
 }
 
-.onglet {
+.tab {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
@@ -30,39 +30,39 @@
     border-color 0.2s ease;
 }
 
-.onglet:hover {
+.tab:hover {
   color: #0f766e;
   border-color: #0f766e;
   background-color: #f1f5f9;
 }
 
-.onglet.active {
+.tab.active {
   color: #f1f5f9;
   border-color: #0f766e;
   background-color: #0f766e;
   box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
 }
 
-.onglet svg,
-.onglet-icon {
+.tab svg,
+.tab-icon {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
   fill: currentColor;
 }
 
-.onglet-label {
+.tab-label {
   white-space: nowrap;
 }
 
 @media (max-width: 640px) {
-  #onglets {
+  #tabs {
     justify-content: space-between;
     padding: 8px 16px;
     border-radius: 12px;
   }
 
-  .onglet {
+  .tab {
     width: 44px;
     min-width: 44px;
     height: 44px;
@@ -71,7 +71,7 @@
     gap: 0;
   }
 
-  .onglet-label {
+  .tab-label {
     display: none;
   }
 }

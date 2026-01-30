@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   font-family: var(--body-text);
-  font-size: 24px;
+  font-size: 1.5rem;
   -webkit-filter: blur(2px);
 }
 
@@ -38,8 +38,8 @@
 .tripinvitation-head {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 30px;
+  align-items: center;
+  gap: 1.875rem;
 }
 
 .tripinvitation-head > p {
@@ -52,7 +52,8 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  height: 250px;
+  height: 30vh;
+  min-height: 200px;
   width: 100%;
 }
 
@@ -61,16 +62,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
   border: 1px solid rgba(0, 0, 0, 0.16);
-  width: 650px;
-  height: 160px;
+  width: 55%;
+  max-width: 650px;
+  min-height: 160px;
   border-radius: 40px;
-  margin-top: -100px;
+  margin-top: -90px;
   position: relative;
   z-index: 10;
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 1rem;
 }
 
 .tripinvitation-trip-infos-title {
@@ -81,14 +84,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
-  width: 900px;
+  gap: 1.25rem;
+  width: 70vw;
+  max-width: 1000px;
   height: auto;
-  padding-bottom: 40px;
+  padding: 1.5rem 0.2rem;
   border: 1px solid black;
   border-radius: 50px;
   background-color: white;
-  font-size: 24px;
+  font-size: 1.5rem;
+  z-index: 1;
 }
 
 .tripinvitation-form-inputs {
@@ -102,8 +107,9 @@
 .tripinvitation-message-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 518px;
+  gap: 0.6rem;
+  width: 200%;
+  max-width: 518px;
 }
 
 .tripinvitation-email-form > input {
@@ -111,6 +117,7 @@
   border-radius: 10px;
   height: 50px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 0.5rem;
 }
 
 .tripinvitation-message-form > textarea {
@@ -118,6 +125,7 @@
   border-radius: 10px;
   height: 163px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  padding: 0.5rem;
 }
 
 .tripinvitation-btn-send-invitation,
@@ -144,4 +152,26 @@
 .tripinvitation-btn-send-invitation:hover,
 .tripinvitation-btn-cancel-invitation:hover {
   opacity: 60%;
+}
+
+@media (max-width: 768px) {
+  .tripinvitation-navbar-list {
+    font-size: 1.1rem;
+  }
+
+  .tripinvitation-trip-infos {
+    margin-top: -50px;
+    border-radius: 20px;
+    width: 40vw;
+  }
+
+  .tripinvitation-btn-navbar {
+    width: 120px;
+    font-size: 0.9rem;
+  }
+
+  .tripinvitation-email-form,
+  .tripinvitation-message-form {
+    width: 150%;
+  }
 }

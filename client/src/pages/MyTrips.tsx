@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useOutletContext } from "react-router";
 import "../styles/Reset.css";
 import "../styles/MyTrips.css";
 
@@ -11,17 +12,38 @@ interface Trip {
   end_at: string;
 }
 
+interface AuthContextType {
+  auth: {
+    token: string;
+    user: { id: number; email: string };
+  } | null;
+}
+
 export default function MyTrips() {
-  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">(
-    "futur",
-  );
-  const [trips, setTrips] = useState([]);
+  const { auth } = useOutletContext() as AuthContextType;
+  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">("futur");
+  
+  const [trips, setTrips] = useState<Trip[]>([]);
+
   useEffect(() => {
-    fetch(`http://localhost:3310/api/trips?status=${activeTab}`)
-      .then((res) => res.json())
+    const token = localStorage.getItem("token") || auth?.token;
+
+    if (!token) return;
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips?status=${activeTab}`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur lors de la récupération");
+        return res.json();
+      })
       .then((data) => setTrips(data))
       .catch((err) => console.error("Error fetching trips:", err));
-  }, [activeTab]);
+  }, [activeTab, auth]); 
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -31,6 +53,7 @@ export default function MyTrips() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
   const formatDateStart = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
       month: "short",
@@ -38,13 +61,14 @@ export default function MyTrips() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
   return (
     <>
       <div className="mytripsheader">
         <h1>Mes voyages</h1>
-
         <input type="text" placeholder="Rechercher un voyage ..." />
       </div>
+      
       <div className="tripstate">
         <button
           type="button"
@@ -58,41 +82,44 @@ export default function MyTrips() {
           className={activeTab === "futur" ? "active" : ""}
           onClick={() => setActiveTab("futur")}
         >
-          A venir
+          À venir
         </button>
         <button
           type="button"
           className={activeTab === "past" ? "active" : ""}
           onClick={() => setActiveTab("past")}
         >
-          {" "}
           Passés
         </button>
       </div>
 
       <div className="tripcards">
-        {trips.map((trip: Trip) => (
-          <div key={trip.id} className="tripcard">
-            <div
-              className="trip-image"
-              style={{
-                backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/cacaland.jpg"})`,
-              }}
-            >
-              <h2>{trip.title}</h2>
+        {trips.length > 0 ? (
+          trips.map((trip) => (
+            <div key={trip.id} className="tripcard">
+              <div
+                className="trip-image"
+                style={{
+                  backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/cacaland.jpg"})`,
+                }}
+              >
+                <h2>{trip.title}</h2>
+              </div>
+              <div className="trip-info">
+                <p>
+                  <img src="/images/Icône localisation.png" alt="" />
+                  {trip.description}
+                </p>
+                <p>
+                  <img src="/images/Icône calendrier 1.png" alt="" />
+                  {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
+                </p>
+              </div>
             </div>
-            <div className="trip-info">
-              <p>
-                <img src="/images/Icône localisation.png" alt="" />{" "}
-                {trip.description}
-              </p>
-              <p>
-                <img src="/images/Icône calendrier 1.png" alt="" />{" "}
-                {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
-              </p>
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="no-trips">Aucun voyage trouvé pour cette catégorie.</p>
+        )}
       </div>
     </>
   );

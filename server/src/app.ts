@@ -1,8 +1,14 @@
 import express from "express";
+import cors from "cors";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import apiRouter from "./routers/api/router";
 
 const app = express();
 
-import cors from "cors";
+// Obligatoire pour que __dirname fonctionne avec "import"
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 if (process.env.CLIENT_URL != null) {
   app.use(cors({ origin: [process.env.CLIENT_URL] }));
@@ -10,12 +16,8 @@ if (process.env.CLIENT_URL != null) {
 
 app.use(express.json());
 
-const apiRouter = require("./routers/api/router");
-
+// Correction ici : on utilise l'importation ES6 définie plus haut
 app.use("/api", apiRouter);
-
-import fs from "node:fs";
-import path from "node:path";
 
 const publicFolderPath = path.join(__dirname, "../../server/public");
 
@@ -38,7 +40,6 @@ import type { ErrorRequestHandler } from "express";
 const logErrors: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err);
   console.error("on req:", req.method, req.path);
-
   next(err);
 };
 

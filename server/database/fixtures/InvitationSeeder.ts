@@ -29,6 +29,7 @@ class InvitationSeeder extends AbstractSeeder {
           "declined",
         ]),
         email: this.faker.internet.email(),
+        message: this.faker.internet.email(),
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
         creator_id: this.getRef(creatorRef).insertId,

@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 3;
+const CONNECTED_USER_ID = 11;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -14,9 +14,7 @@ const read: RequestHandler = async (req, res, next) => {
     }
 
     if (
-      ![invitation.creator_id, invitation.invited_id].includes(
-        CONNECTED_USER_ID,
-      )
+      ![invitation.creator_id, invitation.user_id].includes(CONNECTED_USER_ID)
     ) {
       res.status(403).json({ error: "Accès non autorisé" });
       return;
@@ -59,7 +57,7 @@ const edit: RequestHandler = async (req, res, next) => {
     }
 
     if (
-      ![updateInvitation?.creator_id, updateInvitation?.invited_id].includes(
+      ![updateInvitation?.creator_id, updateInvitation?.user_id].includes(
         CONNECTED_USER_ID,
       )
     ) {
@@ -91,15 +89,15 @@ const edit: RequestHandler = async (req, res, next) => {
 const add: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
-    const { email } = req.body;
+    const { email, message } = req.body;
 
     if (Number.isNaN(tripId)) {
       res.status(400).json({ error: "ID du voyage invalide" });
       return;
     }
 
-    if (!email) {
-      res.status(400).json({ error: "Email requis" });
+    if (!email || !message) {
+      res.status(400).json({ error: "Email et message requis" });
       return;
     }
 
@@ -114,6 +112,7 @@ const add: RequestHandler = async (req, res, next) => {
     const inviteMemberToTrip = await InvitationRepository.create(
       tripId,
       email,
+      message,
       creator_id,
     );
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./styles/Invitation.css";
 import { useParams } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 
 type InvitationForm = {
   email: string;
@@ -43,12 +44,15 @@ function ContactForm() {
           }),
         },
       );
-      if (response.ok) {
+      if (!response.ok) {
         const data = await response.json();
-        console.log("Invitation envoyée avec succès :", data);
+        throw new Error(data.message);
       }
+      toast.success("Invitation envoyée avec succès");
+
+      setInvitationForm({ email: "", message: "" });
     } catch (err) {
-      console.error(err);
+      toast.error("Erreur lors de l'envoi");
     }
   };
 
@@ -61,7 +65,18 @@ function ContactForm() {
       <section id="trip-infos" className="card">
         {/* Composant trip infos */}
       </section>
-
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <form onSubmit={sendInvitation}>
         <label>
           Email

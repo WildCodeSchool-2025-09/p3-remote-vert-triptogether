@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 11;
+const CONNECTED_USER_ID = 1;
 
 const read: RequestHandler = async (req, res, next) => {
   try {

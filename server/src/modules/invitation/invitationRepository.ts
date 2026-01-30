@@ -86,9 +86,10 @@ class invitationRepository {
   async removeMemberFromTrip(tripId: number, userId: number): Promise<boolean> {
     const [result] = await databaseClient.query<Result>(
       `
-      UPDATE invitation
-      SET status = 'removed', updated_at = CURRENT_TIMESTAMP
-      WHERE trip_id = ? AND user_id = ? AND status = 'accepted'
+      DELETE FROM invitation
+      WHERE trip_id = ?
+      AND user_id = ?
+      AND status = 'accepted'
       `,
       [tripId, userId],
     );

@@ -134,14 +134,18 @@ function Invitations() {
         setLoading(false);
       });
   }, [tripId, navigate]);
+
   const removeParticipant = (userId: number) => {
     if (!tripId) return;
 
     setIsRemoving(true);
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trip/${tripId}/${userId}`, {
-      method: "DELETE",
-    })
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
+      {
+        method: "DELETE",
+      },
+    )
       .then(async (response) => {
         if (response.status === 400) {
           toast.error("Requête invalide");
@@ -210,6 +214,7 @@ function Invitations() {
             </>
           )}
         </section>
+
         {memberToRemove && (
           <div className="modal-backdrop">
             <div className="modal">

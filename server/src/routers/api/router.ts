@@ -1,10 +1,10 @@
-import myTripActions from "../../modules/mytrip/mytripActions";
 import express, { type Request } from "express";
 import {
   hashPassword,
   login,
   verifyToken,
 } from "../../modules/auth/authActions";
+import myTripActions from "../../modules/mytrip/mytripActions";
 import {
   add as addUser,
   browse as browseUsers,

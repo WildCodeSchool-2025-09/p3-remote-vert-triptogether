@@ -2,7 +2,7 @@ import "./styles/invitation.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Guests from "../components/Guests/Guests";
-import NavTabs from "../components/NavTabs/NavTabs";
+import NavTabs from "../components/navTabs/NavTabs";
 import type { Guest, invitationType } from "../types/invitationType";
 
 type RouteParams = {

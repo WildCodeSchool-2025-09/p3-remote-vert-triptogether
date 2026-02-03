@@ -1,14 +1,14 @@
 export type Trip = {
-  id?: number;       
+  id?: number;
   title: string;
   description: string;
   city: string;
-  country: string;    
-  start_at: string;     
-  end_at: string;        
-  user_id: number;        
-  image_url?: string;       
-  owner_firstname?: string;  
+  country: string;
+  start_at: string;
+  end_at: string;
+  user_id: number;
+  image_url?: string;
+  owner_firstname?: string;
   owner_lastname?: string;
 };
 

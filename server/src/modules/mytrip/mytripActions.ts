@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
-import mytripRepository from "./mytripRepository";
 import type { Trip, TripStatus } from "../../types/tripType";
+import mytripRepository from "./mytripRepository";
 interface RequestWithAuth extends Request {
   auth: {
     sub: string;

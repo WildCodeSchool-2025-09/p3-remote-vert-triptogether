@@ -23,8 +23,8 @@ interface AuthContextType {
 
 export default function MyTrips() {
   const { auth } = useOutletContext() as AuthContextType;
-  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past">(
-    "futur",
+  const [activeTab, setActiveTab] = useState<"futur" | "current" | "past" | "all">(
+    "all",
   );
 
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -74,6 +74,13 @@ export default function MyTrips() {
       </div>
 
       <div className="tripstate">
+                <button
+          type="button"
+          className={activeTab === "all" ? "active" : ""}
+          onClick={() => setActiveTab("all")}
+        >
+          Tous mes voyages
+        </button>
         <button
           type="button"
           className={activeTab === "current" ? "active" : ""}

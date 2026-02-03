@@ -1,12 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/Invitation.css";
 import { useParams } from "react-router";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "./styles/TripInvitation.css";
+import TripCard from "../components/TripCard";
 
 type InvitationForm = {
   email: string;
   message: string;
+};
+
+type Trip = {
+  id: number;
+  title: string;
+  city: string;
+  country: string;
+  start_at: string;
+  end_at: string;
+  participants: number;
+  status: "pending" | "accepted" | "refused";
+  role: "organizer" | "participant";
 };
 
 function ContactForm() {
@@ -16,6 +29,14 @@ function ContactForm() {
     email: "",
     message: "",
   });
+
+  const [trip, setTrip] = useState<Trip | null>(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
+      .then((res) => res.json())
+      .then((data) => setTrip(data));
+  }, [id]);
 
   const updateInvitationForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -79,6 +100,18 @@ function ContactForm() {
 
       <main className="tripinvitation-main">
         <section className="tripinvitation-invitation-form">
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick={false}
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <article className="tripinvitation-head">
             <p>
               <img src="../../public/letter-picture.png" alt="" width={80} />
@@ -88,9 +121,18 @@ function ContactForm() {
           </article>
           <article className="tripinvitation-bg-image" />
           <article className="tripinvitation-trip-infos">
-            <h2 className="tripinvitation-trip-infos-title">Été à Barcelone</h2>
-            <p>15 juillet -23 août 2026</p>
-            <p>2 participants</p>
+            {trip && (
+              <TripCard
+                title={trip.title}
+                city={trip.city}
+                country={trip.country}
+                startAt={trip.start_at}
+                endAt={trip.end_at}
+                participants={trip.participants}
+                status={trip.status}
+                role={trip.role}
+              />
+            )}
           </article>
           <form
             onSubmit={sendInvitation}

@@ -4,8 +4,8 @@ type TripCardProps = {
   country: string;
   startAt: string;
   endAt: string;
-  participantsCount: number;
-  status: "pending" | "active" | "finished";
+  participants: number;
+  status: "pending" | "accepted" | "refused";
   role: "organizer" | "participant";
 };
 
@@ -15,28 +15,23 @@ function TripCard({
   country,
   startAt,
   endAt,
-  participantsCount,
+  participants,
   status,
   role,
 }: TripCardProps) {
   return (
     <article className="trip-card">
-      <div className="trip-badges">
-        <span>{status === "active" ? "En cours" : "À venir"}</span>
-        {role === "organizer" && <span>Organisateur</span>}
-      </div>
-
-      <h2>{title}</h2>
-
-      <p>
-        📍 {city}, {country}
+      <h2 className="trip-card-title">{title}</h2>
+      <p className="trip-card-location">
+        {city}, {country}
       </p>
-      <p>
-        📅 {startAt} – {endAt}
+      <p className="trip-card-dates">
+        {startAt} - {endAt}
       </p>
-      <p>👥 {participantsCount} participants</p>
+      <p className="trip-card-participants">{participants}</p>
+      <p className="trip-card-status">{status}</p>
+      <p className="trip-card-role">{role}</p>
     </article>
   );
 }
-
 export default TripCard;

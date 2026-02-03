@@ -93,7 +93,7 @@ li:last-child {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  border-radius: 20px;
   font-weight: 600;
   border: none;
   font-size: 13px;
@@ -109,10 +109,12 @@ li:last-child {
 .badge-accepted {
   background-color: #e5e7eb;
   color: #111827;
+  cursor: pointer;
 }
 .badge-pending {
   background-color: #fef3c7;
   color: #92400e;
+  cursor: pointer;
 }
 
 .badge-refuse {

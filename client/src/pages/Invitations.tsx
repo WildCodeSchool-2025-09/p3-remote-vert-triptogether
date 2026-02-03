@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import Guests from "../components/Guests/Guests";
-import NavTabs from "../components/nom/NavTabs";
+import NavTabs from "../components/NavTabs/NavTabs";
 import type { Guest, invitationType } from "../types/invitationType";
 
 type RouteParams = {
@@ -247,7 +247,7 @@ function Invitations() {
         )}
       </main>
       <ToastContainer
-        position="top-center"
+        position="top-right"
         autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}

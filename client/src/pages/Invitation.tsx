@@ -141,7 +141,7 @@ function Invitation() {
       <header>
         <nav>Trip Together</nav>
       </header>
-      <main>
+      <main className="invitation-main">
         <section id="trip-infos" className="card">
           {/* Composant trip infos */}
         </section>

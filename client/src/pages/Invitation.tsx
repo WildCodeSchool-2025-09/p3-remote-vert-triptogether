@@ -138,8 +138,8 @@ function Invitation() {
 
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
+      <header className="invitation-header">
+        <nav className="invitation-navbar">Trip Together</nav>
       </header>
       <main className="invitation-main">
         <section id="trip-infos" className="card">

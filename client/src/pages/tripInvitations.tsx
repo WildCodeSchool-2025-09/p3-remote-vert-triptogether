@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router";
 import "./styles/TripInvitation.css";
+import { ToastContainer, toast } from "react-toastify";
 
 type InvitationForm = {
   email: string;
@@ -47,33 +48,49 @@ function ContactForm() {
         const data = await response.json();
         console.log("Invitation envoyée avec succès :", data);
       }
+      toast.success("Invitation envoyée avec succès");
       setInvitationForm({ email: "", message: "" });
     } catch (err) {
+      toast.error("Erreur lors de l'envoi");
       console.error(err);
     }
   };
 
   return (
     <>
-      <nav className="tripinvitation-navbar">
-        <ul className="tripinvitation-navbar-list">
-          <li>
-            {" "}
-            <img src="../../public/logo.png" alt="" width={50} />
-            <h1 className="tripinvitation-title">Trip Together</h1>
-          </li>
-          <li> Mes voyages</li>
-          <li>
-            <button type="button" className="tripinvitation-btn-navbar">
+      <header>
+        <nav className="tripinvitation-navbar">
+          <ul className="tripinvitation-navbar-list">
+            <li>
               {" "}
-              C'est parti !
-            </button>
-            <img src="../../public/profile-pic-logo.png" alt="" width={50} />
-          </li>
-        </ul>
-      </nav>
+              <img src="../../public/logo.png" alt="" width={50} />
+              <h1 className="tripinvitation-title">Trip Together</h1>
+            </li>
+            <li> Mes voyages</li>
+            <li>
+              <button type="button" className="tripinvitation-btn-navbar">
+                {" "}
+                C'est parti !
+              </button>
+              <img src="../../public/profile-pic-logo.png" alt="" width={50} />
+            </li>
+          </ul>
+        </nav>
+      </header>
 
       <main className="tripinvitation-main">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <section className="tripinvitation-invitation-form">
           <article className="tripinvitation-head">
             <p>

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import Guests from "../components/Guests/Guests";
-import NavTabs from "../components/NavTabs/NavTabs";
+import NavTabs from "../components/nom/NavTabs";
 import type { Guest, invitationType } from "../types/invitationType";
 
 type RouteParams = {
@@ -35,8 +35,8 @@ function Invitations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [memberToRemove, setMemberToRemove] = useState<Guest | null>(null);
-  const [isRemoving, setIsRemoving] = useState(false);
+  const [deleteInvitation, setdeleteInvitation] = useState<Guest | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -138,7 +138,7 @@ function Invitations() {
   const removeParticipant = (userId: number) => {
     if (!tripId) return;
 
-    setIsRemoving(true);
+    setIsDeleting(true);
 
     fetch(
       `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
@@ -177,8 +177,8 @@ function Invitations() {
         toast.error("Erreur serveur.");
       })
       .finally(() => {
-        setIsRemoving(false);
-        setMemberToRemove(null);
+        setIsDeleting(false);
+        setdeleteInvitation(null);
       });
   };
 
@@ -204,7 +204,7 @@ function Invitations() {
                 title="Participants"
                 invited={attendees}
                 type="attendees"
-                remove={setMemberToRemove}
+                delete={setdeleteInvitation}
               />
               <Guests
                 title="Invité·e·s"
@@ -215,31 +215,31 @@ function Invitations() {
           )}
         </section>
 
-        {memberToRemove && (
+        {deleteInvitation && (
           <div className="modal-backdrop">
             <div className="modal">
               <h4>Retirer ce membre ?</h4>
               <p>
                 Voulez-vous vraiment retirer{" "}
-                <strong>{memberToRemove.name}</strong> de ce voyage ?
+                <strong>{deleteInvitation.name}</strong> de ce voyage ?
               </p>
 
               <div className="modal-actions">
                 <button
                   type="button"
                   className="btn-role"
-                  onClick={() => setMemberToRemove(null)}
-                  disabled={isRemoving}
+                  onClick={() => setdeleteInvitation(null)}
+                  disabled={isDeleting}
                 >
                   Annuler
                 </button>
                 <button
                   type="button"
                   className="btn-danger"
-                  onClick={() => removeParticipant(memberToRemove.id)}
-                  disabled={isRemoving}
+                  onClick={() => removeParticipant(deleteInvitation.id)}
+                  disabled={isDeleting}
                 >
-                  {isRemoving ? "Suppression..." : "Confirmer le retrait"}
+                  {isDeleting ? "Suppression..." : "Confirmer le retrait"}
                 </button>
               </div>
             </div>

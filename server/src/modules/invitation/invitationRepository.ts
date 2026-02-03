@@ -83,7 +83,7 @@ class invitationRepository {
     return rows as Invitation[];
   }
 
-  async removeMemberFromTrip(tripId: number, userId: number): Promise<boolean> {
+  async deleteInvitation(tripId: number, userId: number): Promise<boolean> {
     const [result] = await databaseClient.query<Result>(
       `
       DELETE FROM invitation

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer } from "react-toastify";
-import NavTabs from "../components/NavTabs/NavTabs";
+import NavTabs from "../components/nom/NavTabs";
 import { useToast } from "../hooks/useToast";
 
 export function Trip() {

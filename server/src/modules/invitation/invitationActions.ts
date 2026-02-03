@@ -110,7 +110,7 @@ export const selectInvitationsByTrip: RequestHandler = async (
   }
 };
 
-const removeMember: RequestHandler = async (req, res, next) => {
+const delate: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.tripId);
     const userId = Number(req.params.userId);
@@ -120,10 +120,7 @@ const removeMember: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const success = await invitationRepository.removeMemberFromTrip(
-      tripId,
-      userId,
-    );
+    const success = await invitationRepository.deleteInvitation(tripId, userId);
 
     if (!success) {
       res.sendStatus(404);
@@ -136,4 +133,4 @@ const removeMember: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read, selectInvitationsByTrip, removeMember };
+export default { edit, read, selectInvitationsByTrip, delate };

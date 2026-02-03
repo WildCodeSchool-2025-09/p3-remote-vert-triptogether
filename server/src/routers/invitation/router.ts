@@ -12,6 +12,6 @@ router.get(
 );
 router.patch("/:id", invitationActions.edit);
 
-router.delete("/:tripId/:userId", invitationActions.removeMember);
+router.delete("/:tripId/:userId", invitationActions.delate);
 
 module.exports = router;

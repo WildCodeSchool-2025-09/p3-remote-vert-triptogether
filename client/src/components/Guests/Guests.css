@@ -70,6 +70,7 @@ li:last-child {
 .name {
   margin: 0;
   font-weight: 600;
+  font-size: var(--font-size-S);
 }
 
 .date {
@@ -79,7 +80,7 @@ li:last-child {
 }
 
 .date-small {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .right-side {
@@ -92,17 +93,23 @@ li:last-child {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 10px;
   border-radius: 9999px;
-  font-size: 12px;
   font-weight: 600;
+  border: none;
+  font-size: 13px;
+  padding: 6px 14px;
+  min-width: 90px;
+  min-height: 14px;
 }
 
 .badge-organisateur {
   background-color: #ffedd5;
   color: #92400e;
 }
-
+.badge-accepted {
+  background-color: #e5e7eb;
+  color: #111827;
+}
 .badge-pending {
   background-color: #fef3c7;
   color: #92400e;
@@ -122,6 +129,8 @@ li:last-child {
   font-size: 13px;
   font-weight: 600;
   padding: 6px 14px;
+  min-width: 100px;
+  min-height: 14px;
 }
 
 .btn-primary {

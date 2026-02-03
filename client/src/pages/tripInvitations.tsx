@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./styles/Invitation.css";
 import { useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import TripCard from "../components/TripCard";
 
 type InvitationForm = {
   email: string;
   message: string;
+};
+
+type Trip = {
+  title: string;
+  city: string;
+  country: string;
+  start_at: string;
+  end_at: string;
+  participants_count: number;
+  status: "pending" | "active" | "finished";
+  role: "organizer" | "participant";
 };
 
 function ContactForm() {
@@ -15,6 +27,31 @@ function ContactForm() {
     email: "",
     message: "",
   });
+
+  const [trip, setTrip] = useState<Trip | null>(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchTrip = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/trips/${id}`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Erreur chargement voyage");
+        }
+
+        const data = await response.json();
+        setTrip(data);
+      } catch {
+        toast.error("Impossible de charger le voyage");
+      }
+    };
+
+    fetchTrip();
+  }, [id]);
 
   const updateInvitationForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -77,6 +114,21 @@ function ContactForm() {
         pauseOnHover
         theme="light"
       />
+      <section className="trip-card-section">
+        {trip && (
+          <TripCard
+            title={trip.title}
+            city={trip.city}
+            country={trip.country}
+            startAt={trip.start_at}
+            endAt={trip.end_at}
+            participantsCount={trip.participants_count}
+            status={trip.status}
+            role={trip.role}
+          />
+        )}
+      </section>
+
       <form onSubmit={sendInvitation}>
         <label>
           Email

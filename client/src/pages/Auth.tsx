@@ -30,7 +30,6 @@ function Login() {
 
       if (response.status === 200) {
         const data = await response.json();
-        // SAUVEGARDE DOUBLE : State + LocalStorage
         setAuth(data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("auth", JSON.stringify(data));

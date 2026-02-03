@@ -111,7 +111,7 @@ export default function MyTrips() {
               <div
                 className="trip-image"
                 style={{
-                  backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/cacaland.jpg"})`,
+                  backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/villedefault.jpg"})`,
                 }}
               >
                 <h2>{trip.title}</h2>

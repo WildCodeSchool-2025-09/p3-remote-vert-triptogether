@@ -8,4 +8,6 @@ const invitationRouter = require("../invitation/router");
 router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
 
+/* ************************************************************************* */
+
 module.exports = router;

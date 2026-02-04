@@ -20,4 +20,5 @@ router.get(
   invitationActions.read,
 );
 router.patch("/:tripId/invitation/:id", invitationActions.edit);
+
 module.exports = router;

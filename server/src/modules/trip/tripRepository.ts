@@ -45,19 +45,14 @@ class TripRepository {
     return rows as Trip[];
   }
 
-  // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing trip
+  async isOwner(tripId: number, userId: number): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id FROM trip WHERE id = ? AND user_id = ?",
+      [tripId, userId],
+    );
 
-  // async update(trip: Trip) {
-  //   ...
-  // }
-
-  // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an trip by its ID
-
-  // async delete(id: number) {
-  //   ...
-  // }
+    return (rows as Trip[]).length > 0;
+  }
 }
 
 export default new TripRepository();

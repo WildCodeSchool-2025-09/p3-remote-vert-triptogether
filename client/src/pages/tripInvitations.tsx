@@ -73,7 +73,6 @@ function ContactForm() {
       .then((response) => response.json())
       .then((data) => setTrip(data));
   }, [id]);
-  console.log(`données ${trip}`);
   return (
     <>
       <header>
@@ -137,7 +136,7 @@ function ContactForm() {
                 value={invitationForm.email}
                 onChange={updateInvitationForm}
                 required
-                placeholder="janedoe@outlook.com"
+                placeholder="janedoe@caramail.com"
               />
             </label>
 

@@ -19,6 +19,13 @@ function TripCard({
   status,
   role,
 }: TripCardProps) {
+  const formatDate = (dateString: string) => {
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(dateString));
+  };
   return (
     <>
       <article className="tripcard-component">
@@ -27,9 +34,9 @@ function TripCard({
           {city}, {country}
         </p>
         <p className="tripcard-dates">
-          {start_at} - {end_at}
+          {formatDate(start_at)} - {formatDate(end_at)}
         </p>
-        <p className="tripcard-participants">{participants}</p>
+        <p className="tripcard-participants">{participants} participants</p>
         <p className="tripcard-status">{status}</p>
         <p className="tripcard-role">{role}</p>
       </article>

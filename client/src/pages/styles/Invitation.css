@@ -4,7 +4,7 @@ body {
   font-size: 32px;
 }
 
-header {
+.invitation-header {
   background-image: url(../../../header-background-city.png);
   background-repeat: no-repeat;
   background-size: cover;
@@ -13,7 +13,7 @@ header {
   font-size: var(--font-size-XL);
 }
 
-header > nav {
+.invitation-navbar {
   background-color: white;
   height: 80px;
 }

@@ -95,25 +95,39 @@ function TripInvitation() {
 
   return (
     <>
-      <nav className="tripinvitation-navbar">
-        <ul className="tripinvitation-navbar-list">
-          <li>
-            {" "}
-            <img src="../../public/logo.png" alt="" width={50} />
-            <h1 className="tripinvitation-title">Trip Together</h1>
-          </li>
-          <li> Mes voyages</li>
-          <li>
-            <button type="button" className="tripinvitation-btn-navbar">
+      <header>
+        <nav className="tripinvitation-navbar">
+          <ul className="tripinvitation-navbar-list">
+            <li>
               {" "}
-              C'est parti !
-            </button>
-            <img src="../../public/profile-pic-logo.png" alt="" width={50} />
-          </li>
-        </ul>
-      </nav>
+              <img src="../../public/logo.png" alt="" width={50} />
+              <h1 className="tripinvitation-title">Trip Together</h1>
+            </li>
+            <li> Mes voyages</li>
+            <li>
+              <button type="button" className="tripinvitation-btn-navbar">
+                {" "}
+                C'est parti !
+              </button>
+              <img src="../../public/profile-pic-logo.png" alt="" width={50} />
+            </li>
+          </ul>
+        </nav>
+      </header>
 
       <main className="tripinvitation-main">
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <section className="tripinvitation-invitation-form">
           <ToastContainer
             position="top-right"

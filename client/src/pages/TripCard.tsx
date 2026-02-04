@@ -1,20 +1,22 @@
+import "./styles/TripCard.css";
+
 type TripCardProps = {
-  title: string;
-  city: string;
-  country: string;
-  start_at: string;
-  end_at: string;
-  participants: number;
-  status: "pending" | "accepted" | "refused";
-  role: "organizer" | "participants";
+  title?: string;
+  city?: string;
+  country?: string;
+  startAt: string;
+  endAt: string;
+  participants?: number;
+  status?: "pending" | "accepted" | "refused";
+  role?: "organizer" | "participant";
 };
 
 function TripCard({
   title,
   city,
   country,
-  start_at,
-  end_at,
+  startAt,
+  endAt,
   participants,
   status,
   role,
@@ -26,6 +28,7 @@ function TripCard({
       year: "numeric",
     }).format(new Date(dateString));
   };
+
   return (
     <>
       <article className="tripcard-component">
@@ -34,9 +37,9 @@ function TripCard({
           {city}, {country}
         </p>
         <p className="tripcard-dates">
-          {formatDate(start_at)} - {formatDate(end_at)}
+          {formatDate(startAt)} - {formatDate(endAt)}
         </p>
-        <p className="tripcard-participants">{participants} participants</p>
+        <p className="tripcard-participants">{participants} participant(s)</p>
         <p className="tripcard-status">{status}</p>
         <p className="tripcard-role">{role}</p>
       </article>

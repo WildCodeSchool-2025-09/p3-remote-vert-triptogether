@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router";
 import "../styles/Reset.css";
 import "../styles/MyTrips.css";
+import { Link } from "react-router";
 
 interface Trip {
   id: number;
@@ -107,26 +108,32 @@ export default function MyTrips() {
       <div className="tripcards">
         {trips.length > 0 ? (
           trips.map((trip) => (
-            <div key={trip.id} className="tripcard">
-              <div
-                className="trip-image"
-                style={{
-                  backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/villedefault.jpg"})`,
-                }}
-              >
-                <h2>{trip.title}</h2>
+            <Link
+              to={`/trip/${trip.id}`}
+              key={trip.id}
+              className="tripcard-link"
+            >
+              <div className="tripcard">
+                <div
+                  className="trip-image"
+                  style={{
+                    backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/villedefault.jpg"})`,
+                  }}
+                >
+                  <h2>{trip.title}</h2>
+                </div>
+                <div className="trip-info">
+                  <p>
+                    <img src="/images/Icône localisation.png" alt="" />
+                    {trip.city}, {trip.country}
+                  </p>
+                  <p>
+                    <img src="/images/Icône calendrier 1.png" alt="" />
+                    {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
+                  </p>
+                </div>
               </div>
-              <div className="trip-info">
-                <p>
-                  <img src="/images/Icône localisation.png" alt="" />
-                  {trip.city}, {trip.country}
-                </p>
-                <p>
-                  <img src="/images/Icône calendrier 1.png" alt="" />
-                  {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
-                </p>
-              </div>
-            </div>
+            </Link>
           ))
         ) : (
           <p className="no-trips">Aucun voyage trouvé pour cette catégorie.</p>

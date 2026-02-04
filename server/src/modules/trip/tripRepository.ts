@@ -5,7 +5,7 @@ import type { Trip } from "../../types/tripType";
 class TripRepository {
   async create(trip: Omit<Trip, "id">) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO trip (title, description,city, country, start_at, end_at, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO trip (title, description, city, country, start_at, end_at, user_id, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [
         trip.title,
         trip.description,
@@ -14,6 +14,7 @@ class TripRepository {
         trip.start_at,
         trip.end_at,
         trip.user_id,
+        trip.image_url,
       ],
     );
 
@@ -35,29 +36,42 @@ class TripRepository {
     );
 
     if (rows.length === 0) return null;
-
     return rows[0] as Trip;
   }
 
   async readAll() {
     const [rows] = await databaseClient.query<Rows>("SELECT * FROM trip");
-
     return rows as Trip[];
   }
 
-  // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing trip
+  async update(trip: Trip) {
+    const [result] = await databaseClient.query<Result>(
+      `UPDATE trip 
+       SET title = ?, description = ?, city = ?, country = ?, start_at = ?, end_at = ?, image_url = ? 
+       WHERE id = ?`,
+      [
+        trip.title,
+        trip.description,
+        trip.city,
+        trip.country,
+        trip.start_at,
+        trip.end_at,
+        trip.image_url,
+        trip.id,
+      ],
+    );
 
-  // async update(trip: Trip) {
-  //   ...
-  // }
+    return result.affectedRows;
+  }
 
-  // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an trip by its ID
+  async delete(id: number) {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM trip WHERE id = ?",
+      [id],
+    );
 
-  // async delete(id: number) {
-  //   ...
-  // }
+    return result.affectedRows;
+  }
 }
 
 export default new TripRepository();

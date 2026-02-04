@@ -16,6 +16,7 @@ CREATE TABLE trip (
   start_at DATE,
   end_at DATE,
   user_id INT NOT NULL,
+  image_url TEXT,
   CONSTRAINT fk_trip_user
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE

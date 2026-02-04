@@ -6,11 +6,13 @@ type GuestsProps =
       title: string;
       invited: Guest[];
       type: "attendees";
+      delete?: (invitation: Guest) => void;
     }
   | {
       title: string;
       invited: Guest[];
       type: "others";
+      delete?: (invitation: Guest) => void;
     };
 
 function Guests(props: GuestsProps) {
@@ -22,34 +24,34 @@ function Guests(props: GuestsProps) {
         {title} ({invited.length})
       </h3>
       <ul>
-        {invited.map((member) => (
-          <li key={member.id}>
+        {invited.map((invitation) => (
+          <li key={invitation.id}>
             <div className="left-side">
               <div
                 className={
                   props.type === "others" ? "avatar avatar-empty" : "avatar"
                 }
               >
-                {member.avatarUrl ? (
-                  <img src={member.avatarUrl} alt={member.name} />
+                {invitation.avatarUrl ? (
+                  <img src={invitation.avatarUrl} alt={invitation.name} />
                 ) : props.type === "others" ? (
                   <span>👤</span>
                 ) : (
                   <span className="avatar-initial">
-                    {member.name.charAt(0)}
+                    {invitation.name.charAt(0)}
                   </span>
                 )}
               </div>
               <div>
-                <p className="name">{member.name}</p>
+                <p className="name">{invitation.name}</p>
                 <p className="date">
                   Ajouté le{" "}
-                  {new Date(member.addedAt).toLocaleDateString("fr-FR")}
+                  {new Date(invitation.addedAt).toLocaleDateString("fr-FR")}
                 </p>
-                {member.lastReminderAt && (
+                {invitation.lastReminderAt && (
                   <p className="date date-small">
                     Relancé le{" "}
-                    {new Date(member.lastReminderAt).toLocaleDateString(
+                    {new Date(invitation.lastReminderAt).toLocaleDateString(
                       "fr-FR",
                     )}
                   </p>
@@ -59,26 +61,24 @@ function Guests(props: GuestsProps) {
 
             <div className="right-side">
               {props.type === "attendees" ? (
-                member.role === "organisateur" ? (
+                invitation.role === "organisateur" ? (
                   <span className="badge badge-organisateur">Organisateur</span>
                 ) : (
-                  <button type="button" className="btn-role">
-                    Membre
-                  </button>
+                  <span
+                    className="badge badge-accepted"
+                    onClick={() => props.delete?.(invitation)}
+                    onKeyUp={() => props.delete?.(invitation)}
+                  >
+                    Retirer
+                  </span>
                 )
-              ) : member.inviteState === "refuse" ? (
+              ) : invitation.inviteState === "refuse" ? (
                 <>
                   <span className="badge badge-refuse">Refusé</span>
-                  <button type="button" className="btn-danger">
-                    Supprimer
-                  </button>
                 </>
               ) : (
                 <>
                   <span className="badge badge-pending">En Attente</span>
-                  <button type="button" className="btn-primary">
-                    Relancer
-                  </button>
                 </>
               )}
             </div>

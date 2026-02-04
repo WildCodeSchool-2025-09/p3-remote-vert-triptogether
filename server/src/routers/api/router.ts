@@ -21,18 +21,14 @@ type RequestWithAuth = Request & {
 
 const router = express.Router();
 
-// --- 1. ROUTES PUBLIQUES (Login, Inscription) ---
 router.post("/login", login);
 router.post("/users", hashPassword, addUser);
 
-// --- 2. MIDDLEWARE DE PROTECTION GLOBAL ---
-// Tout ce qui est écrit APRÈS cette ligne aura besoin d'un token
+
 router.use(verifyToken);
 
-// --- 3. ROUTES PROTÉGÉES ---
-router.get("/my-trips", myTripActions.browse); // Plus besoin de remettre verifyToken ici
+router.get("/my-trips", myTripActions.browse); 
 
-// Tes sous-routeurs (eux aussi seront protégés maintenant !)
 router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
 

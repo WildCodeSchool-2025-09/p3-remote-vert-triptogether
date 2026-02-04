@@ -72,6 +72,15 @@ class TripRepository {
 
     return result.affectedRows;
   }
+
+  async isOwner(tripId: number, userId: number): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id FROM trip WHERE id = ? AND user_id = ?",
+      [tripId, userId],
+    );
+
+    return rows.length > 0;
+  }
 }
 
 export default new TripRepository();

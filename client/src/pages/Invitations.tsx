@@ -1,6 +1,7 @@
 import "./styles/invitation.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
 import Guests from "../components/Guests/Guests";
 import NavTabs from "../components/navTabs/NavTabs";
 import type { Guest, invitationType } from "../types/invitationType";
@@ -34,6 +35,8 @@ function Invitations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [deleteInvitation, setdeleteInvitation] = useState<Guest | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -132,6 +135,53 @@ function Invitations() {
       });
   }, [tripId, navigate]);
 
+  const removeParticipant = (userId: number) => {
+    if (!tripId) return;
+
+    setIsDeleting(true);
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
+      {
+        method: "DELETE",
+      },
+    )
+      .then(async (response) => {
+        if (response.status === 400) {
+          toast.error("Requête invalide");
+          return;
+        }
+
+        if (response.status === 403) {
+          toast.error("Accès non autorisé");
+          return;
+        }
+
+        if (response.status === 404) {
+          toast.error("Membre introuvable");
+          return;
+        }
+
+        if (!response.ok) {
+          toast.error("Erreur serveur.");
+          return;
+        }
+
+        setAttendees((prev) =>
+          prev.filter((participant) => participant.id !== userId),
+        );
+
+        toast.success("Membre retiré du voyage.");
+      })
+      .catch(() => {
+        toast.error("Erreur serveur.");
+      })
+      .finally(() => {
+        setIsDeleting(false);
+        setdeleteInvitation(null);
+      });
+  };
+
   return (
     <>
       <header>
@@ -154,6 +204,7 @@ function Invitations() {
                 title="Participants"
                 invited={attendees}
                 type="attendees"
+                delete={setdeleteInvitation}
               />
               <Guests
                 title="Invité·e·s"
@@ -163,7 +214,50 @@ function Invitations() {
             </>
           )}
         </section>
+
+        {deleteInvitation && (
+          <div className="modal-backdrop">
+            <div className="modal">
+              <h4>Retirer ce membre ?</h4>
+              <p>
+                Voulez-vous vraiment retirer{" "}
+                <strong>{deleteInvitation.name}</strong> de ce voyage ?
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-role"
+                  onClick={() => setdeleteInvitation(null)}
+                  disabled={isDeleting}
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  className="btn-danger"
+                  onClick={() => removeParticipant(deleteInvitation.id)}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? "Suppression..." : "Confirmer le retrait"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </>
   );
 }

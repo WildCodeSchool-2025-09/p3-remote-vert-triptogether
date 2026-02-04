@@ -82,6 +82,20 @@ class invitationRepository {
 
     return rows as Invitation[];
   }
+
+  async deleteInvitation(tripId: number, userId: number): Promise<boolean> {
+    const [result] = await databaseClient.query<Result>(
+      `
+      DELETE FROM invitation
+      WHERE trip_id = ?
+      AND user_id = ?
+      AND status = 'accepted'
+      `,
+      [tripId, userId],
+    );
+
+    return result.affectedRows === 1;
+  }
 }
 
 export default new invitationRepository();

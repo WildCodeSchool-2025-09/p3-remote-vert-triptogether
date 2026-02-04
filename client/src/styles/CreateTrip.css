@@ -1,0 +1,168 @@
+body {
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+.create-trip-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background);
+}
+
+.button-back-arrow {
+  all: unset;
+  cursor: pointer;
+  position: fixed;
+  top: 5.9vh;
+  left: 6.3vw;
+  z-index: 1000;
+  width: 6vw;
+  height: auto;
+  display: grid;
+  place-items: center;
+}
+
+.back-arrow {
+  position: static;
+  width: 6vw;
+  height: auto;
+}
+
+.create-trip-page > img {
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-top: 10rem;
+}
+
+.create-trip-page h1 {
+  font-family: var(--body-text);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--black);
+  margin-top: 7rem;
+}
+
+.create-trip-page h1 span {
+  font-family: var(--body-text);
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary-button);
+  margin-top: 7rem;
+}
+
+.create-trip-page > p {
+  margin-top: 1rem;
+  font-family: var(--body-text);
+  color: var(--grey);
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.create-trip-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  margin-top: 3.5rem;
+  border: 1px solid black;
+  border-radius: 22px;
+  width: 60vw;
+  background-color: #ffffff;
+}
+
+.create-trip-form p {
+  font-family: var(--body-text);
+  color: var(--black);
+  opacity: 0.76px;
+  max-width: 53vw;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10vh;
+  flex: 1;
+}
+
+.country {
+  display: none;
+}
+
+.form-group label {
+  font-family: var(--body-text);
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--black);
+}
+
+.date-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 6.9rem;
+}
+
+.form-group input {
+  box-sizing: border-box;
+  height: 8vh;
+  border-radius: 12px;
+  font-family: var(--body-text);
+  font-size: 2rem;
+  margin-top: 20px;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  width: 56vw;
+}
+
+.date-container .form-group input {
+  width: 25vw;
+}
+
+.astuces-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 54vw;
+  height: 18vh;
+  background-color: rgba(217, 217, 217, 0.3);
+  border: 1px solid rgba(217, 217, 217, 0.5);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 3.5rem;
+  font-family: var(--body-text);
+  font-size: 1.75rem;
+  color: var(--black);
+  text-align: center;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  align-self: flex-end;
+  gap: 1.5rem;
+  margin: 3.5rem 3rem 10vh 0;
+}
+
+.cancel-button {
+  width: 10.5vw;
+  height: 5rem;
+  border-radius: 8px;
+  font-family: var(--body-text);
+  font-size: 2rem;
+  color: var(--black);
+}
+
+.create-trip-button {
+  width: 20.5vw;
+  height: 5rem;
+  border-radius: 8px;
+  background-color: var(--primary-button);
+  font-family: var(--body-text);
+  font-size: 2rem;
+  color: var(--background);
+}

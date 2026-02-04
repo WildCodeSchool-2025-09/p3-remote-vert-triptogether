@@ -11,6 +11,8 @@ CREATE TABLE trip (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(255),
+  city VARCHAR(100) NOT NULL,
+  country VARCHAR(100) NOT NULL,
   start_at DATE,
   end_at DATE,
   user_id INT NOT NULL,

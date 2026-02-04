@@ -3,7 +3,7 @@ import "./styles/Invitation.css";
 import { useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "./styles/TripInvitation.css";
-import TripCard from "../components/TripCard";
+import TripCard from "./TripCard";
 
 type InvitationForm = {
   email: string;

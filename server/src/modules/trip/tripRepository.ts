@@ -30,7 +30,7 @@ class TripRepository {
   async read(id: number) {
     // Execute the SQL SELECT query to retrieve a specific trip by its ID
     const [rows] = await databaseClient.query<Rows>(
-      "select * from trip where id = ?",
+      `SELECT t.id, t.title, t.start_at, t.end_at, d.city, d.country, COUNT(i.id) AS participants FROM trip t JOIN destination d ON d.trip_id = t.id JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" WHERE t.id = ? GROUP BY t.id, d.id`,
       [id],
     );
 

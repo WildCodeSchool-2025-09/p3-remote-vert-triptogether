@@ -73,7 +73,7 @@ function ContactForm() {
       .then((response) => response.json())
       .then((data) => setTrip(data));
   }, [id]);
-  console.log(trip);
+  console.log(`données ${trip}`);
   return (
     <>
       <header>

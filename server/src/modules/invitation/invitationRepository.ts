@@ -62,12 +62,13 @@ class invitationRepository {
     tripId: number,
     email: string,
     message: string,
+    token: string,
     creator_id: number,
     user_id: number | null,
   ) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO invitation (trip_id, email, message, status, creator_id, user_id) VALUES (?, ?, ?, 'pending', ?, ?)",
-      [tripId, email, message, creator_id, user_id],
+      "INSERT INTO invitation (trip_id, email, message, token, status, creator_id, user_id) VALUES (?, ?, ?, ?, 'pending', ?, ?)",
+      [tripId, email, message, token, creator_id, user_id],
     );
     return result;
   }

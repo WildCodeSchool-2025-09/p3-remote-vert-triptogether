@@ -4,7 +4,6 @@
   align-items: center;
   font-family: var(--body-text);
   font-size: 1.5rem;
-  -webkit-filter: blur(2px);
 }
 
 .tripinvitation-navbar-list > li {

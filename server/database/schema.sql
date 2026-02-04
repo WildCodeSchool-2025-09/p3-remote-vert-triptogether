@@ -54,6 +54,7 @@ CREATE TABLE invitation (
   status VARCHAR(10) NOT NULL,
   email VARCHAR(100) NOT NULL,
   message TEXT NOT NULL,
+  token VARCHAR(255) NOT NULL,
   creator_id INT NOT NULL,
   user_id INT DEFAULT NULL,
   trip_id INT NOT NULL,

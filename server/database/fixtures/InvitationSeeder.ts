@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import AbstractSeeder from "./AbstractSeeder";
 import TripSeeder from "./TripSeeder";
 import UserSeeder from "./UserSeeder";
@@ -22,6 +23,8 @@ class InvitationSeeder extends AbstractSeeder {
       const invitedRef = `user_${(i + 1) % 5 || 1}`;
       const tripRef = `trip_${i % 3}`;
 
+      const token = crypto.randomUUID();
+
       const fakeInvitation = {
         status: this.faker.helpers.arrayElement([
           "pending",
@@ -30,6 +33,7 @@ class InvitationSeeder extends AbstractSeeder {
         ]),
         email: this.faker.internet.email(),
         message: this.faker.lorem.words(5),
+        token,
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
         creator_id: this.getRef(creatorRef).insertId,

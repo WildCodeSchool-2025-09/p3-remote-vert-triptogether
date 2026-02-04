@@ -5,16 +5,18 @@ const router = express.Router();
 import invitationActions from "../../modules/invitation/invitationActions";
 import invitationServices from "../../modules/invitation/invitationServices";
 
+import stepActions from "../../modules/step/stepActions";
 import TripActions from "../../modules/trip/tripActions";
-import VoteActions from "../../modules/vote/voteActions";
 
 router.get("/", TripActions.browse);
 router.get("/:id", TripActions.read);
 
 router.post("/", TripActions.add);
 
-router.post("/steps/:id/votes", VoteActions.add);
-router.get("/steps/:id/votes", VoteActions.browse);
+router.get("/:tripId/steps", stepActions.selectStepsByTrip);
+
+router.get("/:tripId/steps/:id/votes", stepActions.browseVote);
+router.post("/:tripId/steps/:id/votes", stepActions.addVote);
 
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
 

@@ -7,15 +7,29 @@ class StepSeeder extends AbstractSeeder {
   }
 
   async run() {
-    for (let i = 0; i < 10; i += 1) {
-      const fakeStep = {
-        city: this.faker.location.city(),
-        country: this.faker.location.country(),
-        trip_id: this.getRef(`trip_${i}`).insertId,
-        refName: `step_${i}`,
-      };
+    let tripCount = 0;
+    while (this.getRef(`trip_${tripCount}`)) {
+      tripCount++;
+    }
 
-      this.insert(fakeStep);
+    let stepIndex = 0;
+
+    for (let tripIndex = 0; tripIndex < tripCount; tripIndex++) {
+      const tripId = this.getRef(`trip_${tripIndex}`).insertId;
+
+      const stepsPerTrip = this.faker.number.int({ min: 3, max: 7 });
+
+      for (let i = 0; i < stepsPerTrip; i++) {
+        const fakeStep = {
+          city: this.faker.location.city(),
+          country: this.faker.location.country(),
+          trip_id: tripId,
+          refName: `step_${stepIndex}`,
+        };
+
+        this.insert(fakeStep);
+        stepIndex++;
+      }
     }
   }
 }

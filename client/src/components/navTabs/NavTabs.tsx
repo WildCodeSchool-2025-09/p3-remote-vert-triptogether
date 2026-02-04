@@ -7,7 +7,7 @@ const NavTabs = () => {
   return (
     <section id="tabs">
       <NavLink
-        to={id ? `/trip/${id}/explorer` : "/"}
+        to={id ? `/trip/${id}/steps` : "/"}
         className={({ isActive }) => `tab ${isActive ? "active" : ""}`}
         end
       >

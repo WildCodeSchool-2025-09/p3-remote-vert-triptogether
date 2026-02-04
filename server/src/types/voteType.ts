@@ -3,7 +3,7 @@ export type Vote = {
   created_at: string;
   user_id: number;
   step_id: number;
-  vote: boolean;
+  vote: 0 | 1;
   comment: string | null;
 };
 
@@ -14,14 +14,14 @@ export type VoteWithUser = Vote & {
 export type NewVote = {
   user_id: number;
   step_id: number;
-  vote: boolean;
+  vote: 0 | 1;
   comment: string | null;
 };
 
 export type VotesStats = {
   step_id: number;
   allVotes: VoteWithUser[];
-  votesStats: {
+  voteStats: {
     yes: number;
     no: number;
   };

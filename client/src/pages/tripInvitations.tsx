@@ -85,7 +85,6 @@ function TripInvitation() {
       }
 
       await copyToClipboard(data.invitationLink);
-      toast.success("Invitation envoyée - lien copié ");
 
       setInvitationForm({ email: "", message: "" });
     } catch (error) {

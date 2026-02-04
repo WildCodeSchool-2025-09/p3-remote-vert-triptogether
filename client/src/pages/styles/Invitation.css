@@ -32,7 +32,7 @@ body {
   padding-bottom: 80px;
 }
 
-.card {
+.invitation-card {
   gap: 50px;
   background-color: #ffffff;
   border-radius: 20px;
@@ -61,7 +61,7 @@ body {
   justify-content: center;
 }
 
-.other-informations {
+.invitation-other-informations {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 24px;
@@ -100,7 +100,8 @@ body {
   color: #4b5563;
 }
 
-.btn {
+.invitation-btn-primary,
+.invitation-btn-outline {
   border-radius: 8px;
   padding: 8px 16px;
   margin: 20px 15px 0 15px;
@@ -109,12 +110,12 @@ body {
   border: 1px solid transparent;
 }
 
-.btn-primary {
+.invitation-btn-primary {
   background-color: #15803d;
   color: #ffffff;
 }
 
-.btn-outline {
+.invitation-btn-outline {
   background-color: #ffffff;
   color: #15803d;
   border-color: #15803d;
@@ -131,7 +132,7 @@ body {
   color: #4b5563;
 }
 
-.inviter-avatar {
+.invitation-avatar {
   width: 64px;
   height: 64px;
   border-radius: 999px;
@@ -139,7 +140,7 @@ body {
   margin-bottom: 8px;
 }
 
-.inviter-name {
+.invitation-inviter-name {
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -164,7 +165,7 @@ footer {
     padding: 0 16px 40px;
   }
 
-  .other-informations {
+  .invitation-other-informations {
     grid-template-columns: 1fr;
   }
 

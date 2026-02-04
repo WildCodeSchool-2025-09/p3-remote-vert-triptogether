@@ -30,19 +30,21 @@ function TripCard({
   };
 
   return (
-    <article className="trip-card">
-      <h2 className="trip-card-title">{title}</h2>
-      <p className="trip-card-location">
-        {city}, {country}
-      </p>
-
-      <p className="trip-card-dates">
-        {formatDate(startAt)} - {formatDate(endAt)}
-      </p>
-      <p className="trip-card-participants">{participants} participant(s)</p>
-      <p className="trip-card-status">{status}</p>
-      <p className="trip-card-role">{role}</p>
-    </article>
+    <>
+      <article className="tripcard-component">
+        <h2 className="tripcard-title">{title}</h2>
+        <p className="tripcard-location">
+          {city}, {country}
+        </p>
+        <p className="tripcard-dates">
+          {formatDate(startAt)} - {formatDate(endAt)}
+        </p>
+        <p className="tripcard-participants">{participants} participant(s)</p>
+        <p className="tripcard-status">{status}</p>
+        <p className="tripcard-role">{role}</p>
+      </article>
+    </>
   );
 }
+
 export default TripCard;

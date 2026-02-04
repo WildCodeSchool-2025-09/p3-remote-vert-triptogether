@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import "./styles/TripInvitation.css";
 import { ToastContainer, toast } from "react-toastify";
+import TripCard from "../components/TripCard";
 
 type InvitationForm = {
   email: string;
   message: string;
+};
+
+type TripData = {
+  title: string;
+  city: string;
+  country: string;
+  start_at: string;
+  end_at: string;
+  participants: number;
+  status: "pending" | "accepted" | "refused";
+  role: "organizer" | "participants";
 };
 
 function ContactForm() {
@@ -55,7 +67,13 @@ function ContactForm() {
       console.error(err);
     }
   };
-
+  const [trip, setTrip] = useState<TripData>();
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
+      .then((response) => response.json())
+      .then((data) => setTrip(data));
+  }, [id]);
+  console.log(trip);
   return (
     <>
       <header>
@@ -101,9 +119,11 @@ function ContactForm() {
           </article>
           <article className="tripinvitation-bg-image" />
           <article className="tripinvitation-trip-infos">
-            <h2 className="tripinvitation-trip-infos-title">Été à Barcelone</h2>
-            <p>15 juillet -23 août 2026</p>
-            <p>2 participants</p>
+            {trip ? (
+              <TripCard {...trip} />
+            ) : (
+              <p>Chargement des détails du voyage...</p>
+            )}
           </article>
           <form
             onSubmit={sendInvitation}

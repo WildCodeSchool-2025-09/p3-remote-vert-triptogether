@@ -22,7 +22,7 @@ type Trip = {
   role: "organizer" | "participant";
 };
 
-function ContactForm() {
+function TripInvitation() {
   const { id } = useParams<{ id: string }>();
 
   const [invitationForm, setInvitationForm] = useState<InvitationForm>({
@@ -35,7 +35,10 @@ function ContactForm() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
       .then((res) => res.json())
-      .then((data) => setTrip(data));
+      .then((data) => setTrip(data))
+      .catch(() => {
+        toast.error("Impossible de charger le voyage");
+      });
   }, [id]);
 
   const updateInvitationForm = (
@@ -52,6 +55,15 @@ function ContactForm() {
     setInvitationForm({ email: "", message: "" });
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Lien d'invitation copié 📋");
+    } catch {
+      toast.error("Impossible de copier le lien");
+    }
+  };
+
   const sendInvitation = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -66,14 +78,17 @@ function ContactForm() {
           }),
         },
       );
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.message);
       }
-      toast.success("Invitation envoyée avec succès");
+
+      await copyToClipboard(data.invitationLink);
+      toast.success("Invitation envoyée - lien copié ");
 
       setInvitationForm({ email: "", message: "" });
-    } catch (err) {
+    } catch (error) {
       toast.error("Erreur lors de l'envoi");
     }
   };
@@ -181,4 +196,4 @@ function ContactForm() {
   );
 }
 
-export default ContactForm;
+export default TripInvitation;

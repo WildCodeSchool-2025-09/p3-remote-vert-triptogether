@@ -1,8 +1,9 @@
+import crypto from "node:crypto";
 import type { RequestHandler } from "express";
 import userRepository from "../user/userRepository";
 import InvitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 3;
+const CONNECTED_USER_ID = 13;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -113,15 +114,20 @@ const add: RequestHandler = async (req, res, next) => {
 
     const creator_id = CONNECTED_USER_ID;
 
-    const newInvitation = await InvitationRepository.create(
+    const token = crypto.randomUUID();
+
+    await InvitationRepository.create(
       tripId,
       email,
       message,
+      token,
       creator_id,
       user_id,
     );
 
-    res.status(201).json({ message: "Invitation envoyée" });
+    const invitationLink = `http://localhost:3000/invitations/${token}`;
+
+    res.status(201).json({ invitationLink });
   } catch (err) {
     next(err);
   }

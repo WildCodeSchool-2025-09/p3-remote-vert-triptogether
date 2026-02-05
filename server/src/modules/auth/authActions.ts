@@ -13,7 +13,7 @@ type RequestWithAuth = Request & {
 
 export const login: RequestHandler = async (req, res, next) => {
   try {
-    const user = await userRepository.readByEmailWithPassword(req.body.email);
+    const user = await userRepository.readByEmail(req.body.email);
     if (!user) {
       res.sendStatus(422);
       return;
@@ -91,4 +91,3 @@ export const verifyToken: RequestHandler = (req, res, next) => {
     res.sendStatus(401);
   }
 };
-

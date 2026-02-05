@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
+import type { UserType } from "../../types/userType";
 import userRepository from "./userRepository";
-import type { UserType } from "../../types/userType"
 const browse: RequestHandler = async (_req, res, next) => {
   try {
     const users = await userRepository.readAll();
@@ -41,4 +41,4 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default {browse, read, add}
+export default { browse, read, add };

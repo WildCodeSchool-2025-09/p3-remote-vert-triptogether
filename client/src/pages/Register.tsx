@@ -52,35 +52,44 @@ function Register() {
 
   return (
     <form onSubmit={handleSubmit}>
-        <label htmlFor="firstname">Prénom :</label><br />
-        <input ref={firstnameRef} type="text" id="firstname" required />
-<br /><br />
-        <label htmlFor="lastname">Nom :</label><br />
-        <input ref={lastnameRef} type="text" id="lastname" required />
-<br /><br />
-        <label htmlFor="email">Email : </label><br />
-        <input ref={emailRef} type="email" id="email" required />
-<br /><br />
-        <label htmlFor="password">Mot de passe :</label><br />
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={handlePasswordChange}
-          required
-        />
-        {password.length >= 8 ? "✅" : "❌"}
-<br /><br />
-        <label htmlFor="confirm-password">Confirmer le mot de passe</label>
-        <input
-          type="password"
-          id="confirm-password"
-          value={confirmPassword}
-          onChange={handleConfirmPasswordChange}
-          required
-        />
-        {password === confirmPassword && password !== "" ? "✅" : "❌"}
-<br /><br />
+      <label htmlFor="firstname">Prénom :</label>
+      <br />
+      <input ref={firstnameRef} type="text" id="firstname" required />
+      <br />
+      <br />
+      <label htmlFor="lastname">Nom :</label>
+      <br />
+      <input ref={lastnameRef} type="text" id="lastname" required />
+      <br />
+      <br />
+      <label htmlFor="email">Email : </label>
+      <br />
+      <input ref={emailRef} type="email" id="email" required />
+      <br />
+      <br />
+      <label htmlFor="password">Mot de passe :</label>
+      <br />
+      <input
+        type="password"
+        id="password"
+        value={password}
+        onChange={handlePasswordChange}
+        required
+      />
+      {password.length >= 8 ? "✅" : "❌"}
+      <br />
+      <br />
+      <label htmlFor="confirm-password">Confirmer le mot de passe</label>
+      <input
+        type="password"
+        id="confirm-password"
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+        required
+      />
+      {password === confirmPassword && password !== "" ? "✅" : "❌"}
+      <br />
+      <br />
       <button
         type="submit"
         disabled={password !== confirmPassword || password.length < 8}

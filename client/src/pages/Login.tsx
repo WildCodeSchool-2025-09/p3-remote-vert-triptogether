@@ -42,16 +42,21 @@ function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <label htmlFor="email">Email :</label><br />
+      <label htmlFor="email">Email :</label>
+      <br />
       <input ref={emailRef} type="email" placeholder="Email" required />
-      <br /><br />
-      <label htmlFor="password">Mot de passe :</label><br />
+      <br />
+      <br />
+      <label htmlFor="password">Mot de passe :</label>
+      <br />
       <input
         ref={passwordRef}
         type="password"
         placeholder="Password"
         required
-      /><br /><br />
+      />
+      <br />
+      <br />
       <button type="submit">Se connecter </button>
     </form>
   );

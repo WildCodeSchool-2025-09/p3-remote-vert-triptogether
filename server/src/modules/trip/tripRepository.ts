@@ -20,7 +20,7 @@ class TripRepository {
 
     return result.insertId;
   }
-async readTripInfo(id: number): Promise<Trip | null> {
+  async readTripInfo(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT t.id, t.title, t.start_at, t.end_at, d.city, d.country, COUNT(i.id) AS participants 
       FROM trip t 
@@ -96,7 +96,7 @@ async readTripInfo(id: number): Promise<Trip | null> {
     return rows.length > 0;
   }
 
-  async selectByUserId(userId: number, status: string) {
+  async readByUser(userId: number, status: string) {
     let dateCondition = "";
 
     if (status === "futur") {

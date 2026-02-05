@@ -1,5 +1,5 @@
 import type { Request, RequestHandler } from "express";
-import type { Trip , TripStatus } from "../../types/tripType";
+import type { Trip, TripStatus } from "../../types/tripType";
 import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "./tripRepository";
 
@@ -29,7 +29,7 @@ export const browseMyTrip: RequestHandler = async (req, res, next) => {
     const authReq = req as unknown as RequestWithAuth;
     const userId = Number(authReq.auth.sub);
     const status = (req.query.status as TripStatus) || "futur";
-    const trips = await tripRepository.selectByUserId(userId, status);
+    const trips = await tripRepository.readByUser(userId, status);
     res.json(trips);
   } catch (err) {
     next(err);

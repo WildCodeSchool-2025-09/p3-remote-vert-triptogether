@@ -11,7 +11,6 @@ type User = {
 };
 
 class UserRepository {
-
   async create(user: Omit<User, "id">) {
     const [result] = await databaseClient.query<Result>(
       "insert into user (firstname, lastname, email, password) values (?, ?, ?, ?)",
@@ -20,7 +19,6 @@ class UserRepository {
 
     return result.insertId;
   }
-
 
   async read(id: number) {
     const [rows] = await databaseClient.query<Rows>(
@@ -31,7 +29,7 @@ class UserRepository {
     return rows[0] as User;
   }
 
-  async readByEmailWithPassword(email: string) {
+  async readByEmail(email: string) {
     const [rows] = await databaseClient.query<Rows>(
       "select * from user where email = ?",
       [email],

@@ -1,11 +1,11 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";
+import Login from "./pages/Login";
 import MyTrips from "./pages/MyTrips";
+import Register from "./pages/Register";
 import { Trip } from "./pages/Trip";
 
 export const router = createBrowserRouter([

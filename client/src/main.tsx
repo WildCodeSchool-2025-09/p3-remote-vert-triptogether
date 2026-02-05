@@ -12,5 +12,5 @@ import { AuthProvider } from "./contexts/AuthContext";
 createRoot(rootElement).render(
   <AuthProvider>
     <RouterProvider router={router} />
-  </AuthProvider>
+  </AuthProvider>,
 );

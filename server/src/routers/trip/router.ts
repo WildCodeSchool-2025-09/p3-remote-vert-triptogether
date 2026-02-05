@@ -2,8 +2,8 @@ import express from "express";
 import { verifyToken } from "../../modules/auth/authActions";
 import invitationActions from "../../modules/invitation/invitationActions";
 import invitationServices from "../../modules/invitation/invitationServices";
-import * as TripActions from "../../modules/trip/tripActions";
 import * as StepActions from "../../modules/step/stepActions";
+import * as TripActions from "../../modules/trip/tripActions";
 
 const router = express.Router();
 

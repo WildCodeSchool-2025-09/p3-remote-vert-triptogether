@@ -3,10 +3,6 @@ import { ToastContainer } from "react-toastify";
 import "./App.css";
 import { useAuth } from "./contexts/AuthContext";
 
-
-
-
-
 function App() {
   const { auth, logout } = useAuth();
 
@@ -25,7 +21,6 @@ function App() {
               <li>
                 <Link to="/register">Register</Link>
               </li>
-
             </>
           ) : (
             <>
@@ -36,7 +31,9 @@ function App() {
                 <Link to="/my-trips">Mes voyages</Link>
               </li>
               <li>
-                <Link to="/trip/:id/invitation/:invitationId">Mes invitations</Link>
+                <Link to="/trip/:id/invitation/:invitationId">
+                  Mes invitations
+                </Link>
               </li>
               <li>
                 <button type="button" onClick={logout}>

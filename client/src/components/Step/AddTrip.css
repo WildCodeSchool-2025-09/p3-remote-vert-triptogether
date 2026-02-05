@@ -1,6 +1,4 @@
 /* Réutilisation du style de MyTrips pour la cohérence */
-
-
 /* Formulaire d'ajout */
 .add-step-form-container {
   display: flex;
@@ -74,5 +72,3 @@
 .add-btn:active {
   transform: scale(0.98);
 }
-
-

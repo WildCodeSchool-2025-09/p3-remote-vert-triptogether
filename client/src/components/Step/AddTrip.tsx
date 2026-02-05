@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { useParams } from "react-router"; 
+import { useRef, useState } from "react";
+import { useParams } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
-import "./AddTrip.css"; 
+import "./AddTrip.css";
 
-const libraries: ("places")[] = ["places"];
+const libraries: "places"[] = ["places"];
 
 interface AddStepProps {
   onStepAdded: () => void;
@@ -34,7 +34,6 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
     if (countryName) setCountry(countryName);
   };
 
-
   const { auth } = useAuth();
   const { tripId: routeTripId, id } = useParams();
   const tripId = routeTripId || id;
@@ -46,23 +45,26 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
 
     const user_id = auth?.user?.id;
     if (!user_id) {
-       console.error("User ID missing from auth context");
-       return;
+      console.error("User ID missing from auth context");
+      return;
     }
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            city,
+            country,
+            user_id,
+          }),
         },
-        body: JSON.stringify({
-           city,
-           country,
-           user_id
-        }),
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Erreur lors de l'ajout de l'étape");
@@ -70,10 +72,9 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
 
       setCity("");
       setCountry("");
-      
+
       // Notify parent to refresh steps
       onStepAdded();
-
     } catch (error) {
       console.error(error);
     }
@@ -91,10 +92,10 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
               }}
               onPlaceChanged={onPlaceChanged}
             >
-              <input 
-                type="text" 
-                id="city" 
-                name="city" 
+              <input
+                type="text"
+                id="city"
+                name="city"
                 placeholder="Ex: Paris"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -102,30 +103,32 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
               />
             </Autocomplete>
           ) : (
-              <input 
-                type="text" 
-                id="city" 
-                name="city" 
-                placeholder="Ex: Paris"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
+            <input
+              type="text"
+              id="city"
+              name="city"
+              placeholder="Ex: Paris"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
           )}
         </div>
         <div className="add-step-form-group">
           <label htmlFor="country">Pays</label>
-          <input 
-            type="text" 
-            id="country" 
-            name="country" 
+          <input
+            type="text"
+            id="country"
+            name="country"
             placeholder="Ex: France"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className="add-btn">Ajouter cette étape</button>
+        <button type="submit" className="add-btn">
+          Ajouter cette étape
+        </button>
       </form>
     </div>
   );

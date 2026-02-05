@@ -6,7 +6,7 @@ export type Vote = {
   vote: boolean;
   comment: string | null;
   user_name: string;
-} 
+};
 
 export type VotesStats = {
   step_id: number;
@@ -15,22 +15,22 @@ export type VotesStats = {
     yes: number;
     no: number;
   };
-}
+};
 
 export type CreateVotePayload = {
   vote: boolean;
   comment?: string;
-}
+};
 
 export type Step = {
   id: number;
   city: string;
   country: string;
   trip_id: number;
-}
+};
 
 export type StepCardProps = {
   step: Step;
   currentUserId: number;
   tripId: number;
-}
+};

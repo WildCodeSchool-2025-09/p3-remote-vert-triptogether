@@ -26,4 +26,3 @@ export type VotesStats = {
     no: number;
   };
 };
-

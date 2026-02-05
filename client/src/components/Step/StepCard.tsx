@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
-import type { StepCardProps, VotesStats, CreateVotePayload } from "../../types/voteType";
-import "./StepCard.css"
+import { useCallback, useEffect, useState } from "react";
+import type {
+  CreateVotePayload,
+  StepCardProps,
+  VotesStats,
+} from "../../types/voteType";
+import "./StepCard.css";
 
-function StepCard ({step, currentUserId, tripId}: StepCardProps) {
+function StepCard({ step, currentUserId, tripId }: StepCardProps) {
   const [votesData, setVotesData] = useState<VotesStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [alreadyVoted, setAlreadyVoted] = useState(false);
@@ -10,19 +14,19 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
   const [error, setError] = useState<string | null>(null);
   const [showVotes, setShowVotes] = useState(false);
 
-  useEffect(() => {
-    loadVotes();
-  }, [step.id]);
-
-  const loadVotes = () => {
+  const loadVotes = useCallback(() => {
     setLoading(true);
     setError(null);
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`,
+    )
       .then(async (response) => {
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "Erreur lors de la récupération des votes");
+          throw new Error(
+            errorData.error || "Erreur lors de la récupération des votes",
+          );
         }
         const data: VotesStats = await response.json();
         setVotesData(data);
@@ -35,7 +39,11 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, [step.id, tripId]);
+
+  useEffect(() => {
+    loadVotes();
+  }, [loadVotes]);
 
   const handleVote = (voteValue: boolean) => {
     setAlreadyVoted(true);
@@ -46,11 +54,14 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
       comment: comment.trim() || undefined,
     };
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`, {
-      method: "POST",
-      headers: {"Content-type": "application/json"},
-      body: JSON.stringify(createVoteData),
-    })
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`,
+      {
+        method: "POST",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify(createVoteData),
+      },
+    )
       .then(async (response) => {
         if (!response.ok) {
           const errorData = await response.json();
@@ -75,7 +86,7 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
   return (
     <div className="step-card">
       <article className="step-header">
-        <img src="" alt={`Vue de ${step.city}`}/>
+        <img src="" alt={`Vue de ${step.city}`} />
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
       </article>
@@ -83,7 +94,9 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
         {votesData && (
           <div className="vote-stats">
             <div className="stat-item">
-              <span className="stat-value yes">👍 {votesData.voteStats.yes}</span>
+              <span className="stat-value yes">
+                👍 {votesData.voteStats.yes}
+              </span>
               <span className="stat-label">Oui</span>
             </div>
             <div className="stat-item">
@@ -128,9 +141,7 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
               className="vote-comment"
               rows={3}
             />
-            <p className="comment-counter">
-              {comment.length}/500 caractères
-            </p>
+            <p className="comment-counter">{comment.length}/500 caractères</p>
           </div>
         ) : (
           <div className="voted-message">
@@ -181,7 +192,7 @@ function StepCard ({step, currentUserId, tripId}: StepCardProps) {
         )}
       </article>
     </div>
-  )
+  );
 }
 
 export default StepCard;

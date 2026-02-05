@@ -1,8 +1,8 @@
 import type { RequestHandler } from "express";
 import type { NewVote, VotesStats } from "../../types/voteType";
-import stepRepository from "./stepRepository";
-import tripRepository from "../trip/tripRepository";
 import * as googlePlacesService from "../auth/googlePlacesService";
+import tripRepository from "../trip/tripRepository";
+import stepRepository from "./stepRepository";
 
 type AuthRequest = import("express").Request & {
   auth: {
@@ -11,7 +11,7 @@ type AuthRequest = import("express").Request & {
   };
 };
 
-const selectStepsByTrip: RequestHandler = async(req, res, next) => {
+const selectStepsByTrip: RequestHandler = async (req, res, next) => {
   const authReq = req as AuthRequest;
   try {
     const tripId = Number(req.params.tripId);
@@ -32,17 +32,16 @@ const selectStepsByTrip: RequestHandler = async(req, res, next) => {
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
-      tripId, userId
-    )
+      tripId,
+      userId,
+    );
     if (!isMemberOfTrip) {
-      return res
-        .status(403)
-        .json({ error: "Vous devez être membre du voyage pour voir les étapes" });
+      return res.status(403).json({
+        error: "Vous devez être membre du voyage pour voir les étapes",
+      });
     }
 
-    const steps = await stepRepository.selectByTrip(
-      tripId, userId
-    );
+    const steps = await stepRepository.selectByTrip(tripId, userId);
 
     return res.status(200).json({
       trip: {
@@ -52,7 +51,6 @@ const selectStepsByTrip: RequestHandler = async(req, res, next) => {
       },
       steps,
     });
-
   } catch (err) {
     next(err);
   }
@@ -77,19 +75,22 @@ const addStepCity: RequestHandler = async (req, res, next) => {
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
-      tripId, userId
-    )
+      tripId,
+      userId,
+    );
     if (!isMemberOfTrip) {
-      return res
-        .status(403)
-        .json({ error: "Vous devez être membre du voyage pour ajouter une étape" });
+      return res.status(403).json({
+        error: "Vous devez être membre du voyage pour ajouter une étape",
+      });
     }
 
     const { city, country } = req.body;
     const imageUrl = await googlePlacesService.getCityImage(city, country);
 
     if (typeof city !== "string" || typeof country !== "string") {
-      return res.status(400).json({ error: "La ville et le pays sont requis." });
+      return res
+        .status(400)
+        .json({ error: "La ville et le pays sont requis." });
     }
 
     const stepId = await stepRepository.createStepCity({
@@ -111,9 +112,7 @@ const addStepCity: RequestHandler = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};  
-
-
+};
 
 const addVote: RequestHandler = async (req, res, next) => {
   try {
@@ -139,7 +138,11 @@ const addVote: RequestHandler = async (req, res, next) => {
       return res.status(400).json({ error: "Le vote doit être true ou false" });
     }
 
-    if (newVote.comment !== undefined && newVote.comment !== null && typeof newVote.comment !== "string") {
+    if (
+      newVote.comment !== undefined &&
+      newVote.comment !== null &&
+      typeof newVote.comment !== "string"
+    ) {
       return res
         .status(400)
         .json({ error: "Le commentaire doit être une chaîne de caractères" });

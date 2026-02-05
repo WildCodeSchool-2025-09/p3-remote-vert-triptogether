@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import StepCard from "../components/Step/StepCard";
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
+import NavTabs from "../components/NavTabs/NavTabs";
 import AddStep from "../components/Step/AddTrip";
+import StepCard from "../components/Step/StepCard";
 import { useAuth } from "../contexts/AuthContext";
 import type { Step } from "../types/voteType";
 import "./styles/Step.css";
-import { useNavigate, useParams } from "react-router";
-import NavTabs from "../components/NavTabs/NavTabs";
 
 type RouteParams = {
   id: string;
@@ -22,7 +22,7 @@ type StepsResponse =
     }
   | { error?: string; message?: string };
 
-function Steps () {
+function Steps() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
 
@@ -30,16 +30,12 @@ function Steps () {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const navigate = useNavigate();
-
-  /* const currentUserId = 1; */
   const { auth } = useAuth();
   const currentUserId = auth?.user?.id || 0;
 
-  const fetchSteps = () => {
+  const fetchSteps = useCallback(() => {
     if (!id || Number.isNaN(tripId)) return;
-    
-    // Retrieve token (try localStorage if auth is null)
+
     const token = auth?.token || localStorage.getItem("token");
 
     setLoading(true);
@@ -49,20 +45,8 @@ function Steps () {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        // Add Authorization header if needed (StepActions.selectStepsByTrip might require it now?)
-        // The router says: router.get("/:tripId/steps", StepActions.selectStepsByTrip); 
-        // selectStepsByTrip has: const userId = req.body.user_id || 1; AND if (!userId) => 403.
-        // But GET requests don't have a body usually.
-        // Wait, selectStepsByTrip in stepActions.ts reads req.body.user_id ???
-        // GET requests should read from query params or auth token.
-        // If selectStepsByTrip expects body, calling it via GET is problematic if it relies on body.
-        // However, looking at stepActions.ts:
-        // const userId = req.body.user_id || 1;
-        // This is weird for a GET request.
-        // I should probably fix the server to take userId from req.auth (token) if available.
-        // For now, let's send Authorization header.
         Authorization: token ? `Bearer ${token}` : "",
-      }
+      },
     })
       .then(async (response) => {
         const result: StepsResponse = await response.json();
@@ -73,11 +57,8 @@ function Steps () {
         }
 
         if (response.status === 403 || response.status === 401) {
-             // If 403/401, maybe try to show empty list if public?
-             // But the error says "Non authentifié".
-             // The user reported 401. 
-             setError("Accès non autorisé");
-             return;
+          setError("Accès non autorisé");
+          return;
         }
 
         if (!("steps" in result)) {
@@ -94,11 +75,11 @@ function Steps () {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, [auth?.token, id, tripId]);
 
   useEffect(() => {
     fetchSteps();
-  }, [tripId, navigate]);
+  }, [fetchSteps]);
 
   return (
     <>
@@ -111,7 +92,7 @@ function Steps () {
         </section>
 
         <NavTabs />
-        
+
         <AddStep onStepAdded={fetchSteps} />
 
         <section id="steps-list">

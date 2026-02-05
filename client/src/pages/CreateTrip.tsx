@@ -8,7 +8,7 @@ import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
 import { useAuth } from "../contexts/AuthContext";
 
-const libraries: ("places")[] = ["places"];
+const libraries: "places"[] = ["places"];
 
 export default function CreateTrip() {
   const { auth } = useAuth();

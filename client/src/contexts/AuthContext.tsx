@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { type ReactNode, createContext, useContext, useState } from "react";
 
 type User = {
   id: number;

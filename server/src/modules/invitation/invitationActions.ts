@@ -1,24 +1,24 @@
 import crypto from "node:crypto";
 import type { RequestHandler } from "express";
+import tripRepository from "../trip/tripRepository";
 import userRepository from "../user/userRepository";
-import InvitationRepository from "./invitationRepository";
+import invitationRepository from "./invitationRepository";
 
 const CONNECTED_USER_ID = 2;
 
 const read: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const invitation = await InvitationRepository.select(invitationId);
 
-    if (!invitation) {
-      res.status(404).json({ error: "Invitation introuvable" });
+    if (Number.isNaN(invitationId)) {
+      res.status(400).json({ error: "ID invalide" });
       return;
     }
 
-    if (
-      ![invitation.creator_id, invitation.user_id].includes(CONNECTED_USER_ID)
-    ) {
-      res.status(403).json({ error: "Accès non autorisé" });
+    const invitation = await invitationRepository.select(invitationId);
+
+    if (!invitation) {
+      res.status(404).json({ error: "Invitation introuvable" });
       return;
     }
 
@@ -46,7 +46,7 @@ const read: RequestHandler = async (req, res, next) => {
 const edit: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
-    const updateInvitation = await InvitationRepository.select(invitationId);
+    const updateInvitation = await invitationRepository.select(invitationId);
 
     if (Number.isNaN(invitationId)) {
       res.status(400).json({ error: "ID invalide" });
@@ -58,21 +58,7 @@ const edit: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (
-      ![updateInvitation?.creator_id, updateInvitation?.user_id].includes(
-        CONNECTED_USER_ID,
-      )
-    ) {
-      res.status(403).json({ error: "Accès non autorisé" });
-      return;
-    }
-
-    if (updateInvitation?.creator_id === CONNECTED_USER_ID) {
-      res.status(403).json({ error: "Seul l'invité peut accepter" });
-      return;
-    }
-
-    const success = await InvitationRepository.updateStatus(
+    const success = await invitationRepository.updateStatus(
       invitationId,
       req.body.status,
     );
@@ -82,7 +68,7 @@ const edit: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    res.status(200).json();
+    res.sendStatus(200);
   } catch (err) {
     next(err);
   }
@@ -116,16 +102,14 @@ const add: RequestHandler = async (req, res, next) => {
 
     const token = crypto.randomUUID();
 
-    await InvitationRepository.create(
+    const invitationId = await invitationRepository.create(
       tripId,
       email,
       message,
-      token,
-      creator_id,
       user_id,
     );
 
-    const invitationLink = `http://localhost:3000/invitations/${token}`;
+    const invitationLink = `http://localhost:3000/${tripId}/invitation/${invitationId}`;
 
     res.status(201).json({ invitationLink });
   } catch (err) {
@@ -133,4 +117,63 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read, add };
+const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID de voyage invalide" });
+      return;
+    }
+
+    const trip = await tripRepository.read(tripId);
+
+    if (!trip) {
+      res.status(404).json({ error: "Voyage introuvable" });
+      return;
+    }
+
+    const invitations = await invitationRepository.selectByTrip(tripId);
+
+    res.json({
+      trip: {
+        id: trip.id,
+        title: trip.title,
+        description: trip.description,
+        start_at: trip.start_at,
+        end_at: trip.end_at,
+        user_id: trip.user_id,
+        owner_firstname: trip.owner_firstname,
+        owner_lastname: trip.owner_lastname,
+      },
+      invitations,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const delate: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.tripId);
+    const userId = Number(req.params.userId);
+
+    if (Number.isNaN(tripId) || Number.isNaN(userId)) {
+      res.status(400).json({ message: "Paramètres invalides" });
+      return;
+    }
+
+    const success = await invitationRepository.deleteInvitation(tripId, userId);
+
+    if (!success) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { edit, read, add, selectInvitationsByTrip, delate };

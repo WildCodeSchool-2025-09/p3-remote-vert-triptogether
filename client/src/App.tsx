@@ -6,7 +6,6 @@ import { useState } from "react";
 type User = {
   id: number;
   email: string;
-  is_admin: boolean;
 };
 
 type Auth = {

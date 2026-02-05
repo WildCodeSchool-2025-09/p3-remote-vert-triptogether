@@ -10,7 +10,7 @@ router.get("/", TripActions.browse);
 router.get("/countries", TripActions.browse);
 router.get("/:id", TripActions.read);
 router.post("/", verifyToken, TripActions.add);
-router.delete("/:id", verifyToken, TripActions.destroy);
+router.delete("/:id", verifyToken, TripActions.delate);
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
 
 router.get(

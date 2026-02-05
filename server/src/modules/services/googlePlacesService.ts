@@ -14,7 +14,6 @@ export const getCityImage = async (
   country: string,
 ): Promise<string | null> => {
   if (!GOOGLE_API_KEY) return null;
-  console.log("Clé utilisée :", GOOGLE_API_KEY);
   try {
     const searchUrl = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(
       `${city} ${country}`,
@@ -22,7 +21,6 @@ export const getCityImage = async (
 
     const response = await fetch(searchUrl);
 
-    // On dit à TS que le JSON reçu correspond à notre interface
     const data = (await response.json()) as GooglePlacesResponse;
 
     const photoReference = data.candidates?.[0]?.photos?.[0]?.photo_reference;

@@ -9,7 +9,6 @@ import backArrowLogo from "../assets/images/back-arrow-logo.png";
 interface User {
   id: number;
   email: string;
-  is_admin: boolean;
 }
 
 interface Auth {

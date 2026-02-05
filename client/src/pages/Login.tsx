@@ -2,7 +2,7 @@ import { useRef } from "react";
 import type { FormEventHandler } from "react";
 import { useNavigate, useOutletContext } from "react-router";
 
-type User = { id: number; email: string; is_admin: boolean };
+type User = { id: number; email: string };
 type Auth = { user: User; token: string };
 
 function Login() {
@@ -17,7 +17,7 @@ function Login() {
     event.preventDefault();
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/login`,
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         {
           method: "post",
           headers: { "Content-Type": "application/json" },
@@ -42,14 +42,17 @@ function Login() {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label htmlFor="email">Email :</label><br />
       <input ref={emailRef} type="email" placeholder="Email" required />
+      <br /><br />
+      <label htmlFor="password">Mot de passe :</label><br />
       <input
         ref={passwordRef}
         type="password"
         placeholder="Password"
         required
-      />
-      <button type="submit">Send</button>
+      /><br /><br />
+      <button type="submit">Se connecter </button>
     </form>
   );
 }

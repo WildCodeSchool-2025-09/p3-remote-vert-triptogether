@@ -20,7 +20,21 @@ class TripRepository {
 
     return result.insertId;
   }
+async readTripInfo(id: number): Promise<Trip | null> {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT t.id, t.title, t.start_at, t.end_at, d.city, d.country, COUNT(i.id) AS participants 
+      FROM trip t 
+      JOIN destination d ON d.trip_id = t.id 
+      JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
+      WHERE t.id = ? 
+      GROUP BY t.id, d.id`,
+      [id],
+    );
 
+    if (rows.length === 0) return null;
+
+    return rows[0] as Trip;
+  }
   async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
       `
@@ -80,6 +94,24 @@ class TripRepository {
     );
 
     return rows.length > 0;
+  }
+
+  async selectByUserId(userId: number, status: string) {
+    let dateCondition = "";
+
+    if (status === "futur") {
+      dateCondition = "AND start_at > NOW()";
+    } else if (status === "current") {
+      dateCondition = "AND start_at <= NOW() AND end_at >= NOW()";
+    } else if (status === "past") {
+      dateCondition = "AND end_at < NOW()";
+    }
+
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT * FROM trip WHERE user_id = ? ${dateCondition} ORDER BY start_at ASC`,
+      [userId],
+    );
+    return rows as Trip[];
   }
 }
 

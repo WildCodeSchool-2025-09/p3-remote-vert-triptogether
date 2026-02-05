@@ -70,7 +70,7 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const selectInvitationsByTrip: RequestHandler = async (
+const selectInvitationsByTrip: RequestHandler = async (
   req,
   res,
   next,

@@ -3,13 +3,10 @@ import type { Request, RequestHandler } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import userRepository from "../user/userRepository";
 
-// Definition du contenu du Token
 interface MyPayload extends JwtPayload {
   sub: string;
-  isAdmin: boolean;
 }
 
-// Type personnalisé pour inclure 'auth' de manière stricte
 type RequestWithAuth = Request & {
   auth: MyPayload;
 };
@@ -32,7 +29,6 @@ export const login: RequestHandler = async (req, res, next) => {
 
     const payload: MyPayload = {
       sub: user.id.toString(),
-      isAdmin: user.is_admin,
     };
 
     const token = jwt.sign(payload, process.env.APP_SECRET as string, {
@@ -95,3 +91,4 @@ export const verifyToken: RequestHandler = (req, res, next) => {
     res.sendStatus(401);
   }
 };
+

@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import App from "./App";
-import Login from "./pages/Auth";
-import Register from "./pages/AuthRegister";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";

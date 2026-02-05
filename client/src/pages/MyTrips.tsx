@@ -35,7 +35,7 @@ export default function MyTrips() {
 
     if (!token) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/my-trips?status=${activeTab}`, {
+      fetch(`${import.meta.env.VITE_API_URL}/api/users/my-trips?status=${activeTab}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,

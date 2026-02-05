@@ -1,8 +1,7 @@
 import type { RequestHandler } from "express";
 import userRepository from "./userRepository";
-
-// Browse all users
-export const browse: RequestHandler = async (_req, res, next) => {
+import type { UserType } from "../../types/userType"
+const browse: RequestHandler = async (_req, res, next) => {
   try {
     const users = await userRepository.readAll();
     res.json(users);
@@ -11,8 +10,7 @@ export const browse: RequestHandler = async (_req, res, next) => {
   }
 };
 
-// Read one user
-export const read: RequestHandler = async (req, res, next) => {
+const read: RequestHandler = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const user = await userRepository.read(id);
@@ -27,19 +25,20 @@ export const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-// Add user
-export const add: RequestHandler = async (req, res, next) => {
+const add: RequestHandler = async (req, res, next) => {
   try {
     const newUser = {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
       email: req.body.email,
       password: req.body.hashed_password,
-      is_admin: req.body.is_admin || false,
     };
 
     const insertId = await userRepository.create(newUser);
-
     res.status(201).json({ insertId });
   } catch (err) {
     next(err);
   }
 };
+
+export default {browse, read, add}

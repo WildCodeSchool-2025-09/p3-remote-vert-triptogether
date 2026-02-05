@@ -11,5 +11,12 @@ export type Trip = {
   owner_firstname?: string;
   owner_lastname?: string;
 };
+export type Step = {
+  id: number;
+  city: string;
+  country: string;
+  trip_id: number;
+  image_url?: string;
 
+}
 export type TripStatus = "futur" | "past" | "current";

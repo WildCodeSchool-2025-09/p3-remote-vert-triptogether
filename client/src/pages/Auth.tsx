@@ -1,16 +1,13 @@
 import { useRef } from "react";
 import type { FormEventHandler } from "react";
-import { useNavigate, useOutletContext } from "react-router";
+import { useNavigate } from "react-router";
 
-type User = { id: number; email: string; is_admin: boolean };
-type Auth = { user: User; token: string };
+import { useAuth } from "../contexts/AuthContext";
 
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { setAuth } = useOutletContext() as {
-    setAuth: (auth: Auth | null) => void;
-  };
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit: FormEventHandler = async (event) => {

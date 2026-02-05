@@ -24,10 +24,9 @@ const router = express.Router();
 router.post("/login", login);
 router.post("/users", hashPassword, addUser);
 
-
 router.use(verifyToken);
 
-router.get("/my-trips", myTripActions.browse); 
+router.get("/my-trips", myTripActions.browse);
 
 router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);

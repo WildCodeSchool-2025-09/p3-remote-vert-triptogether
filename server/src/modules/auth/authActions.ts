@@ -3,13 +3,11 @@ import type { Request, RequestHandler } from "express";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 import userRepository from "../user/userRepository";
 
-// Definition du contenu du Token
 interface MyPayload extends JwtPayload {
   sub: string;
   isAdmin: boolean;
 }
 
-// Type personnalisé pour inclure 'auth' de manière stricte
 type RequestWithAuth = Request & {
   auth: MyPayload;
 };
@@ -86,7 +84,6 @@ export const verifyToken: RequestHandler = (req, res, next) => {
       process.env.APP_SECRET as string,
     ) as MyPayload;
 
-    // Cast vers notre type étendu
     (req as RequestWithAuth).auth = decoded;
 
     next();

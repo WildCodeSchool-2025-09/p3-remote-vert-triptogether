@@ -17,10 +17,43 @@ class TripRepository {
         trip.image_url,
       ],
     );
+const newTripId = result.insertId;
 
-    return result.insertId;
+  await databaseClient.query<Result>(
+    "INSERT INTO step (city, country, trip_id) VALUES (?, ?, ?)",
+    [
+      trip.city,
+      trip.country,
+      newTripId, 
+    ]
+  );
+
+  return newTripId;
+}
+
+  async isUserMemberOfTrip(
+    tripId: number,
+    userId: number,
+  ): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT i.id
+        FROM invitation AS i
+        WHERE trip_id = ?
+        AND user_id = ?
+        AND status = "accepted"`,
+      [tripId, userId]
+    );
+
+    if (rows.length > 0) return true;
+
+    // Check if user is the owner
+    const [ownerRows] = await databaseClient.query<Rows>(
+      "SELECT id FROM trip WHERE id = ? AND user_id = ?",
+      [tripId, userId]
+    );
+    
+    return ownerRows.length > 0;
   }
-
   async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
       `

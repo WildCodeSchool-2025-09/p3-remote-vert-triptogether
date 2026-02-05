@@ -7,4 +7,10 @@ if (rootElement == null) {
   throw new Error(`Your HTML Document should contain a <div id="root"></div>`);
 }
 
-createRoot(rootElement).render(<RouterProvider router={router} />);
+import { AuthProvider } from "./contexts/AuthContext";
+
+createRoot(rootElement).render(
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
+);

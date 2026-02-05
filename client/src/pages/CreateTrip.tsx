@@ -1,29 +1,17 @@
 import { useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "../styles/CreateTrip.css";
 import "../styles/mobile.css";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
-interface User {
-  id: number;
-  email: string;
-  is_admin: boolean;
-}
+import { useAuth } from "../contexts/AuthContext";
 
-interface Auth {
-  user: User;
-  token: string;
-}
-
-interface AuthContextType {
-  auth: Auth | null;
-  setAuth: (auth: Auth | null) => void;
-}
+const libraries: ("places")[] = ["places"];
 
 export default function CreateTrip() {
-  const { auth } = useOutletContext() as AuthContextType;
+  const { auth } = useAuth();
 
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
@@ -41,7 +29,7 @@ export default function CreateTrip() {
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
-    libraries: ["places"],
+    libraries,
   });
 
   const onPlaceChanged = () => {

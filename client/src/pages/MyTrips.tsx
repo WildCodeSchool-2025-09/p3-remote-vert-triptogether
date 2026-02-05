@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router";
 import "../styles/Reset.css";
 import "../styles/MyTrips.css";
 import { Link } from "react-router";
@@ -15,15 +14,21 @@ interface Trip {
   end_at: string;
 }
 
-interface AuthContextType {
-  auth: {
-    token: string;
-    user: { id: number; email: string };
-  } | null;
+import { useAuth } from "../contexts/AuthContext";
+
+interface Trip {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  start_at: string;
+  city: string;
+  country: string;
+  end_at: string;
 }
 
 export default function MyTrips() {
-  const { auth } = useOutletContext() as AuthContextType;
+  const { auth } = useAuth();
   const [activeTab, setActiveTab] = useState<
     "futur" | "current" | "past" | "all"
   >("all");

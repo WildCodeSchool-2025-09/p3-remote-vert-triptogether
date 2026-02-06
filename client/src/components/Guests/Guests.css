@@ -2,12 +2,12 @@
   margin-top: 24px;
 }
 
-article {
+.guests-article {
   margin-bottom: 24px;
   width: 75vw;
 }
 
-h3 {
+.guests-article h3 {
   padding: 8px 20px;
   background-color: #e5e5e5;
   border-radius: 8px 8px 0 0;
@@ -16,13 +16,13 @@ h3 {
   font-weight: 600;
 }
 
-ul {
+.guests-article ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-li {
+.guests-article ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -152,12 +152,12 @@ li:last-child {
     margin-top: 10px;
   }
 
-  article {
+  .guests-article {
     width: 100%;
     margin-bottom: 10px;
   }
 
-  li {
+  .guests-article ul li {
     flex-direction: column;
     align-items: flex-start;
     padding: 12px 12px;

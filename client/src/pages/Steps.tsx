@@ -105,7 +105,12 @@ function Steps() {
 
         <NavTabs />
 
-        <section id="steps-list">
+        <section className="steps-list">
+          {steps.length === 1 ? (
+            <h1>Étape proposée ({steps.length})</h1>
+          ) : (
+            <h1>Étapes proposées ({steps.length})</h1>
+          )}
           {loading && <p>Chargement des étapes...</p>}
           {error && <p className="error">{error}</p>}
 

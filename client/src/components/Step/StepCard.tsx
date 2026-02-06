@@ -14,6 +14,20 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
   const [error, setError] = useState<string | null>(null);
   const [showVotes, setShowVotes] = useState(false);
 
+  const userVote = votesData?.allVotes.find((v) => v.user_id === currentUserId);
+  const hasVoted = Boolean(userVote);
+  const stepImage = `https://www.sourcesplash.com/i/random?q=city&id=${step.id}`;
+  const thumbsUpLogo = (
+    <img src="/logos/green-thumb.png" className="green-thumb" alt="Oui" />
+  );
+  const thumbsDownLogo = (
+    <img src="/logos/brown-thumb.png" className="brown-thumb" alt="Non" />
+  );
+  const yesVotes = votesData?.voteStats.yes ?? 0;
+  const noVotes = votesData?.voteStats.no ?? 0;
+  const totalVotes = yesVotes + noVotes;
+  const yesPercentage = totalVotes === 0 ? 0 : (yesVotes / totalVotes) * 100;
+
   useEffect(() => {
     loadVotes();
   }, []);
@@ -85,80 +99,33 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
       });
   };
 
-  const userVote = votesData?.allVotes.find((v) => v.user_id === currentUserId);
-  const hasVoted = Boolean(userVote);
-
   return (
     <div className="step-card">
+      <img src={stepImage} alt={`Vue de ${step.city}`} />
       <article className="step-header">
-        <img src="" alt={`Vue de ${step.city}`} />
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
+        <h3 id="step-header-end">Proposée par </h3>
+        {/* ajout à faire du nom du user qui a créé l'étape */}
       </article>
       <article className="step-body">
-        {votesData && (
+        <div className="vote-progress">
           <div className="vote-stats">
-            <div className="stat-item">
-              <span className="stat-value yes">
-                👍 {votesData.voteStats.yes}
-              </span>
-              <span className="stat-label">Oui</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value no">👎 {votesData.voteStats.no}</span>
-              <span className="stat-label">Non</span>
-            </div>
-            <div className="stat-total">
-              {votesData.allVotes.length} vote(s)
-            </div>
+            <span className="stat-value yes">
+              {thumbsUpLogo} {yesVotes}
+            </span>
+            <span className="stat-value no">
+              {thumbsDownLogo} {noVotes}
+            </span>
           </div>
-        )}
-        {error && <p className="error">{error}</p>}
-        {loading ? (
-          <p className="loading-text">Chargement...</p>
-        ) : !hasVoted ? (
-          <div className="vote-section">
-            <h3>Votez pour cette étape</h3>
-            <div className="vote-buttons">
-              <button
-                type="button"
-                onClick={() => handleVote(true)}
-                disabled={alreadyVoted}
-                className="vote-btn vote-yes"
-              >
-                {alreadyVoted ? "Envoi..." : "👍 Oui"}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleVote(false)}
-                disabled={alreadyVoted}
-                className="vote-btn vote-no"
-              >
-                {alreadyVoted ? "Envoi..." : "👎 Non"}
-              </button>
-            </div>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Commentaire (optionnel)"
-              maxLength={500}
-              disabled={alreadyVoted}
-              className="vote-comment"
-              rows={3}
+          <div className="vote-bar">
+            <div
+              className="vote-bar-yes"
+              style={{ width: `${yesPercentage}%` }}
             />
-            <p className="comment-counter">{comment.length}/500 caractères</p>
           </div>
-        ) : (
-          <div className="voted-message">
-            <p className="voted-text">
-              ✅ Vous avez voté : {userVote?.vote ? "👍 Oui" : "👎 Non"}
-            </p>
-            {userVote?.comment && (
-              <p className="voted-comment">"{userVote.comment}"</p>
-            )}
-          </div>
-        )}
-        {votesData && votesData.allVotes.length > 0 && (
+        </div>
+        {votesData && votesData.allVotes.length > 0 ? (
           <div className="all-votes-section">
             <button
               type="button"
@@ -179,7 +146,7 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
                       <p className="vote-user">
                         {vote.user_name}
                         <span className="vote-value">
-                          {vote.vote ? " 👍 Oui" : " 👎 Non"}
+                          {vote.vote ? thumbsUpLogo : thumbsDownLogo}
                         </span>
                       </p>
                       {vote.comment && (
@@ -192,6 +159,66 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
                   </div>
                 ))}
               </div>
+            )}
+          </div>
+        ) : (
+          <div className="no-votes-placeholder">
+            <p className="toggle-votes-btn">En attente d'un vote</p>
+          </div>
+        )}
+        {error && <p className="error">{error}</p>}
+        {loading ? (
+          <p className="loading-text">Chargement...</p>
+        ) : !hasVoted ? (
+          <div className="vote-section">
+            <div className="vote-buttons">
+              <button
+                type="button"
+                onClick={() => handleVote(true)}
+                disabled={alreadyVoted}
+                className="vote-btn vote-yes"
+              >
+                {alreadyVoted ? (
+                  "Envoi..."
+                ) : (
+                  <span className="vote-yes-btn">{thumbsUpLogo} OUI</span>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleVote(false)}
+                disabled={alreadyVoted}
+                className="vote-btn vote-no"
+              >
+                {alreadyVoted ? (
+                  "Envoi..."
+                ) : (
+                  <span className="vote-no-btn">{thumbsDownLogo} NON</span>
+                )}
+              </button>
+            </div>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Commentaire (optionnel)"
+              maxLength={500}
+              disabled={alreadyVoted}
+              className="vote-comment"
+              rows={3}
+            />
+            <p className="comment-counter">{comment.length}/500 caractères</p>
+          </div>
+        ) : (
+          <div className="voted-message">
+            <p className="voted-text">
+              {userVote?.vote ? (
+                <span className="voted-yes">{thumbsUpLogo} Voté OUI</span>
+              ) : (
+                <span className="voted-no">{thumbsDownLogo} Voté NON</span>
+              )}
+            </p>
+            {userVote?.comment && (
+              <p className="voted-comment">"{userVote.comment}"</p>
             )}
           </div>
         )}

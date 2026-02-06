@@ -5,7 +5,6 @@ import userRepository from "../user/userRepository";
 
 interface MyPayload extends JwtPayload {
   sub: string;
-  isAdmin: boolean;
 }
 
 type RequestWithAuth = Request & {
@@ -14,7 +13,7 @@ type RequestWithAuth = Request & {
 
 export const login: RequestHandler = async (req, res, next) => {
   try {
-    const user = await userRepository.readByEmailWithPassword(req.body.email);
+    const user = await userRepository.readByEmail(req.body.email);
     if (!user) {
       res.sendStatus(422);
       return;
@@ -30,7 +29,6 @@ export const login: RequestHandler = async (req, res, next) => {
 
     const payload: MyPayload = {
       sub: user.id.toString(),
-      isAdmin: user.is_admin,
     };
 
     const token = jwt.sign(payload, process.env.APP_SECRET as string, {

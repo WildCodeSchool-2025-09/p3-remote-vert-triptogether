@@ -2,6 +2,17 @@ import { Link, Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import { useAuth } from "./contexts/AuthContext";
+import { useState } from "react";
+
+type User = {
+  id: number;
+  email: string;
+};
+
+type Auth = {
+  user: User;
+  token: string;
+};
 
 function App() {
   const { auth, logout } = useAuth();

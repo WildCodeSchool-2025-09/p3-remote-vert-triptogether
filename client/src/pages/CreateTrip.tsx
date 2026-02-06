@@ -7,6 +7,10 @@ import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
 
 import { useAuth } from "../contexts/AuthContext";
+interface User {
+  id: number;
+  email: string;
+}
 
 const libraries: "places"[] = ["places"];
 

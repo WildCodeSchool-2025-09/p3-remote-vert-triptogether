@@ -1,14 +1,19 @@
 import type { Request, RequestHandler } from "express";
-import type { Trip } from "../../types/tripType";
-import * as googlePlacesService from "../auth/googlePlacesService";
+import type { Trip, TripStatus } from "../../types/tripType";
+import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "./tripRepository";
 
 type AuthRequest = Request & {
   auth: {
     sub: string;
-    isAdmin: boolean;
   };
 };
+
+interface RequestWithAuth extends Request {
+  auth: {
+    sub: string;
+  };
+}
 
 export const browse: RequestHandler = async (_req, res, next) => {
   try {
@@ -18,7 +23,20 @@ export const browse: RequestHandler = async (_req, res, next) => {
     next(err);
   }
 };
-export const destroy: RequestHandler = async (req, res, next) => {
+
+export const browseMyTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const authReq = req as unknown as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+    const status = (req.query.status as TripStatus) || "futur";
+    const trips = await tripRepository.readByUser(userId, status);
+    res.json(trips);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const delate: RequestHandler = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const affectedRows = await tripRepository.delete(id);
@@ -32,10 +50,11 @@ export const destroy: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+
 export const read: RequestHandler = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
-    const trip = await tripRepository.read(id);
+    const trip = await tripRepository.readTripInfo(Number(id));
     if (!trip) {
       res.sendStatus(404);
       return;

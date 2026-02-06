@@ -70,11 +70,7 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const selectInvitationsByTrip: RequestHandler = async (
-  req,
-  res,
-  next,
-) => {
+const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
 

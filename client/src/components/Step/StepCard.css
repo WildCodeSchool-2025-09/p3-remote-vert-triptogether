@@ -36,7 +36,7 @@
 .step-header h3 {
   margin: 0;
   font-size: var(--font-size-XS);
-  color: #666;
+  color: var(--grey-text);
   padding: 8px 0 12px;
 }
 
@@ -54,7 +54,7 @@
 
 .vote-progress {
   display: flex;
-  flex-direction: center;
+  align-items: center;
   gap: 8px;
 }
 
@@ -67,7 +67,6 @@
 
 .stat-value {
   display: flex;
-  align-items: center;
   gap: 4px;
   font-size: var(--font-size-XS);
   font-weight: 600;
@@ -79,6 +78,7 @@
 
 .stat-value.no {
   color: var(--brown);
+  align-items: center;
 }
 
 .stat-value.yes .green-thumb,
@@ -104,7 +104,7 @@
 
 .stat-label {
   font-size: 0.8rem;
-  color: #555;
+  color: var(--grey-text);
 }
 
 .stat-total {
@@ -184,6 +184,7 @@
   padding: 6px;
   margin-top: 8px;
   font-size: 0.9rem;
+  color: var(--grey-text);
   resize: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -250,7 +251,7 @@
 
 .voted-comment {
   font-style: italic;
-  color: #555;
+  color: var(--grey-text);
   margin-top: 12px;
 }
 
@@ -311,7 +312,7 @@
 
 .vote-comment-text {
   font-size: 0.8rem;
-  color: #555;
+  color: var(--grey-text);
   margin: 2px 0 0 4px;
 }
 

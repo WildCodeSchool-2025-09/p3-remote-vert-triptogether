@@ -1,7 +1,14 @@
 import type { RequestHandler } from "express";
-import type { NewVote, VotesStats } from "../../types/voteType";
+import Joi from "joi";
+import type { VotesStats } from "../../types/voteType";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
+
+const createVoteSchema = Joi.object({
+  user_id: Joi.number().required(),
+  vote: Joi.boolean().required(),
+  comment: Joi.string().max(500).allow(null, "").optional(),
+});
 
 const selectStepsByTrip: RequestHandler = async (req, res, next) => {
   try {
@@ -42,12 +49,17 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
 
 const addVote: RequestHandler = async (req, res, next) => {
   try {
-    if (typeof req.params.id !== "string") {
-      return res.status(400).json({ error: "Paramètre invalide" });
+    const stepId = Number(req.params.id);
+
+    const { error, value } = createVoteSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: error.details[0].message,
+      });
     }
 
-    const stepId = Number.parseInt(req.params.id);
-    const userId = req.body.user_id || 1;
+    const { user_id, vote, comment } = value;
+    const userId = user_id || 1;
 
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
@@ -55,20 +67,6 @@ const addVote: RequestHandler = async (req, res, next) => {
 
     if (Number.isNaN(stepId)) {
       return res.status(400).json({ error: "ID d'étape invalide" });
-    }
-
-    if (typeof req.body.vote !== "boolean") {
-      return res.status(400).json({ error: "Le vote doit être true ou false" });
-    }
-
-    if (
-      req.body.comment !== undefined &&
-      req.body.comment !== null &&
-      typeof req.body.comment !== "string"
-    ) {
-      return res.status(400).json({
-        error: "Le commentaire doit être une chaîne de caractères",
-      });
     }
 
     const step = await stepRepository.getStepWithTrip(stepId);
@@ -93,18 +91,11 @@ const addVote: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const newVote: NewVote = {
-      user_id: userId,
-      step_id: stepId,
-      vote: req.body.vote,
-      comment: req.body.comment || null,
-    };
-
     const voteId = await stepRepository.create(
-      newVote.user_id,
-      newVote.step_id,
-      newVote.vote,
-      newVote.comment,
+      userId,
+      stepId,
+      vote,
+      comment || null,
     );
 
     const createdVote = await stepRepository.selectByIdWithUser(voteId);
@@ -153,8 +144,8 @@ const browseVote: RequestHandler = async (req, res, next) => {
       step_id: stepId,
       allVotes,
       voteStats: {
-        yes: allVotes.filter((v) => v.vote === 1).length,
-        no: allVotes.filter((v) => v.vote === 0).length,
+        yes: allVotes.filter((v) => v.vote === true).length,
+        no: allVotes.filter((v) => v.vote === false).length,
       },
     };
 

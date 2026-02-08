@@ -3,19 +3,12 @@ export type Vote = {
   created_at: string;
   user_id: number;
   step_id: number;
-  vote: 0 | 1;
+  vote: boolean;
   comment: string | null;
 };
 
 export type VoteWithUser = Vote & {
   user_name: string;
-};
-
-export type NewVote = {
-  user_id: number;
-  step_id: number;
-  vote: 0 | 1;
-  comment: string | null;
 };
 
 export type VotesStats = {

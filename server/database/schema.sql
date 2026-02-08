@@ -72,7 +72,7 @@ CREATE TABLE vote (
   user_id INT NOT NULL,
   step_id INT NOT NULL,
   vote BOOLEAN NOT NULL,
-  comment TEXT NULL,
+  comment VARCHAR(500) NULL,
   CONSTRAINT fk_vote_user
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,

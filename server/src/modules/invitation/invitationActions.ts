@@ -109,4 +109,28 @@ export const selectInvitationsByTrip: RequestHandler = async (
     next(err);
   }
 };
-export default { edit, read, selectInvitationsByTrip };
+
+const delate: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.tripId);
+    const userId = Number(req.params.userId);
+
+    if (Number.isNaN(tripId) || Number.isNaN(userId)) {
+      res.status(400).json({ message: "Paramètres invalides" });
+      return;
+    }
+
+    const success = await invitationRepository.deleteInvitation(tripId, userId);
+
+    if (!success) {
+      res.sendStatus(404);
+      return;
+    }
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { edit, read, selectInvitationsByTrip, delate };

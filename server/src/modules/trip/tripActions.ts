@@ -31,6 +31,21 @@ const read: RequestHandler = async (req, res, next) => {
   }
 };
 
+const readTripInfo: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+    const trip = await tripRepository.read(tripId);
+
+    if (trip == null) {
+      res.sendStatus(404);
+    } else {
+      res.json(trip);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 const add: RequestHandler = async (req, res, next) => {
   try {
     const newTrip: Trip = {
@@ -83,4 +98,4 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, read, add };
+export default { browse, read, readTripInfo, add };

@@ -45,7 +45,6 @@ function TripInvitation({
 
   const [loading, setLoading] = useState(false);
 
-  // 🔹 Mise à jour des champs du formulaire
   const updateInvitationForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -56,12 +55,10 @@ function TripInvitation({
     }));
   };
 
-  // 🔹 Reset formulaire
   const cancelInvitation = () => {
     setInvitationForm({ email: "", message: "" });
   };
 
-  // 🔹 Fonction dédiée pour copier le lien
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -71,7 +68,6 @@ function TripInvitation({
     }
   };
 
-  // 🔹 Envoi de l’invitation
   const sendInvitation = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -92,7 +88,6 @@ function TripInvitation({
         throw new Error(data.error || "Erreur lors de l'envoi");
       }
 
-      // 👉 Copie du vrai lien renvoyé par l’API
       await copyToClipboard(data.invitationLink);
 
       setInvitationForm({ email: "", message: "" });

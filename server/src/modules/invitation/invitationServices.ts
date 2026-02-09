@@ -1,11 +1,11 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import invitationRepository from "./invitationRepository";
 
-const checkExpirationDate = async (
+const checkExpirationDate: RequestHandler = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
+): Promise<void> => {
   try {
     const invitationId = Number(req.params.id);
     const invitation = await invitationRepository.read(invitationId);
@@ -16,7 +16,7 @@ const checkExpirationDate = async (
       invitation.trip_start
     ) {
       if (new Date() > new Date(invitation.trip_start)) {
-        return res.status(400).json({ error: "Invitation expirée" });
+        res.status(400).json({ error: "Invitation expirée" });
       }
     }
 

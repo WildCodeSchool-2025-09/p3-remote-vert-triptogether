@@ -80,7 +80,7 @@ function Home() {
           <div className="feature-card">
             <div className="feature-icon">
               <img
-                src="/group.png"
+                src="/icon-group.png"
                 alt="Icône représentant un groupe de personnes"
                 className="feature-icon-img"
                 width="40"
@@ -97,7 +97,7 @@ function Home() {
           <div className="feature-card">
             <div className="feature-icon">
               <img
-                src="/pin.png"
+                src="/icon-pin.png"
                 alt="Icône représentant une épingle de localisation"
                 className="feature-icon-img"
                 width="40"
@@ -114,7 +114,7 @@ function Home() {
           <div className="feature-card">
             <div className="feature-icon">
               <img
-                src="/wallet.png"
+                src="/icon-wallet.png"
                 alt="Icône représentant un portefeuille"
                 className="feature-icon-img"
                 width="40"

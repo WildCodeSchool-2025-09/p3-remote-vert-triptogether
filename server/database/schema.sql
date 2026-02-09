@@ -57,14 +57,9 @@ CREATE TABLE invitation (
   status VARCHAR(10) NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  creator_id INT NOT NULL,
   user_id INT NOT NULL,
   trip_id INT NOT NULL,
   trip_status ENUM('futur', 'current', 'past') DEFAULT 'futur',
-
-  CONSTRAINT fk_inviation_creator
-    FOREIGN KEY (creator_id) REFERENCES user(id)
-    ON DELETE CASCADE,
   CONSTRAINT fk_invation_invited
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,

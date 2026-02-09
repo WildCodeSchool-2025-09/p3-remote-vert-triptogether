@@ -14,4 +14,4 @@ router.patch("/:id", invitationActions.edit);
 
 router.delete("/:tripId/:userId", invitationActions.delate);
 
-module.exports = router;
+export default router;

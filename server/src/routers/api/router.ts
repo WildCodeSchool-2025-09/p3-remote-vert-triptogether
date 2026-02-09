@@ -1,13 +1,17 @@
 import express from "express";
+import authRouter from "../auth/router";
+import invitationRouter from "../invitation/router";
+import tripRouter from "../trip/router";
+import userRouter from "../user/router";
 
 const router = express.Router();
 
-const tripRouter = require("../trip/router");
-const invitationRouter = require("../invitation/router");
+router.use("/auth", authRouter);
 
-router.use("/trips", tripRouter);
 router.use("/invitation", invitationRouter);
 
-/* ************************************************************************* */
+router.use("/users", userRouter);
 
-module.exports = router;
+router.use("/trips", tripRouter);
+
+export default router;

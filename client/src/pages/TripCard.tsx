@@ -9,6 +9,7 @@ type TripCardProps = {
   participants?: number;
   status?: "pending" | "accepted" | "refused";
   role?: "organizer" | "participant";
+  onInvite: () => void;
 };
 
 function TripCard({
@@ -20,6 +21,7 @@ function TripCard({
   participants,
   status,
   role,
+  onInvite,
 }: TripCardProps) {
   const formatDate = (dateString: string) => {
     return new Intl.DateTimeFormat("fr-FR", {
@@ -33,6 +35,15 @@ function TripCard({
     <>
       <article className="tripcard-component">
         <h2 className="tripcard-title">{title}</h2>
+
+        <button
+          type="button"
+          className="tripcard-invitation-btn"
+          onClick={onInvite}
+        >
+          Inviter
+        </button>
+
         <p className="tripcard-location">
           {city}, {country}
         </p>

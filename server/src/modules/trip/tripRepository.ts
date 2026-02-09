@@ -23,28 +23,12 @@ class TripRepository {
   async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT 
-        t.*,
-        u.firstname AS owner_firstname,
-        u.lastname  AS owner_lastname
+      t.*,
+      u.firstname AS owner_firstname,
+      u.lastname  AS owner_lastname
       FROM trip t
       JOIN user u ON u.id = t.user_id
       WHERE t.id = ?`,
-      [id],
-    );
-
-    if (rows.length === 0) return null;
-
-    return rows[0] as Trip;
-  }
-
-  async readParticipate(id: number): Promise<Trip | null> {
-    const [rows] = await databaseClient.query<Rows>(
-      `SELECT t.id, t.title, t.start_at, t.end_at, d.city, d.country, COUNT(i.id) AS participants 
-      FROM trip t 
-      JOIN destination d ON d.trip_id = t.id 
-      JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
-      WHERE t.id = ? 
-      GROUP BY t.id, d.id`,
       [id],
     );
 

@@ -1,11 +1,24 @@
-.trip-card {
+.tripcard-component {
   text-align: center;
 }
 
-.trip-card-title {
+.tripcard-title {
   font-size: 28px;
 }
 
-.trip-card-dates {
+.tripcard-dates {
   font-size: 18px;
+}
+
+.tripcard-invitation-btn {
+  border-radius: 10px;
+  width: 80px;
+  height: 30px;
+  color: white;
+  background-color: var(--primary-button);
+}
+
+.tripcard-invitation-btn:hover {
+  opacity: 70%;
+  transition: opacity .1s ease-out;
 }

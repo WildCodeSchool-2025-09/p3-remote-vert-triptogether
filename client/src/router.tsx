@@ -4,7 +4,6 @@ import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";
 import { Trip } from "./pages/Trip";
-import TripInvitations from "./pages/tripInvitations";
 
 export const router = createBrowserRouter([
   {
@@ -26,10 +25,6 @@ export const router = createBrowserRouter([
       {
         path: "/create-trip",
         element: <CreateTrip />,
-      },
-      {
-        path: "trips/:id/invitations",
-        element: <TripInvitations />,
       },
     ],
   },

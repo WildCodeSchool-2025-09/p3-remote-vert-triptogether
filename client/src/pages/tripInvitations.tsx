@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
-import TripCard from "./TripCard";
 
 import "./styles/Invitation.css";
 import "./styles/TripInvitation.css";
@@ -12,18 +11,31 @@ type InvitationForm = {
 };
 
 type Trip = {
-  id: number;
+  tripId: number;
   title: string;
   city: string;
   country: string;
-  start_at: string;
-  end_at: string;
+  startAt: string;
+  endAt: string;
   participants: number;
-  status: "pending" | "accepted" | "refused";
-  role: "organizer" | "participant";
+  onClose?: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
-function TripInvitation() {
+function TripInvitation({
+  title,
+  city,
+  country,
+  startAt,
+  endAt,
+  participants,
+}: Trip) {
+  const formatDate = (dateString: string) => {
+    return new Intl.DateTimeFormat("fr-FR", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(dateString));
+  };
   const { id } = useParams<{ id: string }>();
 
   const [invitationForm, setInvitationForm] = useState<InvitationForm>({
@@ -31,18 +43,7 @@ function TripInvitation() {
     message: "",
   });
 
-  const [trip, setTrip] = useState<Trip | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // 🔹 Récupération des infos du voyage
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
-      .then((res) => res.json())
-      .then((data) => setTrip(data))
-      .catch(() => {
-        toast.error("Impossible de charger le voyage");
-      });
-  }, [id]);
 
   // 🔹 Mise à jour des champs du formulaire
   const updateInvitationForm = (
@@ -101,34 +102,9 @@ function TripInvitation() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
-      .then((response) => response.json())
-      .then((data) => setTrip(data));
-  }, [id]);
 
   return (
     <>
-      <nav className="tripinvitation-navbar">
-        <ul className="tripinvitation-navbar-list">
-          <li>
-            <img src="../../public/logo.png" alt="Trip Together" width={50} />
-            <h1 className="tripinvitation-title">Trip Together</h1>
-          </li>
-          <li>Mes voyages</li>
-          <li>
-            <button type="button" className="tripinvitation-btn-navbar">
-              C&apos;est parti !
-            </button>
-            <img
-              src="../../public/profile-pic-logo.png"
-              alt="Profil"
-              width={50}
-            />
-          </li>
-        </ul>
-      </nav>
-
       <main className="tripinvitation-main">
         <section className="tripinvitation-invitation-form">
           <ToastContainer position="top-right" autoClose={5000} theme="light" />
@@ -144,18 +120,16 @@ function TripInvitation() {
           <article className="tripinvitation-bg-image" />
 
           <article className="tripinvitation-trip-infos">
-            {trip && (
-              <TripCard
-                title={trip.title}
-                city={trip.city}
-                country={trip.country}
-                startAt={trip.start_at}
-                endAt={trip.end_at}
-                participants={trip.participants}
-                status={trip.status}
-                role={trip.role}
-              />
-            )}
+            <h2>{title}</h2>
+            <p className="tripcard-location">
+              {city}, {country}
+            </p>
+            <p className="tripcard-dates">
+              {formatDate(startAt)} - {formatDate(endAt)}
+            </p>
+            <p className="tripcard-participants">
+              {participants} participant(s)
+            </p>
           </article>
 
           <form
@@ -203,8 +177,6 @@ function TripInvitation() {
             </button>
           </form>
         </section>
-
-        <footer />
       </main>
     </>
   );

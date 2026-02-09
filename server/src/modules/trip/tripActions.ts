@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import type { Trip } from "../../types/tripType";
+import invitationRepository from "../invitation/invitationRepository";
 import tripRepository from "./tripRepository";
 
 const browse: RequestHandler = async (req, res, next) => {
@@ -15,13 +16,16 @@ const browse: RequestHandler = async (req, res, next) => {
 const read: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
-    const trip = await tripRepository.read(tripId);
 
+    const trip = await tripRepository.read(tripId);
     if (trip == null) {
       res.sendStatus(404);
-    } else {
-      res.json(trip);
+      return;
     }
+
+    const participants = await invitationRepository.readParticipate(tripId);
+
+    res.json({ ...trip, participants });
   } catch (err) {
     next(err);
   }

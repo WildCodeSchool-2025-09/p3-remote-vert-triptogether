@@ -20,7 +20,7 @@ function Guests(props: GuestsProps) {
 
   return (
     <article>
-      <h3>
+      <h3 className="title-guest">
         {title} ({invited.length})
       </h3>
       <ul>

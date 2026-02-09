@@ -3,8 +3,6 @@ import type { FormEventHandler } from "react";
 import { useNavigate } from "react-router";
 
 import { useAuth } from "../contexts/AuthContext";
-type User = { id: number; email: string };
-type Auth = { user: User; token: string };
 
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);

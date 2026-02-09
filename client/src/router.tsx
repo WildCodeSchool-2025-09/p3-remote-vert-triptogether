@@ -5,8 +5,8 @@ import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";
 import Login from "./pages/Login";
 import MyTrips from "./pages/MyTrips";
-import Steps from "./pages/Steps";
 import Register from "./pages/Register";
+import Steps from "./pages/Steps";
 import { Trip } from "./pages/Trip";
 
 export const router = createBrowserRouter([

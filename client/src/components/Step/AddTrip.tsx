@@ -13,6 +13,7 @@ interface AddStepProps {
 export default function AddStep({ onStepAdded }: AddStepProps) {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -29,9 +30,11 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
       comp.types.includes("country"),
     );
     const countryName = countryComp?.long_name;
+    const photoUrl = place.photos?.[0]?.getUrl() || "";
 
     setCity(cityName);
     if (countryName) setCountry(countryName);
+    setImageUrl(photoUrl);
   };
 
   const { auth } = useAuth();
@@ -62,6 +65,7 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
             city,
             country,
             user_id,
+            image_url: imageUrl,
           }),
         },
       );
@@ -72,8 +76,8 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
 
       setCity("");
       setCountry("");
+      setImageUrl("");
 
-      // Notify parent to refresh steps
       onStepAdded();
     } catch (error) {
       console.error(error);

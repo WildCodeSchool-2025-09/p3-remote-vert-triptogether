@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import type { NewVote, VotesStats } from "../../types/voteType";
-import * as googlePlacesService from "../auth/googlePlacesService";
+import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
 
@@ -48,6 +48,8 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
         id: trip.id,
         title: trip.title,
         description: trip.description,
+        city: trip.city,
+        country: trip.country,
       },
       steps,
     });
@@ -84,8 +86,12 @@ const addStepCity: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const { city, country } = req.body;
-    const imageUrl = await googlePlacesService.getCityImage(city, country);
+    const { city, country, image_url } = req.body;
+    let finalImageUrl = image_url;
+
+    if (!finalImageUrl) {
+      finalImageUrl = await googlePlacesService.getCityImage(city, country);
+    }
 
     if (typeof city !== "string" || typeof country !== "string") {
       return res
@@ -97,7 +103,7 @@ const addStepCity: RequestHandler = async (req, res, next) => {
       trip_id: tripId,
       city,
       country,
-      image_url: imageUrl || "/images/default-trip.jpg",
+      image_url: finalImageUrl || "/images/default-trip.jpg",
     });
 
     return res.status(201).json({
@@ -105,6 +111,8 @@ const addStepCity: RequestHandler = async (req, res, next) => {
         id: trip.id,
         title: trip.title,
         description: trip.description,
+        city: trip.city,
+        country: trip.country,
         image_url: trip.image_url,
       },
       stepId,

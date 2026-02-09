@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import type { Trip } from "../types/tripType";
 import NavTabs from "../components/NavTabs/NavTabs";
 import AddStep from "../components/Step/AddTrip";
 import StepCard from "../components/Step/StepCard";
@@ -13,11 +14,7 @@ type RouteParams = {
 
 type StepsResponse =
   | {
-      trip: {
-        id: number;
-        title: string;
-        description: string;
-      };
+      trip: Trip;
       steps: Step[];
     }
   | { error?: string; message?: string };
@@ -25,7 +22,7 @@ type StepsResponse =
 function Steps() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
-
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,10 +60,14 @@ function Steps() {
 
         if (!("steps" in result)) {
           setError("Données d'étapes invalides");
+
           return;
         }
 
         setSteps(result.steps);
+        if ("trip" in result) {
+          setTrip(result.trip);
+        }
       })
       .catch((err) => {
         console.error("Ereur fetch steps:", err);
@@ -80,16 +81,19 @@ function Steps() {
   useEffect(() => {
     fetchSteps();
   }, [fetchSteps]);
-
+  const mainDestination = steps.find(
+    (step) => trip && step.city === trip.city && step.country === trip.country,
+  );
+  const proposeDestination = steps.filter(
+    (step) => step.id !== mainDestination?.id,
+  );
   return (
     <>
       <header>
         <nav>Trip Together</nav>
       </header>
       <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
-        </section>
+        <section id="trip-infos" className="card" />
 
         <NavTabs />
 
@@ -104,15 +108,31 @@ function Steps() {
               {steps.length === 0 ? (
                 <p>Aucune étape pour le moment</p>
               ) : (
-                <div className="steps-container">
-                  {steps.map((step) => (
-                    <StepCard
-                      key={step.id}
-                      step={step}
-                      currentUserId={currentUserId}
-                      tripId={tripId}
-                    />
-                  ))}
+                <div>
+                  {mainDestination && (
+                    <>
+                      <h1>Destination principale</h1>
+                      <StepCard
+                        key={mainDestination.id}
+                        step={mainDestination}
+                        currentUserId={currentUserId}
+                        tripId={tripId}
+                        isMainDestination={true}
+                      />
+                    </>
+                  )}
+                  <div className="steps-container">
+                    <h1> Propositions d'étapes</h1>
+                    {proposeDestination.map((step) => (
+                      <StepCard
+                        key={step.id}
+                        step={step}
+                        currentUserId={currentUserId}
+                        tripId={tripId}
+                        isMainDestination={false}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

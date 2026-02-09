@@ -6,7 +6,12 @@ import type {
 } from "../../types/voteType";
 import "./StepCard.css";
 
-function StepCard({ step, currentUserId, tripId }: StepCardProps) {
+function StepCard({
+  step,
+  currentUserId,
+  tripId,
+  isMainDestination = false,
+}: StepCardProps) {
   const [votesData, setVotesData] = useState<VotesStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [alreadyVoted, setAlreadyVoted] = useState(false);
@@ -15,6 +20,7 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
   const [showVotes, setShowVotes] = useState(false);
 
   const loadVotes = useCallback(() => {
+    if (isMainDestination) return;
     setLoading(true);
     setError(null);
 
@@ -86,73 +92,83 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
   return (
     <div className="step-card">
       <article className="step-header">
-        <img src="" alt={`Vue de ${step.city}`} />
+        <img
+          src={step.image_url || "/images/default-trip.jpg"}
+          alt={`Vue de ${step.city}`}
+        />
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
       </article>
       <article className="step-body">
-        {votesData && (
-          <div className="vote-stats">
-            <div className="stat-item">
-              <span className="stat-value yes">
-                👍 {votesData.voteStats.yes}
-              </span>
-              <span className="stat-label">Oui</span>
+        {isMainDestination ? (
+          <p>Destination principale</p>
+        ) : (
+          votesData && (
+            <div className="vote-stats">
+              <div className="stat-item">
+                <span className="stat-value yes">
+                  👍 {votesData.voteStats.yes}
+                </span>
+                <span className="stat-label">Oui</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-value no">
+                  👎 {votesData.voteStats.no}
+                </span>
+                <span className="stat-label">Non</span>
+              </div>
+              <div className="stat-total">
+                {votesData.allVotes.length} vote(s)
+              </div>
             </div>
-            <div className="stat-item">
-              <span className="stat-value no">👎 {votesData.voteStats.no}</span>
-              <span className="stat-label">Non</span>
-            </div>
-            <div className="stat-total">
-              {votesData.allVotes.length} vote(s)
-            </div>
-          </div>
+          )
         )}
         {error && <p className="error">{error}</p>}
-        {loading ? (
-          <p className="loading-text">Chargement...</p>
-        ) : !hasVoted ? (
-          <div className="vote-section">
-            <h3>Votez pour cette étape</h3>
-            <div className="vote-buttons">
-              <button
-                type="button"
-                onClick={() => handleVote(true)}
+        {!isMainDestination &&
+          (loading ? (
+            <p className="loading-text">Chargement...</p>
+          ) : !hasVoted ? (
+            <div className="vote-section">
+              <h3>Votez pour cette étape</h3>
+              <div className="vote-buttons">
+                <button
+                  type="button"
+                  onClick={() => handleVote(true)}
+                  disabled={alreadyVoted}
+                  className="vote-btn vote-yes"
+                >
+                  {alreadyVoted ? "Envoi..." : "👍 Oui"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleVote(false)}
+                  disabled={alreadyVoted}
+                  className="vote-btn vote-no"
+                >
+                  {alreadyVoted ? "Envoi..." : "👎 Non"}
+                </button>
+              </div>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Commentaire (optionnel)"
+                maxLength={500}
                 disabled={alreadyVoted}
-                className="vote-btn vote-yes"
-              >
-                {alreadyVoted ? "Envoi..." : "👍 Oui"}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleVote(false)}
-                disabled={alreadyVoted}
-                className="vote-btn vote-no"
-              >
-                {alreadyVoted ? "Envoi..." : "👎 Non"}
-              </button>
+                className="vote-comment"
+                rows={3}
+              />
+              <p className="comment-counter">{comment.length}/500 caractères</p>
             </div>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Commentaire (optionnel)"
-              maxLength={500}
-              disabled={alreadyVoted}
-              className="vote-comment"
-              rows={3}
-            />
-            <p className="comment-counter">{comment.length}/500 caractères</p>
-          </div>
-        ) : (
-          <div className="voted-message">
-            <p className="voted-text">
-              ✅ Vous avez voté : {userVote?.vote ? "👍 Oui" : "👎 Non"}
-            </p>
-            {userVote?.comment && (
-              <p className="voted-comment">"{userVote.comment}"</p>
-            )}
-          </div>
-        )}
+          ) : (
+            <div className="voted-message">
+              <p className="voted-text">
+                ✅ Vous avez voté : {userVote?.vote ? "👍 Oui" : "👎 Non"}
+              </p>
+              {userVote?.comment && (
+                <p className="voted-comment">"{userVote.comment}"</p>
+              )}
+            </div>
+          ))}
         {votesData && votesData.allVotes.length > 0 && (
           <div className="all-votes-section">
             <button

@@ -20,8 +20,8 @@ class TripRepository {
     const newTripId = result.insertId;
 
     await databaseClient.query<Result>(
-      "INSERT INTO step (city, country, trip_id) VALUES (?, ?, ?)",
-      [trip.city, trip.country, newTripId],
+      "INSERT INTO step (city, country, trip_id, image_url) VALUES (?, ?, ?, ?)",
+      [trip.city, trip.country, newTripId, trip.image_url],
     );
 
     return newTripId;

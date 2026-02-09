@@ -45,7 +45,7 @@ function StepCard({
       .finally(() => {
         setLoading(false);
       });
-  }, [step.id, tripId]);
+  }, [step.id, tripId, isMainDestination]);
 
   useEffect(() => {
     loadVotes();

@@ -31,8 +31,7 @@ function App() {
                   Logout
                 </button>
               </li>
-                    {auth && <p>Hello {auth.user.email}</p>}
-
+              {auth && <p>Hello {auth.user.email}</p>}
             </>
           )}
         </ul>

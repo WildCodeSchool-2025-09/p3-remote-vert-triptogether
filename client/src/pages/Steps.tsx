@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import type { Trip } from "../types/tripType";
 import NavTabs from "../components/NavTabs/NavTabs";
 import AddStep from "../components/Step/AddTrip";
 import StepCard from "../components/Step/StepCard";
 import { useAuth } from "../contexts/AuthContext";
+import type { Trip } from "../types/tripType";
 import type { Step } from "../types/voteType";
 import "./styles/Step.css";
 

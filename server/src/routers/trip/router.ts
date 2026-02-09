@@ -1,17 +1,16 @@
-const express = require("express");
+import express from "express";
+import { verifyToken } from "../../modules/auth/authActions";
+import invitationActions from "../../modules/invitation/invitationActions";
+import invitationServices from "../../modules/invitation/invitationServices";
+import * as TripActions from "../../modules/trip/tripActions";
 
 const router = express.Router();
 
-import invitationActions from "../../modules/invitation/invitationActions";
-import invitationServices from "../../modules/invitation/invitationServices";
-
-import TripActions from "../../modules/trip/tripActions";
-
 router.get("/", TripActions.browse);
+router.get("/countries", TripActions.browse);
 router.get("/:id", TripActions.read);
-
-router.post("/", TripActions.add);
-
+router.post("/", verifyToken, TripActions.add);
+router.delete("/:id", verifyToken, TripActions.delate);
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
 
 router.get(
@@ -19,6 +18,7 @@ router.get(
   invitationServices.checkExpirationDate,
   invitationActions.read,
 );
+
 router.patch("/:tripId/invitation/:id", invitationActions.edit);
 
-module.exports = router;
+export default router;

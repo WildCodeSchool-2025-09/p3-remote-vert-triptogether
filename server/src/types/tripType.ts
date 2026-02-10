@@ -1,9 +1,15 @@
 export type Trip = {
+  id?: number;
   title: string;
   description: string;
   city: string;
-  country: "France";
+  country: string;
   start_at: string;
   end_at: string;
   user_id: number;
+  image_url?: string;
+  owner_firstname?: string;
+  owner_lastname?: string;
 };
+
+export type TripStatus = "futur" | "past" | "current";

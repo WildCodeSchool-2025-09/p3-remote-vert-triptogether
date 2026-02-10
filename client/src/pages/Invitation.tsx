@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
-import "./styles/Invitation.css";
+import "./styles/invitation.css";
 import type { invitationType } from "../types/invitationType";
 
 function Invitation() {
-  const { id } = useParams<{ id: string }>();
-  const [invitation] = useState<invitationType | null>(null);
+  const { tripId, invitationId } = useParams<{
+    tripId: string;
+    invitationId: string;
+  }>();
+  const [invitation, setInvitation] = useState<invitationType | null>(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!id) {
+    if (!invitationId) {
       navigate("/", {
         state: {
           toast: {
@@ -22,85 +25,85 @@ function Invitation() {
       });
     }
 
-    // fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${id}`)
-    //   .then(async (response) => {
-    //     const invitation = await response.json();
+    fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`)
+      .then(async (response) => {
+        const invitation = await response.json();
 
-    //     if (response.status === 400) {
-    //       navigate("/", {
-    //         state: {
-    //           toast: {
-    //             type: "error",
-    //             message: invitation.message,
-    //           },
-    //         },
-    //       });
-    //     }
+        if (response.status === 400) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: invitation.message,
+              },
+            },
+          });
+        }
 
-    //   if (response.status === 403) {
-    //     navigate("/", {
-    //       state: {
-    //         toast: {
-    //           type: "error",
-    //           message: invitation.message,
-    //         },
-    //       },
-    //     });
-    //   }
+        if (response.status === 403) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: invitation.message,
+              },
+            },
+          });
+        }
 
-    //   if (response.status === 404) {
-    //     navigate("/", {
-    //       state: {
-    //         toast: {
-    //           type: "error",
-    //           message: invitation.message,
-    //         },
-    //       },
-    //     });
-    //   }
+        if (response.status === 404) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: invitation.message,
+              },
+            },
+          });
+        }
 
-    //   if (response.status === 409) {
-    //     navigate(`/trip/${invitation.trip_id}`, {
-    //       state: {
-    //         toast: {
-    //           type: "error",
-    //           message: invitation.message,
-    //         },
-    //       },
-    //     });
-    //   }
+        if (response.status === 409) {
+          navigate(`/trip/${invitation.trip_id}`, {
+            state: {
+              toast: {
+                type: "error",
+                message: invitation.message,
+              },
+            },
+          });
+        }
 
-    //   if (response.status === 410) {
-    //     navigate("/", {
-    //       state: {
-    //         toast: {
-    //           type: "error",
-    //           message: invitation.message,
-    //         },
-    //       },
-    //     });
-    //   }
+        if (response.status === 410) {
+          navigate("/", {
+            state: {
+              toast: {
+                type: "error",
+                message: invitation.message,
+              },
+            },
+          });
+        }
 
-    //   setInvitation(invitation);
-    // })
-    // .catch(() => {
-    //   navigate("/", {
-    //     state: {
-    //       toast: {
-    //         type: "error",
-    //         message: "Invitation introuvable ou accès non autorisé",
-    //       },
-    //     },
-    //   });
-    // });
-  }, [navigate, id]);
+        setInvitation(invitation);
+      })
+      .catch(() => {
+        navigate("/", {
+          state: {
+            toast: {
+              type: "error",
+              message: "Invitation introuvable ou accès non autorisé",
+            },
+          },
+        });
+      });
+  }, [navigate, invitationId]);
 
   async function invitationResponded(status: "accepted" | "refused") {
-    if (!id) return;
+    if (!invitationId) return;
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/invitation/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -113,7 +116,7 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        navigate(`/trip/${invitation?.trip_id}`, {
+        navigate(`/trip/${tripId ?? invitation?.trip_id}`, {
           state: {
             toast: {
               type: "success",

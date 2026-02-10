@@ -59,7 +59,11 @@ export default function Navbar() {
               aria-label="Profil"
               onClick={toggleMenu}
             >
-              👤
+              <img
+                src="../../public/images/utilisateur.png"
+                className="user-icone"
+                alt=""
+              />
             </button>
 
             <div className={`navbar-menu ${open ? "is-open" : ""}`} role="menu">

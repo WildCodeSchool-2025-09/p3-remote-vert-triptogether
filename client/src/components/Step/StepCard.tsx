@@ -1,21 +1,16 @@
 import { useEffect, useState } from "react";
-import type {
-  CreateVotePayload,
-  StepCardProps,
-  VotesStats,
-} from "../../types/voteType";
+import type { StepCardProps } from "../../types/tripType";
+import type { CreateVotePayload, Vote, VotesStats } from "../../types/voteType";
 import "./StepCard.css";
 
-function StepCard({ step, currentUserId, tripId }: StepCardProps) {
-  const [votesData, setVotesData] = useState<VotesStats | null>(null);
+function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
+  const [allVotes, setAllVotes] = useState<Vote[]>([]);
   const [loading, setLoading] = useState(true);
   const [alreadyVoted, setAlreadyVoted] = useState(false);
   const [comment, setComment] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showVotes, setShowVotes] = useState(false);
 
-  const userVote = votesData?.allVotes.find((v) => v.user_id === currentUserId);
-  const hasVoted = Boolean(userVote);
   const stepImage = `https://www.sourcesplash.com/i/random?q=city&id=${step.id}`;
   const thumbsUpLogo = (
     <img src="/logos/green-thumb.png" className="green-thumb" alt="Oui" />
@@ -23,10 +18,6 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
   const thumbsDownLogo = (
     <img src="/logos/brown-thumb.png" className="brown-thumb" alt="Non" />
   );
-  const yesVotes = votesData?.voteStats.yes ?? 0;
-  const noVotes = votesData?.voteStats.no ?? 0;
-  const totalVotes = yesVotes + noVotes;
-  const yesPercentage = totalVotes === 0 ? 0 : (yesVotes / totalVotes) * 100;
 
   useEffect(() => {
     loadVotes();
@@ -51,7 +42,8 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
           );
         }
         const data: VotesStats = await response.json();
-        setVotesData(data);
+
+        setAllVotes(data.allVotes);
         setError(null);
       })
       .catch((err) => {
@@ -87,8 +79,7 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
           throw new Error(errorData.error || "Erreur lors du vote");
         }
 
-        loadVotes();
-        setComment("");
+        window.location.reload();
       })
       .catch((err) => {
         console.error("Erreur lors du vote:", err);
@@ -98,6 +89,13 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
         setAlreadyVoted(false);
       });
   };
+
+  const userVote = allVotes.find((v) => v.user_id === currentUserId);
+  const hasVoted = Boolean(userVote);
+  const yesVotes = step.voteStats?.yes ?? 0;
+  const noVotes = step.voteStats?.no ?? 0;
+  const totalVotes = yesVotes + noVotes;
+  const yesPercentage = totalVotes === 0 ? 0 : (yesVotes / totalVotes) * 100;
 
   return (
     <div className="step-card">
@@ -125,7 +123,7 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
             />
           </div>
         </div>
-        {votesData && votesData.allVotes.length > 0 ? (
+        {allVotes && allVotes.length > 0 ? (
           <div className="all-votes-section">
             <button
               type="button"
@@ -133,11 +131,11 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
               className="toggle-votes-btn"
             >
               {showVotes ? "▲ Masquer" : "▼ Voir"} tous les votes (
-              {votesData.allVotes.length})
+              {allVotes.length} / {memberCount})
             </button>
             {showVotes && (
               <div className="votes-list">
-                {votesData.allVotes.map((vote) => (
+                {allVotes.map((vote) => (
                   <div
                     key={vote.id}
                     className={`vote-item ${vote.vote ? "vote-yes-item" : "vote-no-item"}`}
@@ -168,7 +166,7 @@ function StepCard({ step, currentUserId, tripId }: StepCardProps) {
         )}
         {error && <p className="error">{error}</p>}
         {loading ? (
-          <p className="loading-text">Chargement...</p>
+          <p className="loading-text">Chargement</p>
         ) : !hasVoted ? (
           <div className="vote-section">
             <div className="vote-buttons">

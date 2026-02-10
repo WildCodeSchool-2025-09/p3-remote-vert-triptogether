@@ -14,8 +14,22 @@ export type VoteWithUser = Vote & {
 export type VotesStats = {
   step_id: number;
   allVotes: VoteWithUser[];
+  summary: {
+    yes: number;
+    no: number;
+    total: number;
+  };
+};
+
+export type StepWithStatus = {
+  id: number;
+  city: string;
+  country: string;
+  trip_id: number;
+  status: "pending" | "validated" | "rejected";
   voteStats: {
     yes: number;
     no: number;
+    total: number;
   };
 };

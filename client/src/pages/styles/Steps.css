@@ -1,16 +1,43 @@
-.steps-list h1 {
-  margin-top: 3rem;
+.steps-section {
+  margin-bottom: 2rem;
+  font-family: var(--title-font);
+}
+
+.section-title {
+  margin: 3rem 0 0.5rem;
   font-size: var(--font-size-M);
+  font-weight: bold;
+}
+
+.section-subtitle {
+  font-family: var(--body-text);
+  font-size: 0.9rem;
+  color: var(--grey-text);
 }
 
 .steps-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 0;
+  padding: 1rem 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(180px, 1fr));
   gap: 2rem;
   justify-content: center;
+}
+
+.validated-section .section-title {
+  color: var(--button-hover);
+}
+
+.rejected-section .section-title {
+  color: var(--brown);
+}
+
+.no-steps {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+  font-size: 1.125rem;
 }
 
 @media (max-width: 768px) {

@@ -70,14 +70,63 @@ class stepRepository {
 
   async selectByStep(stepId: number): Promise<VoteWithUser[]> {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT v.id, v.created_at, v.user_id, v.step_id, v.vote, v.comment, u.firstname as user_name
-       FROM vote v
-       JOIN user u ON v.user_id = u.id
-       WHERE v.step_id = ?
-       ORDER BY v.created_at DESC`,
+      `SELECT
+        v.id,
+        v.created_at,
+        v.user_id,
+        v.step_id,
+        v.vote,
+        v.comment,
+        u.firstname AS user_name
+      FROM vote v
+      JOIN user u ON u.id = v.user_id
+      WHERE v.step_id = ?
+      ORDER BY v.created_at DESC`,
       [stepId],
     );
     return rows as VoteWithUser[];
+  }
+
+  async getStepsWithVotes(tripId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+      SELECT 
+        s.id AS id,
+        s.city AS city,
+        s.country AS country,
+        s.trip_id AS trip_id,
+
+        (
+          SELECT COUNT(*) 
+          FROM (
+            SELECT user_id 
+            FROM invitation 
+            WHERE trip_id = s.trip_id AND status = 'accepted'
+            UNION
+            SELECT t.user_id 
+            FROM trip t 
+            WHERE t.id = s.trip_id
+          ) AS members
+        ) AS total_members,
+
+        (
+          SELECT COUNT(*) 
+          FROM vote v 
+          WHERE v.step_id = s.id
+        ) AS total_votes,
+
+        (
+          SELECT COUNT(*) 
+          FROM vote v 
+          WHERE v.step_id = s.id AND v.vote = 1
+        ) AS yes_votes
+
+      FROM step s
+      WHERE s.trip_id = ?
+      ORDER BY s.id ASC`,
+      [tripId],
+    );
+    return rows;
   }
 }
 

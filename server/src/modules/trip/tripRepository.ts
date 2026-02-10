@@ -48,13 +48,13 @@ class TripRepository {
   async isUserMemberOfTrip(tripId: number, userId: number): Promise<boolean> {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT 1 
-     FROM trip 
-     WHERE id = ? AND user_id = ?
-     UNION
-     SELECT 1 
-     FROM invitation 
-     WHERE trip_id = ? AND user_id = ? AND status = "accepted"
-     LIMIT 1`,
+      FROM trip 
+      WHERE id = ? AND user_id = ?
+      UNION
+      SELECT 1 
+      FROM invitation 
+      WHERE trip_id = ? AND user_id = ? AND status = "accepted"
+      LIMIT 1`,
       [tripId, userId, tripId, userId],
     );
     return rows.length > 0;

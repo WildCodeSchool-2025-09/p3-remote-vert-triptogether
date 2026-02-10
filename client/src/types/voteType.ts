@@ -11,9 +11,10 @@ export type Vote = {
 export type VotesStats = {
   step_id: number;
   allVotes: Vote[];
-  voteStats: {
+  summary: {
     yes: number;
     no: number;
+    total: number;
   };
 };
 
@@ -21,17 +22,4 @@ export type CreateVotePayload = {
   vote: boolean;
   comment?: string;
   user_id: number;
-};
-
-export type Step = {
-  id: number;
-  city: string;
-  country: string;
-  trip_id: number;
-};
-
-export type StepCardProps = {
-  step: Step;
-  currentUserId: number;
-  tripId: number;
 };

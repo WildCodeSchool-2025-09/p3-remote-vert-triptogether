@@ -302,6 +302,8 @@
   font-weight: bold;
   font-size: 0.85rem;
   margin-right: 2px;
+  display: flex;
+  align-items: center;
 }
 
 .vote-value img {

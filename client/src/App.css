@@ -31,3 +31,43 @@
   --space-S: 8px;
   --space-XS: 4px;
 }
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--brown);
+  background-color: var(--light-brown);
+  border-left: 4px solid var(--brown);
+  margin: 2rem 0;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.loading-text {
+  display: flex;
+  background-color: #f5f5f5;
+  color: #444;
+  padding: 1rem;
+  border-radius: 6px;
+  margin: 1.5rem 0;
+}
+.loading-text::after {
+  content: "";
+  animation: dots 1.5s infinite;
+}
+
+@keyframes dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}

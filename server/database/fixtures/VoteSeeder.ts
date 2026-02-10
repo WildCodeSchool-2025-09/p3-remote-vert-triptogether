@@ -1,5 +1,7 @@
 import AbstractSeeder from "./AbstractSeeder";
+import InvitationSeeder from "./InvitationSeeder";
 import StepSeeder from "./StepSeeder";
+import TripSeeder from "./TripSeeder";
 import UserSeeder from "./UserSeeder";
 
 class VoteSeeder extends AbstractSeeder {
@@ -7,39 +9,39 @@ class VoteSeeder extends AbstractSeeder {
     super({
       table: "vote",
       truncate: true,
-      dependencies: [UserSeeder, StepSeeder],
+      dependencies: [UserSeeder, TripSeeder, InvitationSeeder, StepSeeder],
     });
   }
 
   async run() {
-    while (!this.getRef("user_0") || !this.getRef("step_0")) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-    }
+    let stepIndex = 0;
 
-    let userCount = 0;
-    let stepCount = 0;
+    while (this.getRef(`step_${stepIndex}`)) {
+      const stepRef = this.getRef(`step_${stepIndex}`) as unknown as {
+        insertId: number;
+        trip_id: number;
+      };
 
-    while (this.getRef(`user_${userCount}`)) {
-      userCount++;
-    }
+      const stepId = stepRef.insertId;
+      const tripId = stepRef.trip_id;
 
-    while (this.getRef(`step_${stepCount}`)) {
-      stepCount++;
-    }
+      const members = this.getTripMembers(tripId);
 
-    for (let stepIndex = 0; stepIndex < stepCount; stepIndex++) {
-      const stepId = this.getRef(`step_${stepIndex}`).insertId;
+      if (members.length === 0) {
+        stepIndex++;
+        continue;
+      }
 
       const votantsCount = this.faker.number.int({
-        min: 2,
-        max: Math.min(userCount, 5), // Max 5 votants par étape
+        min: 1,
+        max: members.length,
       });
 
-      const userIndexes = this.getRandomUserIndexes(userCount, votantsCount);
+      const selectedMembers = this.faker.helpers
+        .shuffle(members)
+        .slice(0, votantsCount);
 
-      for (const userIndex of userIndexes) {
-        const userId = this.getRef(`user_${userIndex}`).insertId;
-
+      for (const userId of selectedMembers) {
         const createdDate = this.faker.date.between({
           from: "2026-01-01T00:00:00.000Z",
           to: new Date(),
@@ -57,11 +59,44 @@ class VoteSeeder extends AbstractSeeder {
 
         this.insert(fakeVote);
       }
+
+      stepIndex++;
     }
   }
-  private getRandomUserIndexes(userCount: number, count: number): number[] {
-    const allIndexes = Array.from({ length: userCount }, (_, i) => i);
-    return this.faker.helpers.shuffle(allIndexes).slice(0, count);
+
+  getTripMembers(tripId: number): number[] {
+    const members: number[] = [];
+
+    let tripIndex = 0;
+    while (this.getRef(`trip_${tripIndex}`)) {
+      const trip = this.getRef(`trip_${tripIndex}`) as unknown as {
+        insertId: number;
+        user_id: number;
+      };
+
+      if (trip.insertId === tripId) {
+        members.push(trip.user_id);
+      }
+
+      tripIndex++;
+    }
+
+    let invIndex = 0;
+    while (this.getRef(`invitation_${invIndex}`)) {
+      const inv = this.getRef(`invitation_${invIndex}`) as unknown as {
+        trip_id: number;
+        user_id: number;
+        status: string;
+      };
+
+      if (inv.trip_id === tripId && inv.status === "accepted") {
+        members.push(inv.user_id);
+      }
+
+      invIndex++;
+    }
+
+    return members;
   }
 }
 

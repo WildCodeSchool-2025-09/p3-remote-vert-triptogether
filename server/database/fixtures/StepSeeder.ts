@@ -15,7 +15,8 @@ class StepSeeder extends AbstractSeeder {
     let stepIndex = 0;
 
     for (let tripIndex = 0; tripIndex < tripCount; tripIndex++) {
-      const tripId = this.getRef(`trip_${tripIndex}`).insertId;
+      const tripRef = this.getRef(`trip_${tripIndex}`);
+      const tripId = tripRef.insertId;
 
       const stepsPerTrip = this.faker.number.int({ min: 3, max: 7 });
 

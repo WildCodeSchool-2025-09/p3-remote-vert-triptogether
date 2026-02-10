@@ -195,7 +195,7 @@ function Invitations() {
         <NavTabs />
 
         <section id="member-list">
-          {loading && <p>Chargement des membres...</p>}
+          {loading && <p className="loading-text">Chargement des membres</p>}
           {error && <p className="error">{error}</p>}
 
           {!loading && !error && (

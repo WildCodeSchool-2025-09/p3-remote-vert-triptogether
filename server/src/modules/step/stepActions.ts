@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import Joi from "joi";
-import type { VotesStats } from "../../types/voteType";
+import type { StepWithStatus, VotesStats } from "../../types/voteType";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
 
@@ -39,9 +39,45 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const steps = await stepRepository.selectByTrip(tripId);
+    const steps = await stepRepository.getStepsWithVotes(tripId);
 
-    return res.status(200).json({ steps });
+    const stepsWithStatus: StepWithStatus[] = steps.map((step) => {
+      const yesVotes = step.yes_votes;
+      const totalVotes = step.total_votes;
+      const memberCount = step.total_members;
+
+      const everyoneVoted = totalVotes === memberCount;
+      const majorityYes = yesVotes > memberCount / 2;
+
+      let status: "pending" | "validated" | "rejected" = "pending";
+
+      if (everyoneVoted) {
+        status = majorityYes ? "validated" : "rejected";
+      }
+
+      return {
+        id: step.id,
+        city: step.city,
+        country: step.country,
+        trip_id: step.trip_id,
+        status,
+        voteStats: {
+          yes: yesVotes,
+          no: totalVotes - yesVotes,
+          total: totalVotes,
+        },
+      };
+    });
+
+    return res.status(200).json({
+      trip: {
+        id: trip.id,
+        title: trip.title,
+        description: trip.description,
+        memberCount: steps[0]?.total_members ?? 0,
+      },
+      steps: stepsWithStatus,
+    });
   } catch (err) {
     next(err);
   }
@@ -140,16 +176,20 @@ const browseVote: RequestHandler = async (req, res, next) => {
 
     const allVotes = await stepRepository.selectByStep(stepId);
 
-    const voteStats: VotesStats = {
+    const yes = allVotes.filter((v) => v.vote).length;
+    const no = allVotes.filter((v) => !v.vote).length;
+
+    const showVoteStats: VotesStats = {
       step_id: stepId,
       allVotes,
-      voteStats: {
-        yes: allVotes.filter((v) => v.vote === true).length,
-        no: allVotes.filter((v) => v.vote === false).length,
+      summary: {
+        yes,
+        no,
+        total: allVotes.length,
       },
     };
 
-    return res.status(200).json(voteStats);
+    return res.status(200).json(showVoteStats);
   } catch (err) {
     next(err);
   }

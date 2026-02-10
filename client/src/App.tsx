@@ -9,6 +9,7 @@ function App() {
       <header>
         <Navbar />
       </header>
+
       <main>
         <ToastContainer
           position="top-center"
@@ -22,6 +23,7 @@ function App() {
           pauseOnHover
           theme="light"
         />
+
         <Outlet />
       </main>
     </>

@@ -9,6 +9,7 @@ const router = express.Router();
 router.use("/auth", authRouter);
 
 router.use("/invitation", invitationRouter);
+router.use("/trips", tripRouter);
 
 router.use("/users", userRouter);
 

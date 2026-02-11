@@ -1,4 +1,24 @@
 .page {
+  margin: 0;
+  background-color: #f2f2f2;
+  font-size: 32px;
+}
+
+.invitation-header {
+  background-image: url(../../../header-background-city.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  font-size: var(--font-size-XL);
+}
+
+.invitation-navbar {
+  background-color: white;
+  height: 80px;
+}
+
+.invitation-main {
   max-width: 1160px;
   margin: 0 auto;
   padding: 0 20px;
@@ -12,7 +32,7 @@
   padding-bottom: 80px;
 }
 
-.card {
+.invitation-card {
   gap: 50px;
   background-color: #ffffff;
   border-radius: 20px;
@@ -22,7 +42,26 @@
   margin-bottom: 24px;
 }
 
-.other-informations {
+#trip-infos {
+  height: 361px;
+  width: 100%;
+  text-align: center;
+  align-items: center;
+  margin-bottom: 24px;
+  min-height: 120px;
+  position: relative;
+}
+
+#trip-infos::after {
+  content: "composant détail-voyage dans autre US";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invitation-other-informations {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 24px;
@@ -61,7 +100,8 @@
   color: #4b5563;
 }
 
-.btn {
+.invitation-btn-primary,
+.invitation-btn-outline {
   border-radius: 8px;
   padding: 8px 16px;
   margin: 20px 15px 0 15px;
@@ -70,12 +110,12 @@
   border: 1px solid transparent;
 }
 
-.btn-primary {
+.invitation-btn-primary {
   background-color: #15803d;
   color: #ffffff;
 }
 
-.btn-outline {
+.invitation-btn-outline {
   background-color: #ffffff;
   color: #15803d;
   border-color: #15803d;
@@ -92,7 +132,7 @@
   color: #4b5563;
 }
 
-.inviter-avatar {
+.invitation-avatar {
   width: 64px;
   height: 64px;
   border-radius: 999px;
@@ -100,7 +140,7 @@
   margin-bottom: 8px;
 }
 
-.inviter-name {
+.invitation-inviter-name {
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -125,7 +165,7 @@ footer {
     padding: 0 16px 40px;
   }
 
-  .other-informations {
+  .invitation-other-informations {
     grid-template-columns: 1fr;
   }
 

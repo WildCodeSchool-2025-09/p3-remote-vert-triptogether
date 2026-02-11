@@ -85,6 +85,8 @@ export default function CreateTrip() {
       if (response.ok) {
         await response.json();
         navigate("/my-trips");
+        const result = await response.json();
+        navigate(`/trip/${result.insertId}`);
       } else {
         const result = await response.json();
         toast.error(result.error || "Erreur lors de la création");

@@ -50,6 +50,7 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
         description: trip.description,
         city: trip.city,
         country: trip.country,
+        image_url: trip.image_url,
       },
       steps,
     });

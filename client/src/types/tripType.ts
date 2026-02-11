@@ -8,4 +8,7 @@ export type Trip = {
   end_at: string;
   image_url?: string;
   user_id?: number;
+  participants?: number;
+  status?: "pending" | "accepted" | "refused";
+  role?: "organizer" | "participant";
 };

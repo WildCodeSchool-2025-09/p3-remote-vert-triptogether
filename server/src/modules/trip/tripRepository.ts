@@ -28,7 +28,7 @@ class TripRepository {
   }
   async readTripInfo(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT t.id, t.title, t.start_at, t.end_at, t.city, t.country, COUNT(i.id) AS participants 
+      `SELECT t.id, t.title, t.description, t.start_at, t.end_at, t.city, t.country, t.image_url, COUNT(i.id) AS participants 
       FROM trip t 
       LEFT JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
       WHERE t.id = ? 
@@ -63,15 +63,13 @@ class TripRepository {
   }
   async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
-      `
-      SELECT 
-        t.*,
-        u.firstname AS owner_firstname,
-        u.lastname  AS owner_lastname
+      `SELECT 
+      t.*,
+      u.firstname AS owner_firstname,
+      u.lastname  AS owner_lastname
       FROM trip t
       JOIN user u ON u.id = t.user_id
-      WHERE t.id = ?
-      `,
+      WHERE t.id = ?`,
       [id],
     );
 

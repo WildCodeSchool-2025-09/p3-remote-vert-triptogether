@@ -1,5 +1,6 @@
 import type { Request, RequestHandler } from "express";
 import type { Trip, TripStatus } from "../../types/tripType";
+import invitationRepository from "../invitation/invitationRepository";
 import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "./tripRepository";
 
@@ -15,7 +16,7 @@ interface RequestWithAuth extends Request {
   };
 }
 
-export const browse: RequestHandler = async (_req, res, next) => {
+const browse: RequestHandler = async (_req, res, next) => {
   try {
     const trips = await tripRepository.readAll();
     res.json(trips);
@@ -24,7 +25,7 @@ export const browse: RequestHandler = async (_req, res, next) => {
   }
 };
 
-export const browseMyTrip: RequestHandler = async (req, res, next) => {
+const browseMyTrip: RequestHandler = async (req, res, next) => {
   try {
     const authReq = req as unknown as RequestWithAuth;
     const userId = Number(authReq.auth.sub);
@@ -36,7 +37,7 @@ export const browseMyTrip: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const delate: RequestHandler = async (req, res, next) => {
+const delate: RequestHandler = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const affectedRows = await tripRepository.delete(id);
@@ -51,7 +52,7 @@ export const delate: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const read: RequestHandler = async (req, res, next) => {
+const read: RequestHandler = async (req, res, next) => {
   try {
     const id = Number(req.params.id);
     const trip = await tripRepository.readTripInfo(Number(id));
@@ -65,7 +66,7 @@ export const read: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const add: RequestHandler = async (req, res, next) => {
+const add: RequestHandler = async (req, res, next) => {
   const authReq = req as AuthRequest;
 
   try {
@@ -127,3 +128,5 @@ export const add: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+
+export default { browse, browseMyTrip, read, delate, add };

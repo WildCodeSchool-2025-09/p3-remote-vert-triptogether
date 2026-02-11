@@ -56,22 +56,17 @@ CREATE TABLE budget (
 CREATE TABLE invitation (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status VARCHAR(10) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  message TEXT NOT NULL,
+  user_id INT DEFAULT NULL,
+  trip_id INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  creator_id INT NOT NULL,
-  user_id INT NOT NULL,
-  trip_id INT NOT NULL,
-  trip_status ENUM('futur', 'current', 'past') DEFAULT 'futur',
-
-  CONSTRAINT fk_inviation_creator
-    FOREIGN KEY (creator_id) REFERENCES user(id)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_invation_invited
+  CONSTRAINT fk_invitation_user
     FOREIGN KEY (user_id) REFERENCES user(id)
-    ON DELETE CASCADE,
+    ON DELETE SET NULL,
   CONSTRAINT fk_invitation_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
-    ON DELETE CASCADE
 );
 
 CREATE TABLE vote (

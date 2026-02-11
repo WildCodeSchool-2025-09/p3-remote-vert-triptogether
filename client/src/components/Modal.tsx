@@ -10,9 +10,7 @@ type ModalProps = {
 
 function Modal({ isOpen, onClose, children }: ModalProps) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
+    if (isOpen) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "";
     };
@@ -23,19 +21,17 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
   return (
     <div
       className="modal-overlay"
-      aria-modal="true"
-      onClick={onClose}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
           onClose();
         }
       }}
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") onClose();
+      }}
     >
-      <div
-        className="modal-content"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
+      <div className="modal-content">
         <button
           type="button"
           className="modal-close"

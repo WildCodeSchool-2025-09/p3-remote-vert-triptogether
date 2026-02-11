@@ -1,19 +1,31 @@
-import type { RequestHandler } from "express";
-import type { Trip } from "../../types/tripType";
+import type { Request, RequestHandler } from "express";
+import type { Trip, TripStatus } from "../../types/tripType";
 import invitationRepository from "../invitation/invitationRepository";
+import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "./tripRepository";
 
-const browse: RequestHandler = async (req, res, next) => {
+type AuthRequest = Request & {
+  auth: {
+    sub: string;
+  };
+};
+
+interface RequestWithAuth extends Request {
+  auth: {
+    sub: string;
+  };
+}
+
+const browse: RequestHandler = async (_req, res, next) => {
   try {
     const trips = await tripRepository.readAll();
-
     res.json(trips);
   } catch (err) {
     next(err);
   }
 };
 
-const read: RequestHandler = async (req, res, next) => {
+const browseMyTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
 
@@ -26,55 +38,65 @@ const read: RequestHandler = async (req, res, next) => {
     const participants = await invitationRepository.readParticipate(tripId);
 
     res.json({ ...trip, participants });
+    const authReq = req as unknown as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+    const status = (req.query.status as TripStatus) || "futur";
+    const trips = await tripRepository.readByUser(userId, status);
+    res.json(trips);
   } catch (err) {
     next(err);
   }
 };
 
-const readTripInfo: RequestHandler = async (req, res, next) => {
+const delate: RequestHandler = async (req, res, next) => {
   try {
-    const tripId = Number(req.params.id);
-    const trip = await tripRepository.read(tripId);
+    const id = Number(req.params.id);
+    const affectedRows = await tripRepository.delete(id);
 
-    if (trip == null) {
-      res.sendStatus(404);
+    if (affectedRows === 0) {
+      res.status(404).send("Voyage non trouvé");
     } else {
-      res.json(trip);
+      res.status(204).send();
     }
+  } catch (err) {
+    next(err);
+  }
+};
+
+const read: RequestHandler = async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const trip = await tripRepository.readTripInfo(Number(id));
+    if (!trip) {
+      res.sendStatus(404);
+      return;
+    }
+    res.json(trip);
   } catch (err) {
     next(err);
   }
 };
 
 const add: RequestHandler = async (req, res, next) => {
-  try {
-    const newTrip: Trip = {
-      title: req.body.title,
-      description: req.body.description,
-      city: req.body.city,
-      country: req.body.country,
-      start_at: req.body.start_at,
-      end_at: req.body.end_at,
-      user_id: req.body.user_id || 1,
-    };
+  const authReq = req as AuthRequest;
 
-    if (
-      !newTrip.title ||
-      !newTrip.description ||
-      !newTrip.city ||
-      !newTrip.country ||
-      !newTrip.start_at ||
-      !newTrip.end_at
-    ) {
-      res.status(400).json({ error: "Toutes les données sont requises" });
+  try {
+    if (!authReq.auth) {
+      res.status(401).json({ error: "Utilisateur non authentifié" });
+      return;
+    }
+
+    const { title, description, city, country, start_at, end_at } = req.body;
+
+    if (!title || !description || !city || !country || !start_at || !end_at) {
+      res.status(400).json({ error: "Tous les champs sont obligatoires" });
       return;
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
-    const startDate = new Date(newTrip.start_at);
-    const endDate = new Date(newTrip.end_at);
+    const startDate = new Date(start_at);
+    const endDate = new Date(end_at);
 
     if (startDate < today) {
       res
@@ -82,20 +104,36 @@ const add: RequestHandler = async (req, res, next) => {
         .json({ error: "La date de départ ne peut pas être dans le passé" });
       return;
     }
-
     if (endDate <= startDate) {
-      res.status(400).json({
-        error: "La date de retour doit être après la date de départ",
-      });
+      res
+        .status(400)
+        .json({ error: "La date de retour doit être après le départ" });
       return;
     }
 
+    const imageUrl = await googlePlacesService.getCityImage(city, country);
+
+    const newTrip: Trip = {
+      title,
+      description,
+      city,
+      country,
+      start_at,
+      end_at,
+      user_id: Number(authReq.auth.sub),
+      image_url: imageUrl || "/images/default-trip.jpg",
+    };
+
     const insertId = await tripRepository.create(newTrip);
 
-    res.status(201).json({ insertId });
+    res.status(201).json({
+      insertId,
+      message: "Voyage créé avec succès",
+      image_url: newTrip.image_url,
+    });
   } catch (err) {
     next(err);
   }
 };
 
-export default { browse, read, readTripInfo, add };
+export default { browse, browseMyTrip, read, delate, add };

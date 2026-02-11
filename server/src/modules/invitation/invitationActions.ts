@@ -4,8 +4,6 @@ import tripRepository from "../trip/tripRepository";
 import userRepository from "../user/userRepository";
 import invitationRepository from "./invitationRepository";
 
-const CONNECTED_USER_ID = 2;
-
 const read: RequestHandler = async (req, res, next) => {
   try {
     const invitationId = Number(req.params.id);
@@ -98,10 +96,6 @@ const add: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    const creator_id = CONNECTED_USER_ID;
-
-    const token = crypto.randomUUID();
-
     const invitationId = await invitationRepository.create(
       tripId,
       email,
@@ -109,7 +103,7 @@ const add: RequestHandler = async (req, res, next) => {
       user_id,
     );
 
-    const invitationLink = `http://localhost:3000/${tripId}/invitation/${invitationId}`;
+    const invitationLink = `http://localhost:3000/trip/${tripId}/invitation/${invitationId}`;
 
     res.status(201).json({ invitationLink });
   } catch (err) {

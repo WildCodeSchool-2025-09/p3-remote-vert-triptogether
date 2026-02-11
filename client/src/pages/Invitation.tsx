@@ -138,7 +138,7 @@ function Invitation() {
       toast.error("Erreur lors du traitement de l'invitation");
     }
   }
-
+  console.log(invitation);
   return (
     <>
       <header className="invitation-header">
@@ -177,6 +177,7 @@ function Invitation() {
               invitation?.creator_lastname ?? ""
             }`}
           </p>
+          <p>"{invitation?.message}"</p>
 
           <div className="invitation-actions">
             <button

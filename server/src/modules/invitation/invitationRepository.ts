@@ -70,8 +70,9 @@ class invitationRepository {
     message: string,
     user_id: number | null,
   ) {
+    console.log(tripId, email, message, user_id);
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO invitation (trip_id, email, message, status, user_id) VALUES (?, ?, ?, 'pending', ?, ?)",
+      "INSERT INTO invitation (trip_id, email, message, status, user_id) VALUES (?, ?, ?, 'pending', ?)",
       [tripId, email, message, user_id],
     );
     return result.insertId;
@@ -79,7 +80,7 @@ class invitationRepository {
 
   async readParticipate(id: number): Promise<number> {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT COUNT(i.id) AS participants
+      `SELECT COUNT(i.id) + 1 AS participants
     FROM invitation i
     WHERE i.trip_id = ?
     AND i.status = "accepted"`,

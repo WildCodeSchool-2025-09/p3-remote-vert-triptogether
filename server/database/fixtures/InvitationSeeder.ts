@@ -32,7 +32,6 @@ class InvitationSeeder extends AbstractSeeder {
         ]),
         email: this.faker.internet.email(),
         message: this.faker.lorem.words(5),
-        token,
         created_at: CreatedDate.toISOString().split("T")[0],
         updated_at: null,
         user_id: this.getRef(invitedRef).insertId,

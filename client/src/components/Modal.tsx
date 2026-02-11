@@ -21,21 +21,20 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <button
-      type="button"
+    <div
       className="modal-overlay"
+      aria-modal="true"
       onClick={onClose}
-      aria-label="Fermer"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      }}
     >
       <div
         className="modal-content"
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
+        onKeyDown={(e) => e.stopPropagation()}
       >
         <button
           type="button"
@@ -48,7 +47,7 @@ function Modal({ isOpen, onClose, children }: ModalProps) {
 
         <div className="modal-inner">{children}</div>
       </div>
-    </button>
+    </div>
   );
 }
 

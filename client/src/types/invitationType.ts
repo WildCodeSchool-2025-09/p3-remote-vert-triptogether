@@ -12,6 +12,7 @@ export interface invitationType {
   invited_firstname?: string;
   invited_lastname?: string;
   lastReminderAt?: string | null;
+  message?: string | null;
 }
 
 export type Guest = {

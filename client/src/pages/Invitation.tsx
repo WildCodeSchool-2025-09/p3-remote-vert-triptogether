@@ -138,26 +138,26 @@ function Invitation() {
       toast.error("Erreur lors du traitement de l'invitation");
     }
   }
-
+  console.log(invitation);
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
+      <header className="invitation-header">
+        <nav className="invitation-navbar">Trip Together</nav>
       </header>
-      <main>
-        <section id="trip-infos" className="card">
+      <main className="invitation-main">
+        <section id="trip-infos" className="invitation-card">
           {/* Composant trip infos */}
         </section>
-        <section className="other-informations">
-          <article id="budget" className="card">
+        <section className="invitation-other-informations">
+          <article id="budget" className="invitation-card">
             {/* Composant budget autre US */}
           </article>
 
-          <article id="participants" className="card">
+          <article id="participants" className="invitation-card">
             {/* Composant participants */}
           </article>
         </section>
-        <article id="invitation" className="card invitation-card">
+        <article id="invitation" className="invitation-card">
           <ToastContainer
             position="top-center"
             autoClose={5000}
@@ -171,24 +171,25 @@ function Invitation() {
             theme="light"
           />
           <p className="invitation-text">Vous avez été invité·e par</p>
-          <img src="npc3.jpg" alt="" className="inviter-avatar" />
-          <p className="inviter-name">
+          <img src="npc3.jpg" alt="" className="invitation-avatar" />
+          <p className="invitation-inviter-name">
             {`${invitation?.creator_firstname ?? ""} ${
               invitation?.creator_lastname ?? ""
             }`}
           </p>
+          <p>"{invitation?.message}"</p>
 
           <div className="invitation-actions">
             <button
               type="button"
-              className="btn btn-primary"
+              className="invitation-btn-primary"
               onClick={() => invitationResponded("accepted")}
             >
               Accepter
             </button>
             <button
               type="button"
-              className="btn btn-outline"
+              className="invitation-btn-outline"
               onClick={() => invitationResponded("refused")}
             >
               Refuser

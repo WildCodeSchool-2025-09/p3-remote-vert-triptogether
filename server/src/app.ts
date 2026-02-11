@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import cors from "cors";
+import express from "express";
 import apiRouter from "./routers/api/router";
 
 const app = express();

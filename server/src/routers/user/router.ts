@@ -1,13 +1,13 @@
 import express from "express";
 import { verifyToken } from "../../modules/auth/authActions";
 import * as authActions from "../../modules/auth/authActions";
-import * as TripActions from "../../modules/trip/tripActions";
+import tripActions from "../../modules/trip/tripActions";
 import userActions from "../../modules/user/userActions";
 
 const router = express.Router();
 
 router.post("/", authActions.hashPassword, userActions.add);
-router.get("/my-trips", verifyToken, TripActions.browseMyTrip);
+router.get("/my-trips", verifyToken, tripActions.browseMyTrip);
 router.get("/", userActions.browse);
 router.get("/:id", userActions.read);
 

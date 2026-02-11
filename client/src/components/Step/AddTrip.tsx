@@ -2,7 +2,7 @@ import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import { useRef, useState } from "react";
 import { useParams } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
-import "./AddTrip.css";
+import "../../pages/styles/AddTrip.css";
 
 const libraries: "places"[] = ["places"];
 
@@ -30,7 +30,7 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
       comp.types.includes("country"),
     );
     const countryName = countryComp?.long_name;
-    const photoUrl = place.photos?.[0]?.getUrl() || "";
+    const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 600 }) || "";
 
     setCity(cityName);
     if (countryName) setCountry(countryName);

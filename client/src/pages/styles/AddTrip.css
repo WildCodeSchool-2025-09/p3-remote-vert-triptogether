@@ -2,9 +2,9 @@
 /* Formulaire d'ajout */
 .add-step-form-container {
   display: flex;
+  padding-top: 3rem;
   justify-content: center;
   margin-bottom: 3rem;
-  padding: 0 1rem;
 }
 
 .add-step-form {

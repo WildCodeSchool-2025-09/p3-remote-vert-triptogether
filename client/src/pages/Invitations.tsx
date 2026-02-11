@@ -1,24 +1,20 @@
-import "./styles/invitation.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import Guests from "../components/Guests/Guests";
 import NavTabs from "../components/NavTabs/NavTabs";
+import TripInfos from "../components/TripInfos/TripInfos";
 import type { Guest, invitationType } from "../types/invitationType";
+import type { Trip } from "../types/tripType";
+import "./styles/invitation.css";
 
 type RouteParams = {
   id: string;
 };
 
-type Invitations =
+type InvitationsResponse =
   | {
-      trip: {
-        id: number;
-        title: string;
-        description: string;
-        start_at: string;
-        end_at: string;
-        user_id: number;
+      trip: Trip & {
         owner_firstname?: string;
         owner_lastname?: string;
       };
@@ -30,6 +26,7 @@ function Invitations() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
 
+  const [trip, setTrip] = useState<Trip | null>(null);
   const [attendees, setAttendees] = useState<Guest[]>([]);
   const [otherInvitations, setOtherInvitations] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +54,7 @@ function Invitations() {
 
     fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`)
       .then(async (response) => {
-        const result: Invitations = await response.json();
+        const result: InvitationsResponse = await response.json();
 
         if (response.status === 400) {
           navigate("/", {
@@ -89,12 +86,13 @@ function Invitations() {
         }
 
         const { trip, invitations } = result;
+        setTrip(trip);
 
         const creator: Guest = {
-          id: trip.user_id,
+          id: trip.user_id || 0,
           name: `${trip.owner_firstname} ${trip.owner_lastname}`,
           avatarUrl: null,
-          addedAt: trip.start_at,
+          addedAt: trip.start_at || "",
           role: "organisateur",
         };
 
@@ -184,14 +182,8 @@ function Invitations() {
 
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-      <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
-        </section>
-
+      <TripInfos trip={trip} />
+      <main className="page">
         <NavTabs />
 
         <section id="member-list">

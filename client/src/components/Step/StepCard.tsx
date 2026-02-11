@@ -4,13 +4,14 @@ import type {
   StepCardProps,
   VotesStats,
 } from "../../types/voteType";
-import "./StepCard.css";
+import "../../pages/styles/StepCard.css";
 
 function StepCard({
   step,
   currentUserId,
   tripId,
   isMainDestination = false,
+  trip,
 }: StepCardProps) {
   const [votesData, setVotesData] = useState<VotesStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -18,6 +19,13 @@ function StepCard({
   const [comment, setComment] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showVotes, setShowVotes] = useState(false);
+
+  const [startDate, setStartDate] = useState(
+    trip?.start_at ? trip.start_at.split("T")[0] : "",
+  );
+  const [endDate, setEndDate] = useState(
+    trip?.end_at ? trip.end_at.split("T")[0] : "",
+  );
 
   const loadVotes = useCallback(() => {
     if (isMainDestination) return;
@@ -50,6 +58,11 @@ function StepCard({
   useEffect(() => {
     loadVotes();
   }, [loadVotes]);
+
+  useEffect(() => {
+    if (trip?.start_at) setStartDate(trip.start_at.split("T")[0]);
+    if (trip?.end_at) setEndDate(trip.end_at.split("T")[0]);
+  }, [trip]);
 
   const handleVote = (voteValue: boolean) => {
     setAlreadyVoted(true);
@@ -90,20 +103,19 @@ function StepCard({
   const hasVoted = Boolean(userVote);
 
   return (
-    <div className="step-card">
-      <article className="step-header">
-        <img
-          src={step.image_url || "/images/default-trip.jpg"}
-          alt={`Vue de ${step.city}`}
-        />
+    <div className="tripcard">
+      <article
+        className="trip-image"
+        style={{
+          backgroundImage: `url(${step.image_url || "/images/villedefault.jpg"})`,
+        }}
+      >
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
       </article>
-      <article className="step-body">
-        {isMainDestination ? (
-          <p>Destination principale</p>
-        ) : (
-          votesData && (
+      <article className="trip-info">
+        {!isMainDestination &&
+          (votesData ? (
             <div className="vote-stats">
               <div className="stat-item">
                 <span className="stat-value yes">
@@ -121,8 +133,7 @@ function StepCard({
                 {votesData.allVotes.length} vote(s)
               </div>
             </div>
-          )
-        )}
+          ) : null)}
         {error && <p className="error">{error}</p>}
         {!isMainDestination &&
           (loading ? (
@@ -207,6 +218,46 @@ function StepCard({
           </div>
         )}
       </article>
+      {isMainDestination && (
+        <div className="calendar-section">
+          <div className="calendar-header">
+            <span className="calendar-icon">📅</span>
+            <span>Dates du séjour</span>
+          </div>
+          <div className="calendar-inputs">
+            <div className="calendar-input-group">
+              <label
+                htmlFor={`start-date-${step.id}`}
+                className="calendar-label"
+              >
+                Départ
+              </label>
+              <input
+                type="date"
+                id={`start-date-${step.id}`}
+                className="calendar-date-input"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+            <div className="calendar-separator">➜</div>
+            <div className="calendar-input-group">
+              <label htmlFor={`end-date-${step.id}`} className="calendar-label">
+                Fin
+              </label>
+              <input
+                type="date"
+                id={`end-date-${step.id}`}
+                className="calendar-date-input"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

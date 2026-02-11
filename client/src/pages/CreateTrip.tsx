@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import "../styles/CreateTrip.css";
-import "../styles/mobile.css";
+import "./styles/CreateTrip.css";
+import "./styles/mobile.css";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
 import { useAuth } from "../contexts/AuthContext";
@@ -14,6 +14,7 @@ export default function CreateTrip() {
 
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
+  const [imageUrl, setImageUrl] = useState("");
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -40,15 +41,17 @@ export default function CreateTrip() {
       comp.types.includes("country"),
     );
     const countryName = countryComp?.long_name;
+    const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 1200 }) || "";
 
     setCity(cityName);
     if (countryName) setCountry(countryName);
+    setImageUrl(photoUrl);
   };
 
   const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // On vérifie le token dans le localStorage ou le state
+    // On vérifie le token dans le localStorage ou le state (Removed as requested)
     const token = localStorage.getItem("token") || auth?.token;
 
     if (!token) {
@@ -63,6 +66,7 @@ export default function CreateTrip() {
       end_at: endOfTrip.end_at,
       city,
       country,
+      image_url: imageUrl,
     };
 
     try {
@@ -80,7 +84,7 @@ export default function CreateTrip() {
 
       if (response.ok) {
         const result = await response.json();
-        navigate(`/trips/${result.insertId}`);
+        navigate("/my-trips");
       } else {
         const result = await response.json();
         toast.error(result.error || "Erreur lors de la création");

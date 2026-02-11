@@ -1,3 +1,5 @@
+import type { Trip } from "./tripType";
+
 export type Vote = {
   id: number;
   created_at: string;
@@ -35,4 +37,5 @@ export type StepCardProps = {
   currentUserId: number;
   tripId: number;
   isMainDestination?: boolean;
+  trip?: Trip | null;
 };

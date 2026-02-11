@@ -1,6 +1,7 @@
 import { Link, Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
-import "./App.css";
+import "./pages/styles/Reset.css";
+import "./pages/styles/App.css";
 import { useAuth } from "./contexts/AuthContext";
 
 function App() {
@@ -39,7 +40,7 @@ function App() {
       <main>
         <Outlet />
       </main>
-      <ToastContainer position="top-center" autoClose={5000} theme="light" />
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
     </>
   );
 }

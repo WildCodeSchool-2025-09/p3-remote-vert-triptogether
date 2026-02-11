@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import NavTabs from "../components/NavTabs/NavTabs";
 import AddStep from "../components/Step/AddTrip";
 import StepCard from "../components/Step/StepCard";
+import TripInfos from "../components/TripInfos/TripInfos";
+import NavTabs from "../components/NavTabs/NavTabs";
 import { useAuth } from "../contexts/AuthContext";
 import type { Trip } from "../types/tripType";
 import type { Step } from "../types/voteType";
-import "./styles/Step.css";
+import "./styles/invitations.css";
 
 type RouteParams = {
   id: string;
@@ -89,13 +90,11 @@ function Steps() {
   );
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-      <main>
-        <section id="trip-infos" className="card" />
-
+      <TripInfos trip={trip} />
+      <main className="page">
         <NavTabs />
+
+        <section className="step-infos" />
 
         <AddStep onStepAdded={fetchSteps} />
 
@@ -111,18 +110,19 @@ function Steps() {
                 <div>
                   {mainDestination && (
                     <>
-                      <h1>Destination principale</h1>
+                      <h2>Destination acceptée</h2>
                       <StepCard
                         key={mainDestination.id}
                         step={mainDestination}
                         currentUserId={currentUserId}
                         tripId={tripId}
                         isMainDestination={true}
+                        trip={trip}
                       />
                     </>
                   )}
+                  <h2>Propositions d'étapes</h2>
                   <div className="steps-container">
-                    <h1> Propositions d'étapes</h1>
                     {proposeDestination.map((step) => (
                       <StepCard
                         key={step.id}
@@ -130,6 +130,7 @@ function Steps() {
                         currentUserId={currentUserId}
                         tripId={tripId}
                         isMainDestination={false}
+                        trip={trip}
                       />
                     ))}
                   </div>

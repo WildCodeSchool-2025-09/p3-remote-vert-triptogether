@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "./styles/invitation.css";
 import type { invitationType } from "../types/invitationType";
+import type { Trip } from "../types/tripType";
+import TripInfos from "../components/TripInfos/TripInfos";
 
 function Invitation() {
   const { tripId, invitationId } = useParams<{
@@ -139,15 +141,23 @@ function Invitation() {
     }
   }
 
+  const tripForInfos: Trip | null = invitation
+    ? {
+        id: invitation.trip_id,
+        title: invitation.trip_title || "Voyage",
+        description: "",
+        city: "",
+        country: "",
+        start_at: invitation.trip_start,
+        end_at: "",
+        user_id: invitation.user_id,
+      }
+    : null;
+
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-      <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
-        </section>
+      <TripInfos trip={tripForInfos} />
+      <main className="page">
         <section className="other-informations">
           <article id="budget" className="card">
             {/* Composant budget autre US */}
@@ -195,7 +205,6 @@ function Invitation() {
             </button>
           </div>
         </article>
-        <footer>{/*footer */}</footer>
       </main>
     </>
   );

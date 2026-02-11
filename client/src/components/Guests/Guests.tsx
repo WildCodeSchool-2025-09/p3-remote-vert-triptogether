@@ -1,5 +1,5 @@
 import type { Guest } from "../../types/invitationType";
-import "./Guests.css";
+import "../../pages/styles/Guests.css";
 
 type GuestsProps =
   | {

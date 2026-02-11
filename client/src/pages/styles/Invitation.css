@@ -1,0 +1,136 @@
+.page {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: -80px;
+  position: relative;
+  z-index: 10;
+  padding-bottom: 80px;
+}
+
+.card {
+  gap: 50px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #dcdcdc;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
+  padding: 32px;
+  margin-bottom: 24px;
+}
+
+.other-informations {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+  margin-bottom: 100px;
+}
+
+#budget,
+#participants {
+  min-height: 300px;
+  display: flex;
+  flex-direction: columns;
+}
+
+#budget::after {
+  content: "Composant budget dans autre US";
+  display: block;
+  text-align: center;
+  margin-top: 80px;
+}
+
+#participants::after {
+  content: "Composant participants dans autre US";
+  display: block;
+  text-align: center;
+  margin-top: 80px;
+}
+
+#invitation {
+  border: none;
+  background-color: #f2f2f2;
+  box-shadow: 0 0 0;
+  text-align: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  margin-bottom: 8px;
+  color: #4b5563;
+}
+
+.btn {
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin: 20px 15px 0 15px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.btn-primary {
+  background-color: #15803d;
+  color: #ffffff;
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: #15803d;
+  border-color: #15803d;
+}
+
+#invitation.invitation-card {
+  text-align: center;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.invitation-text {
+  margin-bottom: 8px;
+  color: #4b5563;
+}
+
+.inviter-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.inviter-name {
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.invitation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+footer {
+  height: 40vh;
+}
+
+@media (max-width: 900px) {
+  header {
+    height: 550px;
+  }
+
+  main {
+    margin-top: -40px;
+    padding: 0 16px 40px;
+  }
+
+  .other-informations {
+    grid-template-columns: 1fr;
+  }
+
+  .invitation-actions .btn {
+    width: 100%;
+    padding: 14px;
+  }
+}

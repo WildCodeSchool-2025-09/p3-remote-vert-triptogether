@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import Guests from "../components/Guests/Guests";
 import NavTabs from "../components/NavTabs/NavTabs";
 import TripInfos from "../components/TripInfos/TripInfos";
@@ -80,6 +80,10 @@ function Invitations() {
           return;
         }
 
+        if (!response.ok) {
+          throw new Error("Erreur chargement invitations");
+        }
+
         if (!("trip" in result)) {
           setError("Données invitations invalides.");
           return;
@@ -90,7 +94,7 @@ function Invitations() {
 
         const creator: Guest = {
           id: trip.user_id || 0,
-          name: `${trip.owner_firstname} ${trip.owner_lastname}`,
+          name: `${trip.owner_firstname ?? ""} ${trip.owner_lastname ?? ""}`.trim(),
           avatarUrl: null,
           addedAt: trip.start_at || "",
           role: "organisateur",
@@ -110,7 +114,7 @@ function Invitations() {
 
         const attendees: Guest[] = [creator, ...acceptedGuests];
 
-        const otherInvitations: Guest[] = invitations
+        const otherInvitationsGuests: Guest[] = invitations
           .filter((invitation) => invitation.status !== "accepted")
           .map((inv) => ({
             id: inv.user_id,
@@ -122,7 +126,7 @@ function Invitations() {
           }));
 
         setAttendees(attendees);
-        setOtherInvitations(otherInvitations);
+        setOtherInvitations(otherInvitationsGuests);
       })
       .catch((err) => {
         console.error("Erreur fetch invitations:", err);
@@ -182,7 +186,7 @@ function Invitations() {
 
   return (
     <>
-      <TripInfos trip={trip} />
+      {!loading && trip && <TripInfos trip={trip} />}
       <main className="page">
         <NavTabs />
 
@@ -238,18 +242,6 @@ function Invitations() {
           </div>
         )}
       </main>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 }

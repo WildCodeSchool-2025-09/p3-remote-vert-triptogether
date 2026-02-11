@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import NavTabs from "../components/NavTabs/NavTabs";
 import TripInfos from "../components/TripInfos/TripInfos";
 import { useToast } from "../hooks/useToast";
@@ -32,7 +32,7 @@ export function Trip() {
       return;
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/info/${tripId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
       .then(async (response) => {
         if (!response.ok) {
           if (response.status === 401) {
@@ -50,7 +50,6 @@ export function Trip() {
       });
   }, [tripId, navigate]);
 
-  console.log(trip);
   return (
     <>
       <TripInfos trip={trip} />
@@ -61,18 +60,6 @@ export function Trip() {
           <p>Bienvenue sur le récapitulatif de votre voyage.</p>
         </div>
       </main>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 }

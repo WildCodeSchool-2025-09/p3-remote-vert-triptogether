@@ -24,6 +24,17 @@ const browse: RequestHandler = async (_req, res, next) => {
     next(err);
   }
 };
+const browseTheTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const authReq = req as unknown as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+    const status = (req.query.status as TripStatus) || "futur";
+    const trips = await tripRepository.readByUser(userId, status);
+    res.json(trips);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const browseMyTrip: RequestHandler = async (req, res, next) => {
   try {
@@ -140,4 +151,4 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, browseMyTrip, read, delate, add };
+export default { browse, browseTheTrip, browseMyTrip, read, delate, add };

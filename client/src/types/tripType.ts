@@ -9,6 +9,5 @@ export type Trip = {
   image_url?: string;
   user_id?: number;
   participants?: number;
-  status?: "pending" | "accepted" | "refused";
   role?: "organizer" | "participant";
 };

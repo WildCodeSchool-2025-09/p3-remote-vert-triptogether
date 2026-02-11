@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "./styles/invitation.css";
 import TripInfos from "../components/TripInfos/TripInfos";
 import type { invitationType } from "../types/invitationType";
@@ -12,7 +12,7 @@ function Invitation() {
     invitationId: string;
   }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
-
+  const [mytrip, setmyTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +26,24 @@ function Invitation() {
         },
       });
     }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setmyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
 
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`)
       .then(async (response) => {
@@ -98,7 +116,7 @@ function Invitation() {
           },
         });
       });
-  }, [navigate, invitationId]);
+  }, [navigate, invitationId, tripId]);
 
   async function invitationResponded(status: "accepted" | "refused") {
     if (!invitationId) return;
@@ -141,28 +159,10 @@ function Invitation() {
     }
   }
 
-  const tripForInfos: Trip | null = invitation
-    ? {
-        id: invitation.trip_id,
-        title: invitation.trip_title || "Voyage",
-        description: "",
-        city: "",
-        country: "",
-        start_at: invitation.trip_start,
-        end_at: "",
-        user_id: invitation.user_id,
-      }
-    : null;
-
   return (
     <>
-      <header className="invitation-header">
-        <nav className="invitation-navbar">Trip Together</nav>
-      </header>
+      <TripInfos trip={mytrip} />
       <main className="invitation-main">
-        <section id="trip-infos" className="invitation-card">
-          <TripInfos trip={tripForInfos} />
-        </section>
         <section className="invitation-other-informations">
           <article id="budget" className="invitation-card">
             {/* Composant budget autre US */}
@@ -173,18 +173,6 @@ function Invitation() {
           </article>
         </section>
         <article id="invitation" className="invitation-card">
-          <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
           <p className="invitation-text">Vous avez été invité·e par</p>
           <img src="npc3.jpg" alt="" className="invitation-avatar" />
           <p className="invitation-inviter-name">

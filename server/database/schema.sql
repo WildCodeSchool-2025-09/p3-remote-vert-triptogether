@@ -19,7 +19,6 @@ CREATE TABLE trip (
   image_url TEXT,
   CONSTRAINT fk_trip_user
     FOREIGN KEY (user_id) REFERENCES user(id)
-    ON DELETE CASCADE
 );
 
 CREATE TABLE step (

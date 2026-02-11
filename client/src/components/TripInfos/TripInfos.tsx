@@ -1,9 +1,10 @@
 import TripCard from "../../pages/TripCard";
-import TripInvitation from "../../pages/TripInvitations";
+import TripInvitation from "../../pages/tripInvitations";
 import type { Trip } from "../../types/tripType";
 import Modal from "../Modal";
 import "./TripInfos.css";
 import { useState } from "react";
+
 type TripInfosProps = {
   trip: Trip | null;
 };
@@ -43,27 +44,26 @@ function TripInfos({ trip }: TripInfosProps) {
               startAt={trip.start_at}
               endAt={trip.end_at}
               participants={trip.participants}
-              status={trip.status}
               role={trip.role}
               onInvite={openInviteModal}
             />
           )}
-          <Modal isOpen={isInviteModalOpen} onClose={closeInviteModal}>
-            {trip && (
-              <TripInvitation
-                tripId={tripId}
-                title={trip.title}
-                city={trip.city}
-                country={trip.country}
-                startAt={trip.start_at}
-                endAt={trip.end_at}
-                participants={trip.participants}
-                onClose={closeInviteModal}
-              />
-            )}
-          </Modal>
         </article>
       </section>
+      <Modal isOpen={isInviteModalOpen} onClose={closeInviteModal}>
+        {trip && (
+          <TripInvitation
+            tripId={tripId}
+            title={trip.title}
+            city={trip.city}
+            country={trip.country}
+            startAt={trip.start_at}
+            endAt={trip.end_at}
+            participants={trip.participants}
+            onClose={closeInviteModal}
+          />
+        )}
+      </Modal>
     </>
   );
 }

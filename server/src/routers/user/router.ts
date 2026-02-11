@@ -7,7 +7,7 @@ import userActions from "../../modules/user/userActions";
 const router = express.Router();
 
 router.post("/", authActions.hashPassword, userActions.add);
-router.get("/my-trips", verifyToken, tripActions.browseMyTrip);
+router.get("/my-trips", verifyToken, tripActions.browseTheTrip);
 router.get("/", userActions.browse);
 router.get("/:id", userActions.read);
 

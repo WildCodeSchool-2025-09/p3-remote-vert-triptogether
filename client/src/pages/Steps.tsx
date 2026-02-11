@@ -8,6 +8,7 @@ import { useAuth } from "../contexts/AuthContext";
 import type { Trip } from "../types/tripType";
 import type { Step } from "../types/voteType";
 import "./styles/invitations.css";
+import { toast } from "react-toastify";
 
 type RouteParams = {
   id: string;
@@ -24,6 +25,7 @@ function Steps() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
   const [trip, setTrip] = useState<Trip | null>(null);
+  const [mytrip, setmyTrip] = useState<Trip | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -81,16 +83,34 @@ function Steps() {
 
   useEffect(() => {
     fetchSteps();
-  }, [fetchSteps]);
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setmyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
+  }, [fetchSteps, tripId]);
+
   const mainDestination = steps.find(
     (step) => trip && step.city === trip.city && step.country === trip.country,
   );
   const proposeDestination = steps.filter(
     (step) => step.id !== mainDestination?.id,
   );
+
   return (
     <>
-      <TripInfos trip={trip} />
+      <TripInfos trip={mytrip} />
 
       <main className="page">
         <NavTabs />

@@ -3,9 +3,19 @@ import { ToastContainer } from "react-toastify";
 import "./pages/styles/Reset.css";
 import "./pages/styles/App.css";
 import { useAuth } from "./contexts/AuthContext";
+import { useToast } from "./hooks/useToast";
 
 function App() {
   const { auth, logout } = useAuth();
+
+  function hello() {
+    const now = new Date();
+    const hour = now.getHours();
+    return hour < 17 ? "Bonjour" : "Bonsoir";
+  }
+
+  useToast();
+
   return (
     <>
       <nav>
@@ -32,7 +42,11 @@ function App() {
                   Logout
                 </button>
               </li>
-              {auth && <p>Hello {auth.user.email}</p>}
+              {auth && (
+                <p>
+                  {hello()} {auth.user.firstname} !
+                </p>
+              )}
             </>
           )}
         </ul>

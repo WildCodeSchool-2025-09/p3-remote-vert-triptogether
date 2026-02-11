@@ -3,7 +3,8 @@ import { type ReactNode, createContext, useContext, useState } from "react";
 type User = {
   id: number;
   email: string;
-  is_admin: boolean;
+  firstname: string;
+  lastname: string;
 };
 
 type Auth = {

@@ -53,7 +53,6 @@ class TripRepository {
 
     if (rows.length > 0) return true;
 
-    // Check if user is the owner
     const [ownerRows] = await databaseClient.query<Rows>(
       "SELECT id FROM trip WHERE id = ? AND user_id = ?",
       [tripId, userId],

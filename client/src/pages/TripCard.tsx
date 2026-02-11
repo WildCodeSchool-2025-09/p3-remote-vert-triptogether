@@ -2,12 +2,11 @@ import "./styles/TripCard.css";
 
 type TripCardProps = {
   title?: string;
-  city?: string;
-  country?: string;
+  city: string;
+  country: string;
   startAt: string;
   endAt: string;
-  participants?: number;
-  status?: "pending" | "accepted" | "refused";
+  participants: number | undefined;
   role?: "organizer" | "participant";
   onInvite?: () => void;
 };
@@ -19,7 +18,6 @@ function TripCard({
   startAt,
   endAt,
   participants,
-  status,
   role,
   onInvite,
 }: TripCardProps) {
@@ -57,7 +55,6 @@ function TripCard({
           {formatDate(startAt)} - {formatDate(endAt)}
         </p>
         <p className="tripcard-participants">{participants} participant(s)</p>
-        <p className="tripcard-status">{status}</p>
         <p className="tripcard-role">{role}</p>
       </article>
     </>

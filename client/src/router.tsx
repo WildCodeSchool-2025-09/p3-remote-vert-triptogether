@@ -14,23 +14,38 @@ export const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      // Redirection ou page par défaut
-      { index: true, element: <Navigate to="my-trips" replace /> },
-
-      // Routes d'authentification
-      { path: "login", element: <Login /> },
-      { path: "register", element: <Register /> },
-
-      // Routes de gestion des voyages
-      { path: "my-trips", element: <MyTrips /> },
-      { path: "create-trip", element: <CreateTrip /> },
-
-      // Routes spécifiques à un voyage (ID)
-      { path: "trip/:id", element: <Trip /> },
-      { path: "trip/:id/steps", element: <Steps /> },
-      { path: "trip/:id/invitations", element: <Invitations /> },
-
-      // Route spécifique pour une invitation précise
+      {
+        index: true,
+        element: <Navigate to="my-trips" replace />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+      {
+        path: "my-trips",
+        element: <MyTrips />,
+      },
+      {
+        path: "create-trip",
+        element: <CreateTrip />,
+      },
+      {
+        path: "trip/:id",
+        element: <Trip />,
+      },
+      {
+        path: "trip/:id/steps",
+        element: <Steps />,
+      },
+      {
+        path: "trip/:id/invitations",
+        element: <Invitations />,
+      },
       {
         path: "trip/:id/invitation/:invitationId",
         element: <Invitation />,

@@ -30,11 +30,15 @@ function TripInvitation({
   participants,
 }: TripInvitationProps) {
   const formatDate = (dateString: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return dateString;
+
     return new Intl.DateTimeFormat("fr-FR", {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }).format(new Date(dateString));
+    }).format(date);
   };
   const { id } = useParams<{ id: string }>();
 

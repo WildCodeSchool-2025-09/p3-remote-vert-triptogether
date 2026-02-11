@@ -2,6 +2,7 @@ import { Link, Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "./App.css";
 import { useState } from "react";
+import Footer from "./components/Footer/Footer";
 
 type User = {
   id: number;
@@ -60,6 +61,7 @@ function App() {
         <Outlet context={{ auth, setAuth }} />
       </main>
       <ToastContainer position="top-center" autoClose={5000} theme="light" />
+      <Footer />
     </>
   );
 }

@@ -27,6 +27,17 @@ const browse: RequestHandler = async (_req, res, next) => {
 
 const browseMyTrip: RequestHandler = async (req, res, next) => {
   try {
+    const tripId = Number(req.params.id);
+
+    const trip = await tripRepository.read(tripId);
+    if (trip == null) {
+      res.sendStatus(404);
+      return;
+    }
+
+    const participants = await invitationRepository.readParticipate(tripId);
+
+    res.json({ ...trip, participants });
     const authReq = req as unknown as RequestWithAuth;
     const userId = Number(authReq.auth.sub);
     const status = (req.query.status as TripStatus) || "futur";

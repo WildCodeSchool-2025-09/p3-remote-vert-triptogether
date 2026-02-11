@@ -8,7 +8,6 @@ import { useAuth } from "../contexts/AuthContext";
 import type { Trip } from "../types/tripType";
 import type { Step } from "../types/voteType";
 import "./styles/invitations.css";
-import TripCard from "./TripCard";
 
 type RouteParams = {
   id: string;
@@ -94,7 +93,6 @@ function Steps() {
       <TripInfos trip={trip} />
 
       <main className="page">
-
         <NavTabs />
 
         <section className="step-infos" />

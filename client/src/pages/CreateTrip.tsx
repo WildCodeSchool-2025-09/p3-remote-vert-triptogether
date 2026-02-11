@@ -83,7 +83,7 @@ export default function CreateTrip() {
       );
 
       if (response.ok) {
-        const result = await response.json();
+        await response.json();
         navigate("/my-trips");
       } else {
         const result = await response.json();

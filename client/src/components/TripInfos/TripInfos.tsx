@@ -1,6 +1,5 @@
 import type { Trip } from "../../types/tripType";
 import "./TripInfos.css";
-import { formatDate } from "../../utils/dateUtils";
 
 type TripInfosProps = {
   trip: Trip | null;
@@ -22,9 +21,6 @@ function TripInfos({ trip }: TripInfosProps) {
           <p>{trip.description}</p>
         </div>
       </header>
-      <section id="trip-infos" className="card">
-
-      </section>
     </>
   );
 }

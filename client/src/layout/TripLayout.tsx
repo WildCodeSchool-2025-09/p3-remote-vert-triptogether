@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
-import { Outlet, useParams, useLocation } from "react-router";
+import { Outlet, useParams } from "react-router";
 import { toast } from "react-toastify";
-import TripInfos from "../components/TripInfos/TripInfos";
 import NavTabs from "../components/NavTabs/NavTabs";
+import TripInfos from "../components/TripInfos/TripInfos";
 import type { Trip } from "../types/tripType";
 
 export default function TripLayout() {
   const { id } = useParams<{ id: string }>();
   const [trip, setTrip] = useState<Trip | null>(null);
-  const location = useLocation();
 
   useEffect(() => {
     if (!id) return;

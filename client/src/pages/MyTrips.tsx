@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import "./styles/Reset.css";
 import "./styles/MyTrips.css";
 import "./styles/StepCard.css";
+import { createPortal } from "react-dom";
 import { Link } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
-import { createPortal } from "react-dom";
 
 interface Trip {
   id: number;

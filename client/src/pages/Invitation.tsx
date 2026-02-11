@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "./styles/invitation.css";
+import TripInfos from "../components/TripInfos/TripInfos";
 import type { invitationType } from "../types/invitationType";
 import type { Trip } from "../types/tripType";
-import TripInfos from "../components/TripInfos/TripInfos";
 
 function Invitation() {
   const { tripId, invitationId } = useParams<{

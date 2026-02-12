@@ -1,5 +1,5 @@
 import TripCard from "../pages/TripCard";
-import TripInvitation from "../pages/tripInvitations";
+import TripInvitation from "../pages/TripInvitations";
 import type { Trip } from "../types/tripType";
 import Modal from "./Modal";
 import "../pages/styles/TripInfos.css";

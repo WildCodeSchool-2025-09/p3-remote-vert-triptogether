@@ -139,6 +139,7 @@ const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
         user_id: trip.user_id,
         owner_firstname: trip.owner_firstname,
         owner_lastname: trip.owner_lastname,
+        image_url: trip.image_url,
       },
       invitations,
     });

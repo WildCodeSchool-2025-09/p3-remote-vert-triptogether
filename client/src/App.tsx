@@ -1,37 +1,25 @@
 import { Link, Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
-import "./App.css";
-import { useState } from "react";
-
-type User = {
-  id: number;
-  email: string;
-};
-
-type Auth = {
-  user: User;
-  token: string;
-};
+import "./pages/styles/Reset.css";
+import "./pages/styles/App.css";
+import { useAuth } from "./contexts/AuthContext";
+import { useToast } from "./hooks/useToast";
 
 function App() {
-  const [auth, setAuth] = useState<Auth | null>(() => {
-    const savedAuth = localStorage.getItem("auth");
-    return savedAuth ? JSON.parse(savedAuth) : null;
-  });
+  const { auth, logout } = useAuth();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("auth");
-    setAuth(null);
-  };
+  function hello() {
+    const now = new Date();
+    const hour = now.getHours();
+    return hour < 17 ? "Bonjour" : "Bonsoir";
+  }
+
+  useToast();
 
   return (
     <>
       <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
+        <ul className="Testnavbar">
           {auth == null ? (
             <>
               <li>
@@ -47,19 +35,26 @@ function App() {
                 <Link to="/create-trip">Créer un voyage</Link>
               </li>
               <li>
-                <button type="button" onClick={handleLogout}>
+                <Link to="/my-trips">Mes voyages</Link>
+              </li>
+              <li>
+                <button type="button" onClick={logout}>
                   Logout
                 </button>
               </li>
+              {auth && (
+                <p>
+                  {hello()} {auth.user.firstname} !
+                </p>
+              )}
             </>
           )}
         </ul>
       </nav>
-      {auth && <p>Hello {auth.user.email}</p>}
       <main>
-        <Outlet context={{ auth, setAuth }} />
+        <Outlet />
       </main>
-      <ToastContainer position="top-center" autoClose={5000} theme="light" />
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
     </>
   );
 }

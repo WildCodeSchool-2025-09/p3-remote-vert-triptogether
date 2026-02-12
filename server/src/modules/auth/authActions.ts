@@ -82,9 +82,7 @@ export const verifyToken: RequestHandler = (req, res, next) => {
       process.env.APP_SECRET as string,
     ) as MyPayload;
 
-    // Cast vers notre type étendu
     (req as RequestWithAuth).auth = decoded;
-
     next();
   } catch (err) {
     console.error("JWT Verification Error:", err);

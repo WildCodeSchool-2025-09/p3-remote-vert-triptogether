@@ -3,7 +3,7 @@ import TripSeeder from "./TripSeeder";
 
 class DestinationSeeder extends AbstractSeeder {
   constructor() {
-    super({ table: "destination", truncate: true, dependencies: [TripSeeder] });
+    super({ table: "step", truncate: true, dependencies: [TripSeeder] });
   }
 
   async run() {

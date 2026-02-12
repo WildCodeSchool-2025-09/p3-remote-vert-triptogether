@@ -44,4 +44,5 @@ const logErrors: ErrorRequestHandler = (err, req, res, next) => {
 };
 
 app.use(logErrors);
+
 export default app;

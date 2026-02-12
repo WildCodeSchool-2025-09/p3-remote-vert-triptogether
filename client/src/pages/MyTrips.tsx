@@ -120,18 +120,18 @@ export default function MyTrips() {
                 <div
                   className="trip-image"
                   style={{
-                    backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/villedefault.jpg"})`,
+                    backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/default-city.jpg"})`,
                   }}
                 >
                   <h2>{trip.title}</h2>
                 </div>
                 <div className="trip-info">
                   <p>
-                    <img src="/images/Icone localisation.png" alt="" />
+                    <img src="/images/location-icon.png" alt="" />
                     {trip.city}, {trip.country}
                   </p>
                   <p>
-                    <img src="/images/Icone calendrier 1.png" alt="" />
+                    <img src="/images/calendar-icon.png" alt="" />
                     {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
                   </p>
                 </div>

@@ -4,7 +4,7 @@ body {
   font-size: 32px;
 }
 
-header {
+.invitation-header {
   background-image: url(../../../header-background-city.png);
   background-repeat: no-repeat;
   background-size: cover;
@@ -13,12 +13,12 @@ header {
   font-size: var(--font-size-XL);
 }
 
-header > nav {
+.invitation-navbar {
   background-color: white;
   height: 80px;
 }
 
-main {
+.invitation-main {
   max-width: 1160px;
   margin: 0 auto;
   padding: 0 20px;
@@ -30,7 +30,7 @@ main {
   position: relative;
 }
 
-.card {
+.invitation-card {
   gap: 50px;
   background-color: #ffffff;
   border-radius: 20px;
@@ -59,7 +59,7 @@ main {
   justify-content: center;
 }
 
-.other-informations {
+.invitation-other-informations {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
   gap: 24px;
@@ -98,7 +98,8 @@ main {
   color: #4b5563;
 }
 
-.btn {
+.invitation-btn-primary,
+.invitation-btn-outline {
   border-radius: 8px;
   padding: 8px 16px;
   margin: 20px 15px 0 15px;
@@ -107,12 +108,12 @@ main {
   border: 1px solid transparent;
 }
 
-.btn-primary {
+.invitation-btn-primary {
   background-color: #15803d;
   color: #ffffff;
 }
 
-.btn-outline {
+.invitation-btn-outline {
   background-color: #ffffff;
   color: #15803d;
   border-color: #15803d;
@@ -129,7 +130,7 @@ main {
   color: #4b5563;
 }
 
-.inviter-avatar {
+.invitation-avatar {
   width: 64px;
   height: 64px;
   border-radius: 999px;
@@ -137,7 +138,7 @@ main {
   margin-bottom: 8px;
 }
 
-.inviter-name {
+.invitation-inviter-name {
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -162,7 +163,7 @@ footer {
     padding: 0 16px 40px;
   }
 
-  .other-informations {
+  .invitation-other-informations {
     grid-template-columns: 1fr;
   }
 

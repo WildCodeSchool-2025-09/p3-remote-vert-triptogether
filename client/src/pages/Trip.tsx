@@ -1,8 +1,24 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import Modal from "../components/Modal";
 import NavTabs from "../components/NavTabs/NavTabs";
 import { useToast } from "../hooks/useToast";
+import TripCard from "./TripCard";
+import TripInvitation from "./TripInvitations";
+import "./styles/Trip.css";
+
+type Trip = {
+  tripId: number;
+  title: string;
+  city: string;
+  country: string;
+  start_at: string;
+  end_at: string;
+  participants: number;
+  status: "pending" | "accepted" | "refused";
+  role: "organizer" | "participant";
+};
 
 export function Trip() {
   type RouteParams = {
@@ -11,10 +27,11 @@ export function Trip() {
 
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const [trip, setTrip] = useState<Trip | null>(null);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const navigate = useNavigate();
   useToast();
-
   useEffect(() => {
     if (!tripId) {
       navigate("/", {
@@ -29,6 +46,23 @@ export function Trip() {
     }
   }, [tripId, navigate]);
 
+  const openInviteModal = () => {
+    setIsInviteModalOpen(true);
+  };
+
+  const closeInviteModal = () => {
+    setIsInviteModalOpen(false);
+  };
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
+      .then((res) => res.json())
+      .then((data) => setTrip(data))
+      .catch(() => {
+        toast.error("Impossible de charger le voyage");
+      });
+  }, [id]);
+  console.log(trip);
   return (
     <>
       <ToastContainer
@@ -44,15 +78,43 @@ export function Trip() {
         theme="light"
       />
       <header>
-        <nav>Trip Together</nav>
+        <nav className="trip-navbar">Trip Together</nav>
       </header>
       <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
+        <section className="trip-trip-infos">
+          <article className="trip-tripinfocard">
+            {trip && (
+              <TripCard
+                title={trip.title}
+                city={trip.city}
+                country={trip.country}
+                startAt={trip.start_at}
+                endAt={trip.end_at}
+                participants={trip.participants}
+                status={trip.status}
+                role={trip.role}
+                onInvite={openInviteModal}
+              />
+            )}
+          </article>
         </section>
 
         <NavTabs />
       </main>
+      <Modal isOpen={isInviteModalOpen} onClose={closeInviteModal}>
+        {trip && (
+          <TripInvitation
+            tripId={tripId}
+            title={trip.title}
+            city={trip.city}
+            country={trip.country}
+            startAt={trip.start_at}
+            endAt={trip.end_at}
+            participants={trip.participants}
+            onClose={closeInviteModal}
+          />
+        )}
+      </Modal>
     </>
   );
 }

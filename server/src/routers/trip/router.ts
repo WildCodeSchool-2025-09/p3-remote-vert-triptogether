@@ -12,7 +12,7 @@ router.get("/info/:id", tripActions.read);
 router.post("/:id/invitations", invitationActions.add);
 
 router.get("/", tripActions.browse);
-router.get("/:id", tripActions.browseMyTrip);
+router.get("/:id", verifyToken, tripActions.browseMyTrip);
 
 router.get("/countries", tripActions.browse);
 router.post("/", verifyToken, tripActions.add);

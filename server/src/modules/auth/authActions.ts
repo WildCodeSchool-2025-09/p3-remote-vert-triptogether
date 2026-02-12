@@ -83,7 +83,6 @@ export const verifyToken: RequestHandler = (req, res, next) => {
     ) as MyPayload;
 
     (req as RequestWithAuth).auth = decoded;
-    console.log("Decoded sub:", decoded.sub);
     next();
   } catch (err) {
     console.error("JWT Verification Error:", err);

@@ -5,7 +5,7 @@ import Modal from "../components/Modal";
 import NavTabs from "../components/NavTabs/NavTabs";
 import { useToast } from "../hooks/useToast";
 import TripCard from "./TripCard";
-import TripInvitation from "./TripInvitations";
+import TripInvitation from "./TripInvitation";
 import "./styles/Trip.css";
 
 type Trip = {

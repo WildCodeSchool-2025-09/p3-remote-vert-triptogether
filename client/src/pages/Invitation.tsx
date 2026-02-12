@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import "./styles/invitation.css";
-import TripInfos from "../components/TripInfos/TripInfos";
+import BudgetCard from "../components/BudgetCard";
+import ParticipantsCard from "../components/ParticipantsCard";
+import TripInfos from "../components/TripInfos";
 import type { invitationType } from "../types/invitationType";
 import type { Trip } from "../types/tripType";
 
 function Invitation() {
-  const { tripId, invitationId } = useParams<{
-    tripId: string;
+  const { id, invitationId } = useParams<{
+    id: string;
     invitationId: string;
   }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
@@ -27,7 +29,7 @@ function Invitation() {
       });
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
 
       .then(async (response) => {
         if (!response.ok) {
@@ -116,7 +118,7 @@ function Invitation() {
           },
         });
       });
-  }, [navigate, invitationId, tripId]);
+  }, [navigate, invitationId, id]);
 
   async function invitationResponded(status: "accepted" | "refused") {
     if (!invitationId) return;
@@ -136,7 +138,7 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        navigate(`/trip/${tripId ?? invitation?.trip_id}`, {
+        navigate(`/trip/${id ?? invitation?.trip_id}`, {
           state: {
             toast: {
               type: "success",
@@ -164,17 +166,17 @@ function Invitation() {
       <TripInfos trip={mytrip} />
       <main className="invitation-main">
         <section className="invitation-other-informations">
-          <article id="budget" className="invitation-card">
-            {/* Composant budget autre US */}
-          </article>
+          <BudgetCard />
 
-          <article id="participants" className="invitation-card">
-            {/* Composant participants */}
-          </article>
+          <ParticipantsCard />
         </section>
         <article id="invitation" className="invitation-card">
           <p className="invitation-text">Vous avez été invité·e par</p>
-          <img src="npc3.jpg" alt="" className="invitation-avatar" />
+          <img
+            src="/mini-profile-pic.png"
+            alt={invitation?.creator_firstname}
+            className="invitation-avatar"
+          />
           <p className="invitation-inviter-name">
             {`${invitation?.creator_firstname ?? ""} ${
               invitation?.creator_lastname ?? ""

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import Guests from "../components/Guests/Guests";
-import NavTabs from "../components/NavTabs/NavTabs";
-import TripInfos from "../components/TripInfos/TripInfos";
+import Guests from "../components/Guests";
+import NavTabs from "../components/NavTabs";
+import TripInfos from "../components/TripInfos";
 import type { Guest, invitationType } from "../types/invitationType";
 import type { Trip } from "../types/tripType";
 import "./styles/invitation.css";
@@ -27,6 +27,7 @@ function Invitations() {
   const tripId = Number(id);
 
   const [trip, setTrip] = useState<Trip | null>(null);
+  const [mytrip, setmyTrip] = useState<Trip | null>(null);
   const [attendees, setAttendees] = useState<Guest[]>([]);
   const [otherInvitations, setOtherInvitations] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +52,23 @@ function Invitations() {
 
     setLoading(true);
     setError(null);
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setmyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
 
     fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`)
       .then(async (response) => {
@@ -186,7 +204,7 @@ function Invitations() {
 
   return (
     <>
-      {!loading && trip && <TripInfos trip={trip} />}
+      {!loading && trip && <TripInfos trip={mytrip} />}
       <main className="page">
         <NavTabs />
 

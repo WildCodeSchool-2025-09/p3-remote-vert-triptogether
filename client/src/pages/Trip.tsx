@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import NavTabs from "../components/NavTabs/NavTabs";
-import TripInfos from "../components/TripInfos/TripInfos";
+import NavTabs from "../components/NavTabs";
+import TripInfos from "../components/TripInfos";
 import { useToast } from "../hooks/useToast";
 import "./styles/Trip.css";
 import type { Trip as TripType } from "../types/tripType";

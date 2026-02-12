@@ -3,8 +3,8 @@ import type {
   CreateVotePayload,
   StepCardProps,
   VotesStats,
-} from "../../types/voteType";
-import "../../pages/styles/StepCard.css";
+} from "../types/voteType";
+import "../pages/styles/StepCard.css";
 
 function StepCard({
   step,

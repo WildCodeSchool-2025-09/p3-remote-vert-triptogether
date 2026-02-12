@@ -1,8 +1,8 @@
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import { useRef, useState } from "react";
 import { useParams } from "react-router";
-import { useAuth } from "../../contexts/AuthContext";
-import "../../pages/styles/AddTrip.css";
+import { useAuth } from "../contexts/AuthContext";
+import "../pages/styles/AddTrip.css";
 
 const libraries: "places"[] = ["places"];
 

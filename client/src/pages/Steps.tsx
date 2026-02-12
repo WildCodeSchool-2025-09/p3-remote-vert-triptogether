@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router";
-import NavTabs from "../components/NavTabs/NavTabs";
-import AddStep from "../components/Step/AddTrip";
-import StepCard from "../components/Step/StepCard";
-import TripInfos from "../components/TripInfos/TripInfos";
+import AddStep from "../components/AddTrip";
+import NavTabs from "../components/NavTabs";
+import StepCard from "../components/StepCard";
+import TripInfos from "../components/TripInfos";
 import { useAuth } from "../contexts/AuthContext";
 import type { Trip } from "../types/tripType";
 import type { Step } from "../types/voteType";

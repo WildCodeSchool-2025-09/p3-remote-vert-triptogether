@@ -1,8 +1,8 @@
-import TripCard from "../../pages/TripCard";
-import TripInvitation from "../../pages/tripInvitations";
-import type { Trip } from "../../types/tripType";
-import Modal from "../Modal";
-import "./TripInfos.css";
+import TripCard from "../pages/TripCard";
+import TripInvitation from "../pages/tripInvitations";
+import type { Trip } from "../types/tripType";
+import Modal from "./Modal";
+import "../pages/styles/TripInfos.css";
 import { useState } from "react";
 
 type TripInfosProps = {

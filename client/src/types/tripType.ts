@@ -17,3 +17,15 @@ export type StepCardProps = {
   tripId: number;
   memberCount?: number;
 };
+
+export type StepsResponse =
+  | {
+      trip: {
+        id: number;
+        title: string;
+        description: string;
+        memberCount: number;
+      };
+      steps: Step[];
+    }
+  | { error?: string; message?: string };

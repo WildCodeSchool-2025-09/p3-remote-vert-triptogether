@@ -3,7 +3,7 @@ export type Trip = {
   title: string;
   description: string;
   city: string;
-  country: "";
+  country: string;
   start_at: string;
   end_at: string;
   user_id: number;

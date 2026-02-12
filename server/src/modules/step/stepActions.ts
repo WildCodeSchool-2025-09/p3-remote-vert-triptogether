@@ -59,6 +59,7 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
         id: step.id,
         city: step.city,
         country: step.country,
+        // creator_name: step.creator_name,
         trip_id: step.trip_id,
         status,
         voteStats: {

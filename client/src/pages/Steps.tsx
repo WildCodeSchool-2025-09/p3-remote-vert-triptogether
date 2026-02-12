@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import StepCard from "../components/Step/StepCard";
-import type { Step } from "../types/tripType";
+import type { Step, StepsResponse } from "../types/tripType";
 import "./styles/Steps.css";
 import { useNavigate, useParams } from "react-router";
 import NavTabs from "../components/NavTabs/NavTabs";
@@ -8,18 +8,6 @@ import NavTabs from "../components/NavTabs/NavTabs";
 type RouteParams = {
   id: string;
 };
-
-type StepsResponse =
-  | {
-      trip: {
-        id: number;
-        title: string;
-        description: string;
-        memberCount: number;
-      };
-      steps: Step[];
-    }
-  | { error?: string; message?: string };
 
 function Steps() {
   const { id } = useParams<RouteParams>();
@@ -116,7 +104,7 @@ function Steps() {
           {error && <p className="error">{error}</p>}
 
           {!loading && !error && (
-            <div>
+            <>
               {pendingSteps.length > 0 && (
                 <div className="steps-section">
                   <h2 className="section-title">
@@ -189,7 +177,7 @@ function Steps() {
               {steps.length === 0 && (
                 <p className="no-steps">Aucune étape pour le moment</p>
               )}
-            </div>
+            </>
           )}
         </section>
       </main>

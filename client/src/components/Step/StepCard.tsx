@@ -104,7 +104,7 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
         <h3 id="step-header-end">Proposée par </h3>
-        {/* ajout à faire du nom du user qui a créé l'étape */}
+        {/* ajouter {step.creator_name} */}
       </article>
       <article className="step-body">
         <div className="vote-progress">

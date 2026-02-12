@@ -1,19 +1,26 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import NavTabs from "../components/NavTabs/NavTabs";
 import { useToast } from "../hooks/useToast";
+import "./styles/Trip.css";
+import StepCard from "../components/Step/StepCard";
+import type { Step } from "../types/tripType";
 
-export function Trip() {
+function Trip() {
   type RouteParams = {
     id: string;
   };
 
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [memberCount, setMemberCount] = useState(0);
 
   const navigate = useNavigate();
   useToast();
+
+  const currentUserId = 1;
 
   useEffect(() => {
     if (!tripId) {
@@ -27,32 +34,58 @@ export function Trip() {
       });
       return;
     }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`)
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setSteps(data.steps);
+        setMemberCount(data.trip.memberCount);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
   }, [tripId, navigate]);
+
+  const validatedSteps = steps.filter((s) => s.status === "validated");
 
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
       <header>
         <nav>Trip Together</nav>
       </header>
-      <main>
+      <main className="page">
         <section id="trip-infos" className="card">
           {/* Composant trip infos */}
         </section>
-
         <NavTabs />
+        <section className="steps-section">
+          <h2 className="section-title">Récapitulatif du voyage</h2>
+          <p className="section-subtitle">
+            Voici les étapes validées par les membres
+          </p>
+          <section className="steps-container">
+            {validatedSteps.map((step) => (
+              <StepCard
+                key={step.id}
+                step={step}
+                currentUserId={currentUserId}
+                tripId={tripId}
+                memberCount={memberCount}
+              />
+            ))}
+          </section>
+        </section>
       </main>
     </>
   );
 }
+
+export default Trip;

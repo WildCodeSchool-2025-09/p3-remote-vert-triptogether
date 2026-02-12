@@ -26,9 +26,13 @@ CREATE TABLE step (
   city VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   trip_id INT NOT NULL,
+  -- user_id INT NOT NULL,
   CONSTRAINT fk_step_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
     ON DELETE CASCADE
+  -- CONSTRAINT fk_step_user
+  --   FOREIGN KEY (user_id) REFERENCES user(id)
+  --   ON DELETE CASCADE
 );
 
 CREATE TABLE category (

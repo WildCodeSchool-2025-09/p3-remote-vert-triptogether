@@ -4,7 +4,7 @@ import CreateTrip from "./pages/CreateTrip";
 import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";
 import Steps from "./pages/Steps";
-import { Trip } from "./pages/Trip";
+import Trip from "./pages/Trip";
 
 export const router = createBrowserRouter([
   {

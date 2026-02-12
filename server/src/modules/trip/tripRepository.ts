@@ -39,6 +39,21 @@ class TripRepository {
     return rows[0] as Trip;
   }
 
+  async readTripInfo(id: number): Promise<Trip | null> {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT t.id, t.title, t.description, t.start_at, t.end_at, t.city, t.country, t.image_url, COUNT(i.id) AS participants 
+      FROM trip t 
+      LEFT JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
+      WHERE t.id = ? 
+      GROUP BY t.id`,
+      [id],
+    );
+
+    if (rows.length === 0) return null;
+
+    return rows[0] as Trip;
+  }
+
   async readAll() {
     const [rows] = await databaseClient.query<Rows>("SELECT * FROM trip");
 

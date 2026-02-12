@@ -1,15 +1,15 @@
 import express from "express";
-
-const router = express.Router();
-
 import invitationActions from "../../modules/invitation/invitationActions";
 import invitationServices from "../../modules/invitation/invitationServices";
-
 import stepActions from "../../modules/step/stepActions";
 import TripActions from "../../modules/trip/tripActions";
 
+const router = express.Router();
+
 router.get("/", TripActions.browse);
 router.get("/:id", TripActions.read);
+
+router.get("/info/:id", TripActions.read);
 
 router.post("/", TripActions.add);
 

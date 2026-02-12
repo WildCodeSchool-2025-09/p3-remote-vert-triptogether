@@ -124,6 +124,7 @@ class stepRepository {
       FROM step s
       WHERE s.trip_id = ?
       ORDER BY s.id ASC`,
+      // ajouter u.firstname AS creator_name, dans SELECT et JOIN user u ON u.id = s.user_id après FROM step s
       [tripId],
     );
     return rows;

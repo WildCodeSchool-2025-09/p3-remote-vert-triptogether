@@ -14,14 +14,13 @@ const browse: RequestHandler = async (req, res, next) => {
 
 const read: RequestHandler = async (req, res, next) => {
   try {
-    const tripId = Number(req.params.id);
-    const trip = await tripRepository.read(tripId);
-
-    if (trip == null) {
+    const id = Number(req.params.id);
+    const trip = await tripRepository.readTripInfo(Number(id));
+    if (!trip) {
       res.sendStatus(404);
-    } else {
-      res.json(trip);
+      return;
     }
+    res.json(trip);
   } catch (err) {
     next(err);
   }

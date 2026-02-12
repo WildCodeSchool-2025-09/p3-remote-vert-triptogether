@@ -104,7 +104,7 @@ const addStepCity: RequestHandler = async (req, res, next) => {
       trip_id: tripId,
       city,
       country,
-      image_url: finalImageUrl || "/images/default-trip.jpg",
+      image_url: finalImageUrl || "/images/default-city.jpg",
     });
 
     return res.status(201).json({

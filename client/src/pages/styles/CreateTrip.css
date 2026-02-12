@@ -1,3 +1,4 @@
+/* --- Styles Généraux --- */
 body {
   font-size: 16px;
   margin: 0;
@@ -10,8 +11,10 @@ body {
   justify-content: center;
   align-items: center;
   background-color: var(--background);
+  padding-bottom: 10vh;
 }
 
+/* --- Navigation --- */
 .button-back-arrow {
   all: unset;
   cursor: pointer;
@@ -31,27 +34,23 @@ body {
   height: auto;
 }
 
+/* --- Typographie --- */
 .create-trip-page > img {
   width: 5.5rem;
   height: 5.5rem;
   margin-top: 10rem;
 }
 
-.create-trip-page h1 {
-  font-family: var(--body-text);
-  font-size: 3rem;
-  font-weight: 800;
-  color: var(--black);
-  margin-top: 7rem;
-}
-
+.create-trip-page h1, 
 .create-trip-page h1 span {
   font-family: var(--body-text);
   font-size: 3rem;
   font-weight: 800;
-  color: var(--primary-button);
   margin-top: 7rem;
 }
+
+.create-trip-page h1 { color: var(--black); }
+.create-trip-page h1 span { color: var(--primary-button); }
 
 .create-trip-page > p {
   margin-top: 1rem;
@@ -61,6 +60,7 @@ body {
   font-weight: 400;
 }
 
+/* --- Formulaire --- */
 .create-trip-form {
   display: flex;
   flex-direction: column;
@@ -73,23 +73,12 @@ body {
   background-color: #ffffff;
 }
 
-.create-trip-form p {
-  font-family: var(--body-text);
-  color: var(--black);
-  opacity: 0.76px;
-  max-width: 53vw;
-}
-
 .form-group {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-top: 10vh;
   flex: 1;
-}
-
-.country {
-  display: none;
 }
 
 .form-group label {
@@ -99,24 +88,57 @@ body {
   color: var(--black);
 }
 
-.date-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 6.9rem;
-}
-
-.form-group input {
+/* --- Inputs Standards & Autocomplete --- */
+/* On harmonise le style pour que l'autocomplete ressemble aux inputs */
+.form-group input, 
+.create-trip-form gmp-place-autocomplete {
   box-sizing: border-box;
   height: 8vh;
   border-radius: 12px;
   font-family: var(--body-text);
   font-size: 2rem;
   margin-top: 20px;
+  width: 56vw;
+  border: 1px solid #000; /* Ta bordure noire de base */
+  background-color: #fff;
+}
+
+/* Spécificités pour l'Autocomplete Google (Suppression du BLEU) */
+.create-trip-form gmp-place-autocomplete {
+  display: block;
+  padding: 0;
+  overflow: hidden; /* Pour que l'input interne respecte le border-radius */
+}
+
+/* C'est ici qu'on "tue" le contour bleu à l'intérieur du composant */
+.create-trip-form gmp-place-autocomplete::part(input) {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: none !important;
+  outline: none !important;      /* Supprime le contour bleu */
+  box-shadow: none !important;   /* Supprime l'ombre bleue */
   padding-left: 1.5rem;
   padding-right: 1.5rem;
-  width: 56vw;
+  font-family: var(--body-text);
+  font-size: 2rem;
+  color: var(--black);
+}
+
+/* Suppression globale de l'outline sur le focus pour tout le formulaire */
+*:focus, *:focus-visible, *:focus-within {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* --- Conteneurs spéciaux --- */
+.date-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding-left: 2vw;
+  gap: 6.9rem;
 }
 
 .date-container .form-group input {
@@ -140,6 +162,7 @@ body {
   text-align: center;
 }
 
+/* --- Boutons --- */
 .button-container {
   display: flex;
   justify-content: center;
@@ -175,10 +198,4 @@ body {
   background-color: transparent;
   color: var(--grey);
   border: 1px solid var(--grey);
-}
-
-.button-container button[type="button"]:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--black);
-  border-color: var(--black);
 }

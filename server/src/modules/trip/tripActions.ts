@@ -136,7 +136,7 @@ const add: RequestHandler = async (req, res, next) => {
       start_at,
       end_at,
       user_id: Number(authReq.auth.sub),
-      image_url: finalImageUrl || "/images/default-trip.jpg",
+      image_url: finalImageUrl || "/images/default-city.jpg",
     };
 
     const insertId = await tripRepository.create(newTrip);

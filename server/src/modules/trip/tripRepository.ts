@@ -131,8 +131,15 @@ class TripRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT * FROM trip WHERE user_id = ? ${dateCondition} ORDER BY start_at ASC`,
-      [userId],
+      `SELECT t.*, u.*
+    FROM trip t
+    JOIN user u ON u.id = t.user_id
+    WHERE (t.user_id = ? 
+    OR EXISTS (
+    SELECT 1 FROM invitation i 
+    WHERE i.trip_id = t.id AND i.user_id = ? AND i.status = 'accepted'))
+    ${dateCondition} ORDER BY t.start_at ASC`,
+      [userId, userId],
     );
     return rows as Trip[];
   }

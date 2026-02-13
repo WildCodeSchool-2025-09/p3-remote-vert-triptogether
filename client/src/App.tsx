@@ -1,56 +1,20 @@
-import { Link, Outlet } from "react-router";
+import { Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "./pages/styles/Reset.css";
 import "./pages/styles/App.css";
-import { useAuth } from "./contexts/AuthContext";
+import Navbar from "./components/Navbar";
 import { useToast } from "./hooks/useToast";
+import "./App.css";
 
 function App() {
-  const { auth, logout } = useAuth();
-
-  function hello() {
-    const now = new Date();
-    const hour = now.getHours();
-    return hour < 17 ? "Bonjour" : "Bonsoir";
-  }
-
   useToast();
 
   return (
     <>
-      <nav>
-        <ul className="Testnavbar">
-          {auth == null ? (
-            <>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/register">Register</Link>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <Link to="/create-trip">Créer un voyage</Link>
-              </li>
-              <li>
-                <Link to="/my-trips">Mes voyages</Link>
-              </li>
-              <li>
-                <button type="button" onClick={logout}>
-                  Logout
-                </button>
-              </li>
-              {auth && (
-                <p>
-                  {hello()} {auth.user.firstname} !
-                </p>
-              )}
-            </>
-          )}
-        </ul>
-      </nav>
+      <header>
+        <Navbar />
+      </header>
+
       <main>
         <Outlet />
       </main>

@@ -17,9 +17,10 @@ body {
   cursor: pointer;
   position: fixed;
   top: 5.9vh;
-  left: 6.3vw;
+  left: 4vw;
+  margin-top: 10vw;
   z-index: 1000;
-  width: 6vw;
+  width: 4.5vw;
   height: auto;
   display: grid;
   place-items: center;
@@ -27,7 +28,7 @@ body {
 
 .back-arrow {
   position: static;
-  width: 6vw;
+  width: 4.5vw;
   height: auto;
 }
 

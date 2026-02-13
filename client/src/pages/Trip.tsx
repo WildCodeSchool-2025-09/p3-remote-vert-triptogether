@@ -49,7 +49,7 @@ export function Trip() {
         toast.error("Impossible de charger le voyage");
       });
   }, [tripId, navigate]);
-
+  console.log(trip);
   return (
     <>
       <TripInfos trip={trip} />

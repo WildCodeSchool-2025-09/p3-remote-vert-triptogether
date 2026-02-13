@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import type { StepCardProps } from "../../types/tripType";
-import type { CreateVotePayload, Vote, VotesStats } from "../../types/voteType";
-import "./StepCard.css";
+import type { StepCardProps } from "../types/tripType";
+import type { CreateVotePayload, Vote, VotesStats } from "../types/voteType";
+import "../pages/styles/StepCard.css";
 
 function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
   const [allVotes, setAllVotes] = useState<Vote[]>([]);

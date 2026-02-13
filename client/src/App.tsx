@@ -1,25 +1,25 @@
 import { Outlet } from "react-router";
-import "./App.css";
 import { ToastContainer } from "react-toastify";
-import "./reset.css";
+import "./pages/styles/Reset.css";
+import "./pages/styles/App.css";
+import Navbar from "./components/Navbar";
+import { useToast } from "./hooks/useToast";
+import "./App.css";
 
 function App() {
+  useToast();
+
   return (
-    <main>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <Outlet />
-    </main>
+    <>
+      <header>
+        <Navbar />
+      </header>
+
+      <main>
+        <Outlet />
+      </main>
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+    </>
   );
 }
 

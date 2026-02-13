@@ -23,3 +23,20 @@ export type CreateVotePayload = {
   comment?: string;
   user_id: number;
 };
+import type { TheTrip } from "./tripType";
+
+export type Step = {
+  id: number;
+  city: string;
+  country: string;
+  trip_id: number;
+  image_url?: string;
+};
+
+export type StepCardProps = {
+  step: Step;
+  currentUserId: number;
+  tripId: number;
+  isMainDestination?: boolean;
+  trip?: TheTrip | null;
+};

@@ -1,8 +1,16 @@
 import type { RequestHandler } from "express";
 import Joi from "joi";
 import type { StepWithStatus, VotesStats } from "../../types/voteType";
+import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
+
+type AuthRequest = import("express").Request & {
+  auth: {
+    sub: string;
+    isAdmin: boolean;
+  };
+};
 
 const createVoteSchema = Joi.object({
   user_id: Joi.number().required(),
@@ -196,4 +204,69 @@ const browseVote: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { selectStepsByTrip, addVote, browseVote };
+const addStepCity: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.tripId);
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID de voyage invalide" });
+      return;
+    }
+
+    const userId = req.body.user_id || 1;
+    if (!userId) {
+      return res.status(403).json({ error: "Non authentifié" });
+    }
+
+    const trip = await tripRepository.read(tripId);
+    if (!trip) {
+      res.status(404).json({ error: "Voyage introuvable" });
+      return;
+    }
+
+    const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
+      tripId,
+      userId,
+    );
+    if (!isMemberOfTrip) {
+      return res.status(403).json({
+        error: "Vous devez être membre du voyage pour ajouter une étape",
+      });
+    }
+
+    const { city, country, image_url } = req.body;
+    let finalImageUrl = image_url;
+
+    if (!finalImageUrl) {
+      finalImageUrl = await googlePlacesService.getCityImage(city, country);
+    }
+
+    if (typeof city !== "string" || typeof country !== "string") {
+      return res
+        .status(400)
+        .json({ error: "La ville et le pays sont requis." });
+    }
+
+    const stepId = await stepRepository.createStepCity({
+      trip_id: tripId,
+      city,
+      country,
+      image_url: finalImageUrl || "/images/default-trip.jpg",
+    });
+
+    return res.status(201).json({
+      trip: {
+        id: trip.id,
+        title: trip.title,
+        description: trip.description,
+        city: trip.city,
+        country: trip.country,
+        image_url: trip.image_url,
+      },
+      stepId,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { selectStepsByTrip, addVote, browseVote, addStepCity };

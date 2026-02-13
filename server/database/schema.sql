@@ -1,9 +1,9 @@
 CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstname VARCHAR(50) NOT NULL,
-  lastname VARCHAR(75) NOT NULL,
+  firstname VARCHAR(50) DEFAULT NULL,
+  lastname VARCHAR(75) DEFAULT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
-  password VARCHAR(50) NOT NULL
+  password VARCHAR(255) NOT NULL
 );
 
 
@@ -16,9 +16,9 @@ CREATE TABLE trip (
   start_at DATE,
   end_at DATE,
   user_id INT NOT NULL,
+  image_url TEXT,
   CONSTRAINT fk_trip_user
     FOREIGN KEY (user_id) REFERENCES user(id)
-    ON DELETE CASCADE
 );
 
 CREATE TABLE step (
@@ -27,6 +27,7 @@ CREATE TABLE step (
   country VARCHAR(255) NOT NULL,
   trip_id INT NOT NULL,
   -- user_id INT NOT NULL,
+  image_url TEXT,
   CONSTRAINT fk_step_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
     ON DELETE CASCADE
@@ -58,16 +59,17 @@ CREATE TABLE budget (
 CREATE TABLE invitation (
   id INT PRIMARY KEY AUTO_INCREMENT,
   status VARCHAR(10) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  message TEXT NOT NULL,
+  user_id INT DEFAULT NULL,
+  trip_id INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  user_id INT NOT NULL,
-  trip_id INT NOT NULL,
-  CONSTRAINT fk_invation_invited
+  CONSTRAINT fk_invitation_user
     FOREIGN KEY (user_id) REFERENCES user(id)
-    ON DELETE CASCADE,
+    ON DELETE SET NULL,
   CONSTRAINT fk_invitation_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
-    ON DELETE CASCADE
 );
 
 CREATE TABLE vote (

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import NavTabs from "../components/NavTabs/NavTabs";
+import NavTabs from "../components/NavTabs";
+import TripInfos from "../components/TripInfos";
 import { useToast } from "../hooks/useToast";
 import "./styles/Trip.css";
-import StepCard from "../components/Step/StepCard";
-import type { Step } from "../types/tripType";
+import StepCard from "../components/StepCard";
+import type { Step, TheTrip } from "../types/tripType";
 
 function Trip() {
   type RouteParams = {
@@ -16,6 +17,7 @@ function Trip() {
   const tripId = Number(id);
   const [steps, setSteps] = useState<Step[]>([]);
   const [memberCount, setMemberCount] = useState(0);
+  const [myTrip, setMyTrip] = useState<TheTrip | null>(null);
 
   const navigate = useNavigate();
   useToast();
@@ -34,6 +36,24 @@ function Trip() {
       });
       return;
     }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setMyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
 
     fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`)
       .then(async (response) => {
@@ -63,7 +83,7 @@ function Trip() {
       </header>
       <main className="page">
         <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
+          <TripInfos trip={myTrip} />
         </section>
         <NavTabs />
         <section className="steps-section">

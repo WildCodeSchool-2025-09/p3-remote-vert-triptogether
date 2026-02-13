@@ -129,6 +129,21 @@ class stepRepository {
     );
     return rows;
   }
+
+  async createStepCity(step: Omit<Step, "id">) {
+    const [result] = await databaseClient.query<Result>(
+      "INSERT INTO step (city, country, trip_id, image_url) VALUES (?, ?, ?, ?)",
+      [step.city, step.country, step.trip_id, step.image_url],
+    );
+    return result.insertId;
+  }
+  async stepExists(stepId: number): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id FROM step WHERE id = ?",
+      [stepId],
+    );
+    return rows.length > 0;
+  }
 }
 
 export default new stepRepository();

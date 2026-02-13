@@ -1,5 +1,5 @@
 import { NavLink, useLocation, useParams } from "react-router";
-import "./NavTabs.css";
+import "../pages/styles/NavTabs.css";
 
 const NavTabs = () => {
   const { id } = useParams<{ id: string }>();

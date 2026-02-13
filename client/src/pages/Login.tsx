@@ -1,16 +1,14 @@
 import { useRef } from "react";
 import type { FormEventHandler } from "react";
-import { useNavigate, useOutletContext } from "react-router";
+import { Link, useNavigate } from "react-router";
+import "./styles/Auth.css";
 
-type User = { id: number; email: string };
-type Auth = { user: User; token: string };
+import { useAuth } from "../contexts/AuthContext";
 
 function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const { setAuth } = useOutletContext() as {
-    setAuth: (auth: Auth | null) => void;
-  };
+  const { setAuth } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit: FormEventHandler = async (event) => {
@@ -41,24 +39,44 @@ function Login() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="email">Email :</label>
-      <br />
-      <input ref={emailRef} type="email" placeholder="Email" required />
-      <br />
-      <br />
-      <label htmlFor="password">Mot de passe :</label>
-      <br />
-      <input
-        ref={passwordRef}
-        type="password"
-        placeholder="Password"
-        required
-      />
-      <br />
-      <br />
-      <button type="submit">Se connecter </button>
-    </form>
+    <div className="auth auth-page">
+      <div className="auth-card">
+        <div className="logo-container">
+          <span className="logo-icon">🧳</span>
+          <h1 className="logo-text">Trip Together</h1>
+        </div>
+        <h2 className="title">Bon retour parmi nous</h2>
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="input-group">
+            <input
+              ref={emailRef}
+              type="email"
+              id="email"
+              className="form-input"
+              placeholder="Email"
+              required
+            />
+          </div>
+          <div className="input-group">
+            <input
+              ref={passwordRef}
+              type="password"
+              id="password"
+              className="form-input"
+              placeholder="Mot de passe"
+              required
+            />
+          </div>
+
+          <button type="submit" className="submit-btn">
+            SE CONNECTER
+          </button>
+        </form>
+        <div className="footer-login">
+          Pas encore membre ? <Link to="/register">S'inscrire</Link>
+        </div>
+      </div>
+    </div>
   );
 }
 

@@ -64,6 +64,31 @@ class invitationRepository {
     return result.affectedRows === 1;
   }
 
+  async create(
+    tripId: number,
+    email: string,
+    message: string,
+    user_id: number | null,
+  ) {
+    const [result] = await databaseClient.query<Result>(
+      "INSERT INTO invitation (trip_id, email, message, status, user_id) VALUES (?, ?, ?, 'pending', ?)",
+      [tripId, email, message, user_id],
+    );
+    return result.insertId;
+  }
+
+  async readParticipate(id: number): Promise<number> {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT COUNT(i.id) + 1 AS participants
+    FROM invitation i
+    WHERE i.trip_id = ?
+    AND i.status = "accepted"`,
+      [id],
+    );
+
+    return rows[0]?.participants ?? 0;
+  }
+
   async selectByTrip(tripId: number): Promise<Invitation[]> {
     const [rows] = await databaseClient.query<Rows>(
       `

@@ -1,24 +1,4 @@
-body {
-  margin: 0;
-  background-color: #f2f2f2;
-  font-size: 32px;
-}
-
-header {
-  background-image: url(../../../header-background-city.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  height: 400px;
-  font-size: var(--font-size-XL);
-}
-
-header > nav {
-  background-color: white;
-  height: 80px;
-}
-
-main {
+.page {
   max-width: 1160px;
   margin: 0 auto;
   padding: 0 20px;
@@ -40,23 +20,4 @@ main {
   box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
   padding: 32px;
   margin-bottom: 24px;
-}
-
-#trip-infos {
-  height: 361px;
-  width: 100%;
-  text-align: center;
-  align-items: center;
-  margin-bottom: 24px;
-  min-height: 120px;
-  position: relative;
-}
-
-#trip-infos::after {
-  content: "composant détail-voyage dans autre US";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

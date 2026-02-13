@@ -44,19 +44,14 @@ class UserRepository {
     return rows as User[];
   }
 
-  // The U of CRUD - Update operation
-  // TODO: Implement the update operation to modify an existing user
+  async findByEmail(email: string) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT id FROM user WHERE email = ?",
+      [email],
+    );
 
-  // async update(user: User) {
-  //   ...
-  // }
-
-  // The D of CRUD - Delete operation
-  // TODO: Implement the delete operation to remove an user by its ID
-
-  // async delete(id: number) {
-  //   ...
-  // }
+    return rows[0] as User;
+  }
 }
 
 export default new UserRepository();

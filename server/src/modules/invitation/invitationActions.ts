@@ -1,5 +1,6 @@
 import type { RequestHandler } from "express";
 import tripRepository from "../trip/tripRepository";
+import userRepository from "../user/userRepository";
 import invitationRepository from "./invitationRepository";
 
 const read: RequestHandler = async (req, res, next) => {
@@ -70,6 +71,45 @@ const edit: RequestHandler = async (req, res, next) => {
   }
 };
 
+const add: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+    const { email, message } = req.body;
+    const existingUser = await userRepository.findByEmail(email);
+
+    const user_id = existingUser ? existingUser.id : null;
+
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID du voyage invalide" });
+      return;
+    }
+
+    if (!email || !message) {
+      res.status(400).json({ error: "Email et message requis" });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ error: "Format email invalide" });
+      return;
+    }
+
+    const invitationId = await invitationRepository.create(
+      tripId,
+      email,
+      message,
+      user_id,
+    );
+
+    const invitationLink = `http://localhost:3000/trip/${tripId}/invitation/${invitationId}`;
+
+    res.status(201).json({ invitationLink });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
@@ -98,6 +138,7 @@ const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
         user_id: trip.user_id,
         owner_firstname: trip.owner_firstname,
         owner_lastname: trip.owner_lastname,
+        image_url: trip.image_url,
       },
       invitations,
     });
@@ -129,4 +170,4 @@ const delate: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { edit, read, selectInvitationsByTrip, delate };
+export default { edit, read, add, selectInvitationsByTrip, delate };

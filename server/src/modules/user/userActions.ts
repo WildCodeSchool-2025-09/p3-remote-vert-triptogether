@@ -1,6 +1,7 @@
 import type { RequestHandler } from "express";
 import type { UserType } from "../../types/userType";
 import userRepository from "./userRepository";
+
 const browse: RequestHandler = async (_req, res, next) => {
   try {
     const users = await userRepository.readAll();

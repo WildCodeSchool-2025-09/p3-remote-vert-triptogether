@@ -1,31 +1,20 @@
 import { useRef, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
-import "../styles/CreateTrip.css";
-import "../styles/mobile.css";
+import "./styles/CreateTrip.css";
+import "./styles/mobile.css";
 import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
+import { useAuth } from "../contexts/AuthContext";
 
-interface User {
-  id: number;
-  email: string;
-}
-
-interface Auth {
-  user: User;
-  token: string;
-}
-
-interface AuthContextType {
-  auth: Auth | null;
-  setAuth: (auth: Auth | null) => void;
-}
+const libraries: "places"[] = ["places"];
 
 export default function CreateTrip() {
-  const { auth } = useOutletContext() as AuthContextType;
+  const { auth } = useAuth();
 
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
+  const [imageUrl, setImageUrl] = useState("");
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -40,7 +29,7 @@ export default function CreateTrip() {
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
-    libraries: ["places"],
+    libraries,
   });
 
   const onPlaceChanged = () => {
@@ -52,15 +41,17 @@ export default function CreateTrip() {
       comp.types.includes("country"),
     );
     const countryName = countryComp?.long_name;
+    const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 1200 }) || "";
 
     setCity(cityName);
     if (countryName) setCountry(countryName);
+    setImageUrl(photoUrl);
   };
 
   const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // On vérifie le token dans le localStorage ou le state
+    // On vérifie le token dans le localStorage ou le state (Removed as requested)
     const token = localStorage.getItem("token") || auth?.token;
 
     if (!token) {
@@ -75,6 +66,7 @@ export default function CreateTrip() {
       end_at: endOfTrip.end_at,
       city,
       country,
+      image_url: imageUrl,
     };
 
     try {
@@ -91,8 +83,10 @@ export default function CreateTrip() {
       );
 
       if (response.ok) {
+        await response.json();
+        navigate("/my-trips");
         const result = await response.json();
-        navigate(`/trips/${result.insertId}`);
+        navigate(`/trip/${result.insertId}`);
       } else {
         const result = await response.json();
         toast.error(result.error || "Erreur lors de la création");
@@ -104,16 +98,14 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
-      <div className="container-back-arrow">
-        <button
-          type="button"
-          className="button-back-arrow"
-          onClick={() => navigate(-1)}
-          aria-label="Retour"
-        >
-          <img className="back-arrow" src={backArrowLogo} alt="" />
-        </button>
-      </div>
+      <button
+        type="button"
+        className="button-back-arrow"
+        onClick={() => navigate(-1)}
+        aria-label="Retour"
+      >
+        <img className="back-arrow" src={backArrowLogo} alt="" />
+      </button>
 
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
       <h1>

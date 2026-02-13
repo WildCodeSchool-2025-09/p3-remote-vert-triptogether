@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "./styles/invitation.css";
+import BudgetCard from "../components/BudgetCard";
+import ParticipantsCard from "../components/ParticipantsCard";
+import TripInfos from "../components/TripInfos";
 import type { invitationType } from "../types/invitationType";
+import type { Trip } from "../types/tripType";
 
 function Invitation() {
-  const { tripId, invitationId } = useParams<{
-    tripId: string;
+  const { id, invitationId } = useParams<{
+    id: string;
     invitationId: string;
   }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
-
+  const [mytrip, setmyTrip] = useState<Trip | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +28,24 @@ function Invitation() {
         },
       });
     }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
+
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setmyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
 
     fetch(`${import.meta.env.VITE_API_URL}/api/invitation/${invitationId}`)
       .then(async (response) => {
@@ -96,7 +118,7 @@ function Invitation() {
           },
         });
       });
-  }, [navigate, invitationId]);
+  }, [navigate, invitationId, id]);
 
   async function invitationResponded(status: "accepted" | "refused") {
     if (!invitationId) return;
@@ -116,7 +138,7 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        navigate(`/trip/${tripId ?? invitation?.trip_id}`, {
+        navigate(`/trip/${id ?? invitation?.trip_id}`, {
           state: {
             toast: {
               type: "success",
@@ -141,61 +163,44 @@ function Invitation() {
 
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-      <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
-        </section>
-        <section className="other-informations">
-          <article id="budget" className="card">
-            {/* Composant budget autre US */}
-          </article>
+      <TripInfos trip={mytrip} />
+      <main className="invitation-main">
+        <section className="invitation-other-informations">
+          <BudgetCard />
 
-          <article id="participants" className="card">
-            {/* Composant participants */}
-          </article>
+          <ParticipantsCard />
         </section>
-        <article id="invitation" className="card invitation-card">
-          <ToastContainer
-            position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+        <article id="invitation" className="invitation-card">
           <p className="invitation-text">Vous avez été invité·e par</p>
-          <img src="npc3.jpg" alt="" className="inviter-avatar" />
-          <p className="inviter-name">
+          <img
+            src="/mini-profile-pic.png"
+            alt={invitation?.creator_firstname}
+            className="invitation-avatar"
+          />
+          <p className="invitation-inviter-name">
             {`${invitation?.creator_firstname ?? ""} ${
               invitation?.creator_lastname ?? ""
             }`}
           </p>
+          <p>"{invitation?.message}"</p>
 
           <div className="invitation-actions">
             <button
               type="button"
-              className="btn btn-primary"
+              className="invitation-btn-primary"
               onClick={() => invitationResponded("accepted")}
             >
               Accepter
             </button>
             <button
               type="button"
-              className="btn btn-outline"
+              className="invitation-btn-outline"
               onClick={() => invitationResponded("refused")}
             >
               Refuser
             </button>
           </div>
         </article>
-        <footer>{/*footer */}</footer>
       </main>
     </>
   );

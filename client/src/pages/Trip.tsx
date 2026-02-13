@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ToastContainer } from "react-toastify";
-import NavTabs from "../components/NavTabs/NavTabs";
+import { toast } from "react-toastify";
+import NavTabs from "../components/NavTabs";
+import TripInfos from "../components/TripInfos";
 import { useToast } from "../hooks/useToast";
+import "./styles/Trip.css";
+import type { Trip as TripType } from "../types/tripType";
 
 export function Trip() {
   type RouteParams = {
@@ -11,6 +14,7 @@ export function Trip() {
 
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const [trip, setTrip] = useState<TripType | null>(null);
 
   const navigate = useNavigate();
   useToast();
@@ -27,31 +31,34 @@ export function Trip() {
       });
       return;
     }
-  }, [tripId, navigate]);
 
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
+  }, [tripId, navigate]);
+  console.log(trip);
   return (
     <>
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={false}
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-      <main>
-        <section id="trip-infos" className="card">
-          {/* Composant trip infos */}
-        </section>
-
+      <TripInfos trip={trip} />
+      <main className="page">
         <NavTabs />
+        <div className="trip-dashboard">
+          <h2>Tableau de bord</h2>
+          <p>Bienvenue sur le récapitulatif de votre voyage.</p>
+        </div>
       </main>
     </>
   );

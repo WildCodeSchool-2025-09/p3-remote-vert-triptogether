@@ -10,6 +10,7 @@ export default function Navbar() {
 
   function navigateToCreateTrip() {
     navigate("/create-trip");
+    closeMenu();
   }
 
   function toggleMenu() {
@@ -26,19 +27,28 @@ export default function Navbar() {
     return hour < 17 ? "Bonjour" : "Bonsoir";
   }
 
+  const closelogout = () => {
+    logout();
+    closeMenu();
+  };
+
   return (
     <nav className="navbar navbar-container">
       <div className="navbar-left">
-        <img
-          src="../../public/logos/logo.png"
-          className="navbar-logo"
-          alt="Logo"
-        />
-        <div className="website-name">Trip Together</div>
+        <Link to="/" onClick={closeMenu}>
+          <img
+            src="../../public/logos/logo.png"
+            className="navbar-logo"
+            alt="Logo"
+          />
+        </Link>
+        <Link to="/" onClick={closeMenu}>
+          <div className="website-name">Trip Together</div>
+        </Link>
       </div>
 
       <div className="navbar-center">
-        <Link className="navbar-page-title" to="/my-trips">
+        <Link className="navbar-page-title" to="/my-trips" onClick={closeMenu}>
           Mes voyages
         </Link>
       </div>
@@ -84,7 +94,9 @@ export default function Navbar() {
                     >
                       Mon compte
                     </Link>
-                    <button type="button" onClick={logout}>
+                  </li>
+                  <li>
+                    <button type="button" onClick={closelogout}>
                       Logout
                     </button>
                   </li>
@@ -92,10 +104,14 @@ export default function Navbar() {
               ) : (
                 <>
                   <li>
-                    <Link to="/login">Login</Link>
+                    <Link to="/login" onClick={closeMenu}>
+                      Login
+                    </Link>
                   </li>
                   <li>
-                    <Link to="/register">Register</Link>
+                    <Link to="/register" onClick={closeMenu}>
+                      Register
+                    </Link>
                   </li>
                 </>
               )}

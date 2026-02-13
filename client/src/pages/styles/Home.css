@@ -1,8 +1,8 @@
 .home {
   width: 100%;
-  max-width: 1200px;
-  margin: 40px;
+  margin: auto;
   padding: 0 20px;
+  background-color: var(--background);
 }
 
 .hero-section {
@@ -45,35 +45,35 @@
 
 .btn-cta {
   padding: 14px 32px;
-  font-size: 1rem;
   font-weight: 600;
-  border-radius: 8px;
+  border-radius: 10px;
   text-decoration: none;
   display: inline-block;
   transition: all 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
-  max-width: 200px;
+  max-width: 250px;
 }
 
-.btn-primary {
-  background-color: #2d7738;
-  color: white;
-  border-color: #2d7738;
+.btn-primairy {
+  background-color: var(--primary-button);
+  color: var(--white);
+  border-color: var(--primary-button);
+  width: 600px;
 }
 
-.btn-primary:hover {
-  background-color: #245d2d;
-  border-color: #245d2d;
+.btn-primairy:hover {
+  background-color: var(--primary-button);
+  border-color: var(--primary-button);
 }
 
-.btn-secondary {
-  background-color: white;
-  color: #2d7738;
-  border-color: #2d7738;
+.btn-secondairy {
+  background-color: var(--white);
+  color: var(--primary-button);
+  border-color: var(--primary-button);
 }
 
-.btn-secondary:hover {
+.btn-secondairy:hover {
   background-color: #f8f8f8;
 }
 
@@ -128,23 +128,23 @@
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 16px;
-  color: #1a1a1a;
+  color: var(--black);
 }
 
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 3vw;
   margin-top: 48px;
 }
 
 .feature-card {
-  background-color: white;
-  border: 1px solid #e0e0e0;
+  background-color: var(--white);
+  border: 1px solid var(--white);
   border-radius: 12px;
   padding: 32px 24px;
   transition: all 0.3s ease;
-  cursor: default;
+  max-width: 400px;
 }
 
 .feature-card:hover {
@@ -161,7 +161,7 @@
   font-size: 1.25rem;
   font-weight: 700;
   margin: 12px 0 12px;
-  color: #1a1a1a;
+  color: var(--black);
   text-align: left;
 }
 

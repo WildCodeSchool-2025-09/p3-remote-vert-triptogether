@@ -70,7 +70,6 @@ class invitationRepository {
     message: string,
     user_id: number | null,
   ) {
-    console.log(tripId, email, message, user_id);
     const [result] = await databaseClient.query<Result>(
       "INSERT INTO invitation (trip_id, email, message, status, user_id) VALUES (?, ?, ?, 'pending', ?)",
       [tripId, email, message, user_id],

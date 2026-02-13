@@ -61,8 +61,6 @@ CREATE TABLE invitation (
   trip_id INT NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  user_id INT NOT NULL,
-  trip_id INT NOT NULL,
   trip_status ENUM('futur', 'current', 'past') DEFAULT 'futur',
   CONSTRAINT fk_invitation_user
     FOREIGN KEY (user_id) REFERENCES user(id)

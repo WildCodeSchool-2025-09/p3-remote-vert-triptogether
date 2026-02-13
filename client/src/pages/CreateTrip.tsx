@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import "./styles/CreateTrip.css";
@@ -11,7 +11,15 @@ const libraries: "places"[] = ["places"];
 
 export default function CreateTrip() {
   const { auth } = useAuth();
-
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token") || auth?.token;
+  useEffect(() => {
+    if (!token) return;
+    if (!auth?.token) {
+      toast.error("Vous devez être connecté pour créer un voyage");
+      navigate("/login");
+    }
+  }, [token, auth?.token, navigate]);
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
   const [imageUrl, setImageUrl] = useState("");
@@ -21,7 +29,6 @@ export default function CreateTrip() {
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const startAtRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -50,14 +57,6 @@ export default function CreateTrip() {
 
   const submitCreateTrip = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // On vérifie le token dans le localStorage ou le state (Removed as requested)
-    const token = localStorage.getItem("token") || auth?.token;
-
-    if (!token) {
-      toast.error("Vous devez être connecté");
-      return;
-    }
 
     const newTrip = {
       title: titleRef.current?.value,
@@ -106,7 +105,6 @@ export default function CreateTrip() {
       >
         <img className="back-arrow" src={backArrowLogo} alt="" />
       </button>
-
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
       <h1>
         Créer un nouveau <span>voyage</span>

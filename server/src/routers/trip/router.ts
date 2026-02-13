@@ -7,12 +7,12 @@ import tripActions from "../../modules/trip/tripActions";
 
 const router = express.Router();
 
+router.get("/count", tripActions.count);
 router.get("/info/:id", tripActions.read);
 router.post("/:id/invitations", invitationActions.add);
 
 router.get("/", tripActions.browse);
 router.get("/:id", tripActions.browseMyTrip);
-
 router.get("/countries", tripActions.browse);
 router.post("/", verifyToken, tripActions.add);
 router.delete("/:id", verifyToken, tripActions.delate);

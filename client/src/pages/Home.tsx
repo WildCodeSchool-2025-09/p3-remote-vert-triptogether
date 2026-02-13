@@ -1,7 +1,27 @@
 import { Link } from "react-router";
-import "../styles/Home.css";
+import "./styles/Home.css";
+import { useEffect, useState } from "react";
 
 function Home() {
+  const [countTrip, setCountTrip] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/count`).then(
+      async (response) => {
+        if (!response.ok) {
+          console.error(
+            "Backend erreur:",
+            response.status,
+            await response.json(),
+          );
+          throw new Error(`Erreur ${response.status}`);
+        }
+        const count = await response.json();
+        setCountTrip(count);
+      },
+    );
+  }, []);
+
   return (
     <div className="home">
       <section className="hero-section">
@@ -15,10 +35,10 @@ function Home() {
           préférées et partagez les dépenses. Tout ça au même endroit.
         </p>
         <div className="hero-cta">
-          <Link to="/create-trip" className="btn-cta btn-primary">
+          <Link to="/create-trip" className="btn-cta btn-primairy">
             Commencer maintenant
           </Link>
-          <Link to="/trips" className="btn-cta btn-secondary">
+          <Link to="/my-trips" className="btn-cta btn-secondairy">
             Voir mes voyages
           </Link>
         </div>
@@ -64,8 +84,11 @@ function Home() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span className="badge-text">3 voyages en cours</span>
-            {/* TODO: Récupérer le nombre de voyages actifs depuis le backend (US_XX) */}
+            <span className="badge-text">
+              {countTrip !== null
+                ? `${countTrip} voyages ont déjà été créés`
+                : "0"}
+            </span>
           </div>
         </div>
       </section>
@@ -76,7 +99,7 @@ function Home() {
           TripTogether simplifie l'organisation de vos voyages en groupe avec
           des outils puissants et intuitifs.
         </p>
-        <div className="features-grid">
+        <div className="features">
           <div className="feature-card">
             <div className="feature-icon">
               <img

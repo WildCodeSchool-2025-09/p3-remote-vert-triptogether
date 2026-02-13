@@ -7,6 +7,7 @@ import tripActions from "../../modules/trip/tripActions";
 
 const router = express.Router();
 
+router.get("/count", tripActions.count);
 router.get("/info/:id", tripActions.read);
 router.post("/:id/invitations", invitationActions.add);
 

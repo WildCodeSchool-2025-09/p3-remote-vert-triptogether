@@ -131,7 +131,8 @@ class TripRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT 
+      `
+      SELECT 
         t.id, 
         t.title, 
         t.description, 
@@ -148,10 +149,18 @@ class TripRepository {
       WHERE 
         (t.user_id = ? OR i.status = 'accepted')
         ${dateCondition}
-      ORDER BY t.start_at ASC`,
+      ORDER BY t.start_at ASC
+    `,
       [userId, userId],
     );
     return rows as Trip[];
+  }
+
+  async countTrips() {
+    const [rows] = await databaseClient.query(
+      "SELECT COUNT(*) AS count FROM trip",
+    );
+    return (rows as { count: number }[])[0].count;
   }
 }
 

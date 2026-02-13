@@ -101,7 +101,7 @@ function TripInvitation({
       setLoading(false);
     }
   };
-  console.log(invitationForm);
+
   return (
     <>
       <main className="tripinvitation-main">

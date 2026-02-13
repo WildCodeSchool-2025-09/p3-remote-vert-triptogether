@@ -90,6 +90,14 @@ const read: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
+const count: RequestHandler = async (_req, res, next) => {
+  try {
+    const countTrips = await tripRepository.countTrips();
+    res.json(countTrips);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const add: RequestHandler = async (req, res, next) => {
   const authReq = req as AuthRequest;
@@ -154,4 +162,12 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { browse, browseTheTrip, browseMyTrip, read, delate, add };
+export default {
+  browse,
+  browseTheTrip,
+  browseMyTrip,
+  read,
+  delate,
+  add,
+  count,
+};

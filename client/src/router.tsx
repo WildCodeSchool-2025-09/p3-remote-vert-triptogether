@@ -1,7 +1,8 @@
-import { Navigate, createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router";
 import App from "./App";
 import Account from "./components/Account";
 import CreateTrip from "./pages/CreateTrip";
+import Home from "./pages/Home";
 import Invitation from "./pages/Invitation";
 import Invitations from "./pages/Invitations";
 import Login from "./pages/Login";
@@ -17,9 +18,12 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="my-trips" replace />,
+        element: <Home />,
       },
-      { path: "account", element: <Account /> },
+      {
+        path: "account",
+        element: <Account />,
+      },
       {
         path: "login",
         element: <Login />,

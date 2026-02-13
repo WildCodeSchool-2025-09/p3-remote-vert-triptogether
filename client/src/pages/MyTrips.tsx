@@ -3,7 +3,8 @@ import "./styles/Reset.css";
 import "./styles/MyTrips.css";
 import "./styles/StepCard.css";
 import { createPortal } from "react-dom";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 
 interface Trip {
@@ -19,6 +20,7 @@ interface Trip {
 
 export default function MyTrips() {
   const { auth } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
     "futur" | "current" | "past" | "all"
   >("all");
@@ -27,8 +29,10 @@ export default function MyTrips() {
 
   useEffect(() => {
     const token = localStorage.getItem("token") || auth?.token;
-
-    if (!token) return;
+    if (!token) {
+      toast.error("Vous devez être connecté pour voir vos voyages");
+      navigate("/login");
+    }
 
     fetch(
       `${import.meta.env.VITE_API_URL}/api/users/my-trips?status=${activeTab}`,
@@ -46,7 +50,7 @@ export default function MyTrips() {
       })
       .then((data) => setTrips(data))
       .catch((err) => console.error("Error fetching trips:", err));
-  }, [activeTab, auth]);
+  }, [activeTab, auth?.token, navigate]);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {

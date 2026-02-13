@@ -4,9 +4,9 @@ import { toast } from "react-toastify";
 import Guests from "../components/Guests";
 import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
+import { useAuth } from "../contexts/AuthContext";
 import type { Guest, invitationType } from "../types/invitationType";
 import type { Trip } from "../types/tripType";
-import { useAuth } from "../contexts/AuthContext";
 import "./styles/invitation.css";
 
 type RouteParams = {
@@ -78,7 +78,11 @@ function Invitations() {
         toast.error("Impossible de charger le voyage");
       });
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
       .then(async (response) => {
         const result: InvitationsResponse = await response.json();
 
@@ -172,6 +176,9 @@ function Invitations() {
       `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
       },
     )
       .then(async (response) => {

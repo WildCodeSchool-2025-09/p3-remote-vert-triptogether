@@ -64,7 +64,7 @@ export default function MyTrips() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-
+  console.log(trips);
   return (
     <>
       <div className="mytripsheader">
@@ -114,7 +114,7 @@ export default function MyTrips() {
                   <div
                     className="tripcard-image"
                     style={{
-                      backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/default-city.jpg"})`,
+                      backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/default-city"})`,
                     }}
                   >
                     <h2>{trip.title}</h2>

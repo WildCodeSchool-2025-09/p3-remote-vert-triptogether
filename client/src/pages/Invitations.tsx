@@ -172,6 +172,8 @@ function Invitations() {
 
     setIsDeleting(true);
 
+    const token = auth?.token || localStorage.getItem("token");
+
     fetch(
       `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
       {

@@ -29,6 +29,10 @@
   --space-XS: 4px;
 }
 
+main {
+  width: 100vw;
+}
+
 .error {
   display: flex;
   align-items: center;
@@ -67,86 +71,4 @@
   100% {
     content: "...";
   }
-}
-
-.Testnavbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: var(--space-XL);
-  padding: var(--space-M);
-  background-color: var(--white);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin: 0;
-  list-style: none;
-
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.Testnavbar li {
-  display: flex;
-  align-items: center;
-}
-
-.Testnavbar a {
-  text-decoration: none;
-  color: var(--black);
-  font-family: var(--title-font);
-  font-size: var(--font-size-S);
-  font-weight: 600;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.Testnavbar a::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--primary-button);
-  transition: width 0.3s ease;
-}
-
-.Testnavbar a:hover::after {
-  width: 100%;
-}
-
-.Testnavbar a:hover {
-  color: var(--primary-button);
-}
-
-.Testnavbar button {
-  background-color: var(--primary-button);
-  color: var(--white);
-  border: none;
-  padding: var(--space-S) var(--space-L);
-  border-radius: var(--button-radius);
-  font-family: var(--body-text);
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(27, 94, 29, 0.2);
-}
-
-.Testnavbar button:hover {
-  background-color: var(--button-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(27, 94, 29, 0.3);
-}
-
-@media (max-width: 768px) {
-  .Testnavbar {
-    gap: var(--space-M);
-    padding: var(--space-S);
-    flex-wrap: wrap;
-  }
-}
-main {
-  width: 100vw;
 }

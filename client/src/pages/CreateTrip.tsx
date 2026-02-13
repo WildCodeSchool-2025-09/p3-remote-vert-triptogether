@@ -142,16 +142,14 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
-      <div className="container-back-arrow">
-        <button
-          type="button"
-          className="button-back-arrow"
-          onClick={() => navigate(-1)}
-          aria-label="Retour"
-        >
-          <img className="back-arrow" src={backArrowLogo} alt="" />
-        </button>
-      </div>
+      <button
+        type="button"
+        className="button-back-arrow"
+        onClick={() => navigate(-1)}
+        aria-label="Retour"
+      >
+        <img className="back-arrow" src={backArrowLogo} alt="" />
+      </button>
 
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
       <h1>

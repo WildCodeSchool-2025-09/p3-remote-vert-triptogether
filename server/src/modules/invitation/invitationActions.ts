@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import type { RequestHandler } from "express";
 import tripRepository from "../trip/tripRepository";
 import userRepository from "../user/userRepository";

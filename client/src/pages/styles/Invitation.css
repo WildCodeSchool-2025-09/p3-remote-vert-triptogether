@@ -1,31 +1,11 @@
-body {
-  margin: 0;
-  background-color: #f2f2f2;
-  font-size: 32px;
-}
-
-.invitation-header {
-  background-image: url(../../../header-background-city.png);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  height: 400px;
-  font-size: var(--font-size-XL);
-}
-
-.invitation-navbar {
-  background-color: white;
-  height: 80px;
-}
-
 .invitation-main {
-  max-width: 1160px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  gap: 2rem;
   margin-top: -80px;
   position: relative;
 }
@@ -40,135 +20,127 @@ body {
   margin-bottom: 24px;
 }
 
-#trip-infos {
-  height: 361px;
-  width: 100%;
-  text-align: center;
-  align-items: center;
-  margin-bottom: 24px;
-  min-height: 120px;
-  position: relative;
-}
-
-#trip-infos::after {
-  content: "composant détail-voyage dans autre US";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .invitation-other-informations {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 24px;
-  margin-bottom: 100px;
-}
-
-#budget,
-#participants {
-  min-height: 300px;
-  display: flex;
-  flex-direction: columns;
-}
-
-#budget::after {
-  content: "Composant budget dans autre US";
-  display: block;
-  text-align: center;
-  margin-top: 80px;
-}
-
-#participants::after {
-  content: "Composant participants dans autre US";
-  display: block;
-  text-align: center;
-  margin-top: 80px;
-}
-
-#invitation {
-  border: none;
-  background-color: #f2f2f2;
-  box-shadow: 0 0 0;
-  text-align: center;
-  padding-top: 24px;
-  padding-bottom: 24px;
-  margin-bottom: 8px;
-  color: #4b5563;
-}
-
-.invitation-btn-primary,
-.invitation-btn-outline {
-  border-radius: 8px;
-  padding: 8px 16px;
-  margin: 20px 15px 0 15px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  border: 1px solid transparent;
-}
-
-.invitation-btn-primary {
-  background-color: #15803d;
-  color: #ffffff;
-}
-
-.invitation-btn-outline {
-  background-color: #ffffff;
-  color: #15803d;
-  border-color: #15803d;
-}
-
-#invitation.invitation-card {
-  text-align: center;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
 }
 
 .invitation-text {
-  margin-bottom: 8px;
-  color: #4b5563;
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 .invitation-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 999px;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 8px;
+  margin: 0 auto 1.25rem;
+  border: 4px solid #f1f5f9;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .invitation-inviter-name {
-  font-weight: 600;
-  margin-bottom: 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.invitation-card p:nth-child(4) {
+  font-style: italic;
+  color: #475569;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 1.5rem 0 2.5rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border-left: 4px solid #3b82f6;
 }
 
 .invitation-actions {
   display: flex;
+  gap: 1rem;
   justify-content: center;
-  gap: 12px;
+  flex-wrap: wrap;
 }
 
-footer {
-  height: 40vh;
+.invitation-btn-primary,
+.invitation-btn-outline {
+  flex: 1;
+  min-width: 140px;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
-@media (max-width: 900px) {
-  header {
-    height: 550px;
-  }
+.invitation-btn-primary {
+  background: var(--primary-button);
+  color: white;
+  box-shadow: 0 4px 14px 0 var(--primary-button);
+}
 
-  main {
-    margin-top: -40px;
-    padding: 0 16px 40px;
-  }
+.invitation-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px 0 var(--primary-button);
+}
 
+.invitation-btn-outline {
+  background: transparent;
+  color: var(--primary-button);
+  border: 2px solid var(--primary-button);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.invitation-btn-outline:hover {
+  background: var(--primary-button);
+  color: white;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
   .invitation-other-informations {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .invitation-main {
+    padding: 1rem 0.5rem;
+    gap: 1.5rem;
   }
 
-  .invitation-actions .btn {
-    width: 100%;
-    padding: 14px;
+  .invitation-card {
+    padding: 2rem 1.5rem;
+    margin: 0 1rem;
+  }
+
+  .invitation-actions {
+    flex-direction: column;
+  }
+
+  .invitation-btn-primary,
+  .invitation-btn-outline {
+    min-width: 100%;
   }
 }

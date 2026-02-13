@@ -7,7 +7,6 @@ import apiRouter from "./routers/api/router";
 
 const app = express();
 
-// Obligatoire pour que __dirname fonctionne avec "import"
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 if (process.env.CLIENT_URL != null) {
@@ -16,7 +15,6 @@ if (process.env.CLIENT_URL != null) {
 
 app.use(express.json());
 
-// Correction ici : on utilise l'importation ES6 définie plus haut
 app.use("/api", apiRouter);
 
 const publicFolderPath = path.join(__dirname, "../../server/public");

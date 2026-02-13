@@ -17,23 +17,48 @@ class TripRepository {
         trip.image_url,
       ],
     );
+    const newTripId = result.insertId;
 
-    return result.insertId;
+    await databaseClient.query<Result>(
+      "INSERT INTO step (city, country, trip_id, image_url) VALUES (?, ?, ?, ?)",
+      [trip.city, trip.country, newTripId, trip.image_url],
+    );
+
+    return newTripId;
   }
   async readTripInfo(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT t.id, t.title, t.start_at, t.end_at, d.city, d.country, COUNT(i.id) AS participants 
+      `SELECT t.id, t.title, t.description, t.start_at, t.end_at, t.city, t.country, t.image_url, COUNT(i.id) AS participants 
       FROM trip t 
-      JOIN destination d ON d.trip_id = t.id 
-      JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
+      LEFT JOIN invitation i ON i.trip_id = t.id AND i.status = "accepted" 
       WHERE t.id = ? 
-      GROUP BY t.id, d.id`,
+      GROUP BY t.id`,
       [id],
     );
 
     if (rows.length === 0) return null;
 
     return rows[0] as Trip;
+  }
+
+  async isUserMemberOfTrip(tripId: number, userId: number): Promise<boolean> {
+    const [rows] = await databaseClient.query<Rows>(
+      `SELECT i.id
+        FROM invitation AS i
+        WHERE trip_id = ?
+        AND user_id = ?
+        AND status = "accepted"`,
+      [tripId, userId],
+    );
+
+    if (rows.length > 0) return true;
+
+    const [ownerRows] = await databaseClient.query<Rows>(
+      "SELECT id FROM trip WHERE id = ? AND user_id = ?",
+      [tripId, userId],
+    );
+
+    return ownerRows.length > 0;
   }
   async read(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
@@ -106,8 +131,15 @@ class TripRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT * FROM trip WHERE user_id = ? ${dateCondition} ORDER BY start_at ASC`,
-      [userId],
+      `SELECT t.*, u.*
+    FROM trip t
+    JOIN user u ON u.id = t.user_id
+    WHERE (t.user_id = ? 
+    OR EXISTS (
+    SELECT 1 FROM invitation i 
+    WHERE i.trip_id = t.id AND i.user_id = ? AND i.status = 'accepted'))
+    ${dateCondition} ORDER BY t.start_at ASC`,
+      [userId, userId],
     );
     return rows as Trip[];
   }

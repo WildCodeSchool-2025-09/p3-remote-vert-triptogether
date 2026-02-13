@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router";
-import "../styles/Reset.css";
-import "../styles/MyTrips.css";
+import "./styles/Reset.css";
+import "./styles/MyTrips.css";
+import "./styles/StepCard.css";
+import { createPortal } from "react-dom";
 import { Link } from "react-router";
+import { useAuth } from "../contexts/AuthContext";
 
 interface Trip {
   id: number;
@@ -15,15 +17,8 @@ interface Trip {
   end_at: string;
 }
 
-interface AuthContextType {
-  auth: {
-    token: string;
-    user: { id: number; email: string };
-  } | null;
-}
-
 export default function MyTrips() {
-  const { auth } = useOutletContext() as AuthContextType;
+  const { auth } = useAuth();
   const [activeTab, setActiveTab] = useState<
     "futur" | "current" | "past" | "all"
   >("all");
@@ -69,12 +64,11 @@ export default function MyTrips() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-
+  console.log(trips);
   return (
     <>
       <div className="mytripsheader">
         <h1>Mes voyages</h1>
-        <input type="text" placeholder="Rechercher un voyage ..." />
       </div>
 
       <div className="tripstate">
@@ -109,38 +103,44 @@ export default function MyTrips() {
       </div>
 
       <div className="tripcards">
-        {trips.length > 0 ? (
-          trips.map((trip) => (
-            <Link
-              to={`/trip/${trip.id}`}
-              key={trip.id}
-              className="tripcard-link"
-            >
-              <div className="tripcard">
-                <div
-                  className="trip-image"
-                  style={{
-                    backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/default-city.jpg"})`,
-                  }}
-                >
-                  <h2>{trip.title}</h2>
+        {trips.length > 0
+          ? trips.map((trip) => (
+              <Link
+                to={`/trip/${trip.id}`}
+                key={trip.id}
+                className="tripcard-link"
+              >
+                <div className="tripcard">
+                  <div
+                    className="tripcard-image"
+                    style={{
+                      backgroundImage: `url(${trip.image_url ? trip.image_url : "/images/default-city"})`,
+                    }}
+                  >
+                    <h2>{trip.title}</h2>
+                  </div>
+                  <div>
+                    <div className="trip-info">
+                      <p>
+                        <img src="/images/location-icon.png" alt="" />
+                        {trip.city}, {trip.country}
+                      </p>
+                      <p>
+                        <img src="/images/calendar-icon.png" alt="" />
+                        {formatDateStart(trip.start_at)} -{" "}
+                        {formatDate(trip.end_at)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="trip-info">
-                  <p>
-                    <img src="/images/location-icon.png" alt="" />
-                    {trip.city}, {trip.country}
-                  </p>
-                  <p>
-                    <img src="/images/calendar-icon.png" alt="" />
-                    {formatDateStart(trip.start_at)} - {formatDate(trip.end_at)}
-                  </p>
-                </div>
-              </div>
-            </Link>
-          ))
-        ) : (
-          <p className="no-trips">Aucun voyage trouvé pour cette catégorie.</p>
-        )}
+              </Link>
+            ))
+          : createPortal(
+              <p className="no-trips">
+                Aucun voyage trouvé pour cette catégorie.
+              </p>,
+              document.body,
+            )}
       </div>
     </>
   );

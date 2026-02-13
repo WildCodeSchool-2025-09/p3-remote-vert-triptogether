@@ -2,6 +2,7 @@ import express from "express";
 import { verifyToken } from "../../modules/auth/authActions";
 import invitationActions from "../../modules/invitation/invitationActions";
 import invitationServices from "../../modules/invitation/invitationServices";
+import * as StepActions from "../../modules/step/stepActions";
 import tripActions from "../../modules/trip/tripActions";
 
 const router = express.Router();
@@ -16,6 +17,8 @@ router.get("/countries", tripActions.browse);
 router.post("/", verifyToken, tripActions.add);
 router.delete("/:id", verifyToken, tripActions.delate);
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
+router.get("/:tripId/steps", verifyToken, StepActions.selectStepsByTrip);
+router.post("/:tripId/steps", verifyToken, StepActions.addStepCity);
 
 router.get(
   "/:tripId/invitation/:id",

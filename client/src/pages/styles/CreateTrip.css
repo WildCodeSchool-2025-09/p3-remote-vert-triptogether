@@ -143,27 +143,43 @@ body {
 
 .button-container {
   display: flex;
-  flex-direction: row;
-  align-self: flex-end;
-  gap: 1.5rem;
-  margin: 3.5rem 3rem 10vh 0;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
-.cancel-button {
-  width: 10.5vw;
-  height: 5rem;
-  border-radius: 8px;
+.button-container button {
+  padding: 12px 24px;
+  border-radius: 25px;
   font-family: var(--body-text);
-  font-size: 2rem;
-  color: var(--black);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.create-trip-button {
-  width: 20.5vw;
-  height: 5rem;
-  border-radius: 8px;
+.button-container button[type="submit"] {
   background-color: var(--primary-button);
-  font-family: var(--body-text);
-  font-size: 2rem;
-  color: var(--background);
+  color: white;
+}
+
+.button-container button[type="submit"]:hover {
+  background-color: var(--button-hover, #244a38);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(36, 74, 56, 0.2);
+}
+
+.button-container button[type="button"] {
+  background-color: transparent;
+  color: var(--grey);
+  border: 1px solid var(--grey);
+}
+
+.button-container button[type="button"]:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--black);
+  border-color: var(--black);
 }

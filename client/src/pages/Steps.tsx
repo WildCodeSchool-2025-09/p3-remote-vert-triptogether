@@ -83,7 +83,13 @@ function Steps() {
 
   useEffect(() => {
     fetchSteps();
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    const token = auth?.token || localStorage.getItem("token");
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
       .then(async (response) => {
         if (!response.ok) {
           if (response.status === 401) {
@@ -99,7 +105,7 @@ function Steps() {
         console.error(err);
         toast.error("Impossible de charger le voyage");
       });
-  }, [fetchSteps, tripId]);
+  }, [fetchSteps, tripId, auth?.token]);
 
   const mainDestination = steps.find(
     (step) => trip && step.city === trip.city && step.country === trip.country,

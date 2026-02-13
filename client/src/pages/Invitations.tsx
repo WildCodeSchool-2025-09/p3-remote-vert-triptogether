@@ -6,6 +6,7 @@ import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
 import type { Guest, invitationType } from "../types/invitationType";
 import type { Trip } from "../types/tripType";
+import { useAuth } from "../contexts/AuthContext";
 import "./styles/invitation.css";
 
 type RouteParams = {
@@ -25,6 +26,7 @@ type InvitationsResponse =
 function Invitations() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const { auth } = useAuth();
 
   const [trip, setTrip] = useState<Trip | null>(null);
   const [mytrip, setmyTrip] = useState<Trip | null>(null);
@@ -52,7 +54,13 @@ function Invitations() {
 
     setLoading(true);
     setError(null);
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    const token = auth?.token || localStorage.getItem("token");
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
 
       .then(async (response) => {
         if (!response.ok) {
@@ -153,7 +161,7 @@ function Invitations() {
       .finally(() => {
         setLoading(false);
       });
-  }, [tripId, navigate]);
+  }, [tripId, navigate, auth?.token]);
 
   const removeParticipant = (userId: number) => {
     if (!tripId) return;

@@ -26,52 +26,64 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
     if (!isLoaded || !inputRef.current) return;
 
     if (placeAutocompleteRef.current) {
-      inputRef.current.appendChild(placeAutocompleteRef.current);
+      if (!inputRef.current.contains(placeAutocompleteRef.current)) {
+        inputRef.current.appendChild(placeAutocompleteRef.current);
+      }
       return;
     }
 
-    const initAutocomplete = () => {
-      // @ts-ignore
-      const autocomplete = new google.maps.places.PlaceAutocompleteElement();
-      placeAutocompleteRef.current = autocomplete;
+    const initAutocomplete = async () => {
+      try {
+        // Importation dynamique de la librairie "places"
+        // @ts-ignore
+        const { PlaceAutocompleteElement } = (await google.maps.importLibrary(
+          "places",
+        )) as google.maps.PlacesLibrary;
 
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      inputRef.current!.innerHTML = "";
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      inputRef.current!.appendChild(autocomplete);
+        // @ts-ignore
+        const autocomplete = new PlaceAutocompleteElement();
+        placeAutocompleteRef.current = autocomplete;
 
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      autocomplete.addEventListener("gmp-places-select", async (event: any) => {
-        const place = event.place;
-        if (!place) return;
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        inputRef.current!.innerHTML = "";
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        inputRef.current!.appendChild(autocomplete);
 
-        await place.fetchFields({
-          fields: ["address_components", "name", "photos"],
+        autocomplete.addEventListener("gmp-places-select", async (e: Event) => {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          const place = (e as any).place;
+          if (!place) return;
+
+          await place.fetchFields({
+            fields: ["address_components", "name", "photos"],
+          });
+
+          const cityName = place.name || "";
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          const countryComp = place.address_components?.find((comp: any) =>
+            comp.types.includes("country"),
+          );
+          const countryName = countryComp?.long_name;
+          const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 400 }) || "";
+
+          console.log("Place details fetched:", {
+            cityName,
+            countryName,
+            hasPhoto: !!photoUrl,
+          });
+
+          setCity(cityName);
+          if (countryName) setCountry(countryName);
+          setImageUrl(photoUrl);
         });
 
-        const cityName = place.name || "";
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const countryComp = place.address_components?.find((comp: any) =>
-          comp.types.includes("country"),
-        );
-        const countryName = countryComp?.long_name;
-        const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 400 }) || "";
-
-        console.log("Place details fetched:", {
-          cityName,
-          countryName,
-          hasPhoto: !!photoUrl,
+        autocomplete.addEventListener("change", () => {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          setCity((autocomplete as any).value);
         });
-
-        setCity(cityName);
-        if (countryName) setCountry(countryName);
-        setImageUrl(photoUrl);
-      });
-
-      autocomplete.addEventListener("change", () => {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setCity((autocomplete as any).value);
-      });
+      } catch (error) {
+        console.error("Error loading Google Maps Places library:", error);
+      }
     };
 
     initAutocomplete();

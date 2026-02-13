@@ -107,7 +107,7 @@ function StepCard({
       <article
         className="trip-image"
         style={{
-          backgroundImage: `url(${step.image_url || "/images/villedefault.jpg"})`,
+          backgroundImage: `url(${step.image_url || "/images/default-city.jpg"})`,
         }}
       >
         <h2>{step.city}</h2>

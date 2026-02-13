@@ -110,9 +110,23 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
+type AuthRequest = import("express").Request & {
+  auth: {
+    sub: string;
+  };
+};
+
 const selectInvitationsByTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
+    const authReq = req as AuthRequest;
+    const userId = Number(authReq.auth.sub);
+
+    const isMember = await tripRepository.isUserMemberOfTrip(tripId, userId);
+    if (!isMember) {
+      res.status(403).json({ error: "Accès refusé" });
+      return;
+    }
 
     if (Number.isNaN(tripId)) {
       res.status(400).json({ error: "ID de voyage invalide" });

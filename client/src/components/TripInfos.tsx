@@ -25,7 +25,7 @@ function TripInfos({ trip }: TripInfosProps) {
       <header
         className="trip-header"
         style={{
-          backgroundImage: `url(${trip.image_url || "/images/villedefault.jpg"})`,
+          backgroundImage: `url(${trip.image_url || "/images/default-city.jpg"})`,
         }}
       >
         <div className="header-content">

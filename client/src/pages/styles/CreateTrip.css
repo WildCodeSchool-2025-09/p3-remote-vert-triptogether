@@ -112,7 +112,6 @@ body {
 .create-trip-form gmp-place-autocomplete {
   display: block;
   padding: 0;
-  overflow: hidden; /* Pour que l'input interne respecte le border-radius */
 }
 
 /* C'est ici qu'on "tue" le contour bleu à l'intérieur du composant */

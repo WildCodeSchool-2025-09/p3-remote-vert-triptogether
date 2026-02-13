@@ -41,7 +41,7 @@ body {
   margin-top: 10rem;
 }
 
-.create-trip-page h1, 
+.create-trip-page h1,
 .create-trip-page h1 span {
   font-family: var(--body-text);
   font-size: 3rem;
@@ -49,8 +49,12 @@ body {
   margin-top: 7rem;
 }
 
-.create-trip-page h1 { color: var(--black); }
-.create-trip-page h1 span { color: var(--primary-button); }
+.create-trip-page h1 {
+  color: var(--black);
+}
+.create-trip-page h1 span {
+  color: var(--primary-button);
+}
 
 .create-trip-page > p {
   margin-top: 1rem;
@@ -90,7 +94,7 @@ body {
 
 /* --- Inputs Standards & Autocomplete --- */
 /* On harmonise le style pour que l'autocomplete ressemble aux inputs */
-.form-group input, 
+.form-group input,
 .create-trip-form gmp-place-autocomplete {
   box-sizing: border-box;
   height: 8vh;
@@ -116,8 +120,8 @@ body {
   width: 100%;
   height: 100%;
   border: none !important;
-  outline: none !important;      /* Supprime le contour bleu */
-  box-shadow: none !important;   /* Supprime l'ombre bleue */
+  outline: none !important; /* Supprime le contour bleu */
+  box-shadow: none !important; /* Supprime l'ombre bleue */
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   font-family: var(--body-text);
@@ -126,7 +130,9 @@ body {
 }
 
 /* Suppression globale de l'outline sur le focus pour tout le formulaire */
-*:focus, *:focus-visible, *:focus-within {
+*:focus,
+*:focus-visible,
+*:focus-within {
   outline: none !important;
   box-shadow: none !important;
 }

@@ -72,11 +72,9 @@
   transform: scale(0.98);
 }
 
-
-
 gmp-place-autocomplete {
-    background-color: rgb(218, 222, 218);
-    color-scheme: light;
-    border-radius: 9px;
-    border: 0px solid rgb(209, 213, 219);
+  background-color: rgb(218, 222, 218);
+  color-scheme: light;
+  border-radius: 9px;
+  border: 0px solid rgb(209, 213, 219);
 }

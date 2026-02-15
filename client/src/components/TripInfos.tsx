@@ -10,9 +10,12 @@ type TripInfosProps = {
 };
 
 function TripInfos({ trip }: TripInfosProps) {
-  if (!trip) return null;
-  const tripId = trip.id;
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+
+  if (!trip) return null;
+
+  const tripId = trip.id;
+
   const openInviteModal = () => {
     setIsInviteModalOpen(true);
   };
@@ -20,6 +23,7 @@ function TripInfos({ trip }: TripInfosProps) {
   const closeInviteModal = () => {
     setIsInviteModalOpen(false);
   };
+
   return (
     <>
       <header

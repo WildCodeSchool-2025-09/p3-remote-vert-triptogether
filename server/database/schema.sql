@@ -32,25 +32,6 @@ CREATE TABLE step (
     ON DELETE CASCADE
 );
 
-CREATE TABLE category (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  label VARCHAR(80) NOT NULL
-);
-
-
-CREATE TABLE budget (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  amount DECIMAL(6,2) NOT NULL,
-  is_mandatory BOOLEAN NOT NULL,
-  trip_id INT NOT NULL,
-  category_id INT NOT NULL,
-  CONSTRAINT fk_budget_trip
-    FOREIGN KEY (trip_id) REFERENCES trip(id)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_budget_category
-    FOREIGN KEY (category_id) REFERENCES category(id)
-    ON DELETE RESTRICT
-);
 
 CREATE TABLE invitation (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -81,3 +62,31 @@ CREATE TABLE vote (
     ON DELETE CASCADE
 );
 
+CREATE TABLE expense_category (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE expense (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  trip_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  date DATE DEFAULT (CURRENT_DATE),
+  paid_by INT NOT NULL,
+  category_id INT NOT NULL,
+  
+  FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE CASCADE,
+  FOREIGN KEY (paid_by) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES expense_category(id)
+);
+
+
+CREATE TABLE expense_share (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  expense_id INT NOT NULL,
+  user_id INT NOT NULL, 
+  share_amount DECIMAL (10,2) NOT NULL,
+  FOREIGN KEY (expense_id) REFERENCES expense(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);

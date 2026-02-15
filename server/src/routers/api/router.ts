@@ -3,6 +3,7 @@ import authRouter from "../auth/router";
 import invitationRouter from "../invitation/router";
 import tripRouter from "../trip/router";
 import userRouter from "../user/router";
+import budgetRouter from "../budget/router";
 
 const router = express.Router();
 
@@ -13,6 +14,6 @@ router.use("/trips", tripRouter);
 
 router.use("/users", userRouter);
 
-router.use("/trips", tripRouter);
+router.use("/budget", budgetRouter);
 
 export default router;

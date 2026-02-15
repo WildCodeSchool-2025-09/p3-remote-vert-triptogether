@@ -1,3 +1,13 @@
+main {
+  background-color: var(--background);
+}
+
+.steps-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
 .steps-section {
   margin-bottom: 2rem;
   font-family: var(--title-font);

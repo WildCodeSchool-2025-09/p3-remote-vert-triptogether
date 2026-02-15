@@ -1,15 +1,25 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 import type { StepCardProps } from "../types/tripType";
 import type { CreateVotePayload, Vote, VotesStats } from "../types/voteType";
 import "../pages/styles/StepCard.css";
 
-function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
+function StepCard({
+  step,
+  currentUserId,
+  tripId,
+  memberCount,
+  onVoteSuccess,
+}: StepCardProps) {
   const [allVotes, setAllVotes] = useState<Vote[]>([]);
   const [loading, setLoading] = useState(true);
   const [alreadyVoted, setAlreadyVoted] = useState(false);
   const [comment, setComment] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showVotes, setShowVotes] = useState(false);
+
+  const { auth, logout } = useAuth();
+  const token = auth?.token;
 
   const stepImage = `https://www.sourcesplash.com/i/random?q=city&id=${step.id}`;
   const thumbsUpLogo = (
@@ -31,10 +41,19 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
       `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`,
       {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       },
     )
       .then(async (response) => {
+        if (response.status === 401) {
+          logout();
+          window.location.href = "/login";
+          return;
+        }
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(
@@ -60,7 +79,6 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
     setError(null);
 
     const createVoteData: CreateVotePayload = {
-      user_id: currentUserId,
       vote: voteValue,
       comment: comment.trim() || undefined,
     };
@@ -69,17 +87,30 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
       `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}/votes`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(createVoteData),
       },
     )
       .then(async (response) => {
+        if (response.status === 401) {
+          logout();
+          window.location.href = "/login";
+          return;
+        }
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Erreur lors du vote");
         }
 
-        window.location.reload();
+        loadVotes();
+
+        if (onVoteSuccess) {
+          onVoteSuccess();
+        }
       })
       .catch((err) => {
         console.error("Erreur lors du vote:", err);
@@ -103,8 +134,7 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
       <article className="step-header">
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
-        <h3 id="step-header-end">Proposée par </h3>
-        {/* ajouter {step.creator_name} */}
+        <h3 id="step-header-end">Proposée par {step.creator_name} </h3>
       </article>
       <article className="step-body">
         <div className="vote-progress">
@@ -161,7 +191,7 @@ function StepCard({ step, currentUserId, tripId, memberCount }: StepCardProps) {
           </div>
         ) : (
           <div className="no-votes-placeholder">
-            <p className="toggle-votes-btn">En attente d'un vote</p>
+            <p className="toggle-votes-btn">En attente de vote</p>
           </div>
         )}
         {error && <p className="error">{error}</p>}

@@ -4,6 +4,8 @@ export type Step = {
   country: string;
   trip_id: number;
   status?: "pending" | "validated" | "rejected";
+  creator_name: string;
+  image_url?: string;
   voteStats?: {
     yes: number;
     no: number;
@@ -16,6 +18,9 @@ export type StepCardProps = {
   currentUserId: number;
   tripId: number;
   memberCount?: number;
+  isMainDestination?: boolean;
+  trip?: TheTrip | null;
+  onVoteSuccess?: () => void;
 };
 
 export type StepsResponse =

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./styles/Reset.css";
 import "./styles/MyTrips.css";
 import "./styles/StepCard.css";
 import { createPortal } from "react-dom";

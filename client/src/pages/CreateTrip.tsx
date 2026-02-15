@@ -27,7 +27,8 @@ export default function CreateTrip() {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayString = today.toISOString().slice(0, 10);
+
+  const todayString = today.toLocaleDateString("fr-CA");
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
@@ -105,6 +106,11 @@ export default function CreateTrip() {
       currentCity = (placeAutocompleteRef.current as any).value;
     }
 
+    if (!titleRef.current || !descriptionRef.current || !startAtRef.current) {
+      toast.error("Formulaire incomplet");
+      return;
+    }
+
     const newTrip = {
       title: titleRef.current?.value,
       description: descriptionRef.current?.value,
@@ -114,6 +120,19 @@ export default function CreateTrip() {
       country,
       image_url: imageUrl,
     };
+
+    const departureDate = new Date(startAtRef.current.value);
+    const returnDate = new Date(endOfTrip.end_at);
+
+    if (departureDate < today) {
+      toast.error("La date de départ ne peut pas être dans le passé");
+      return;
+    }
+
+    if (returnDate <= departureDate) {
+      toast.error("La date de retour doit être après la date de départ");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -164,7 +183,7 @@ export default function CreateTrip() {
             type="text"
             id="trip-name"
             ref={titleRef}
-            placeholder="Nom du voyage"
+            placeholder="Entrez le nom du voyage"
             required
           />
         </div>
@@ -175,7 +194,7 @@ export default function CreateTrip() {
             type="text"
             id="description"
             ref={descriptionRef}
-            placeholder="Description"
+            placeholder="Entrez la description"
             required
           />
         </div>
@@ -212,10 +231,16 @@ export default function CreateTrip() {
         </div>
 
         <div className="button-container">
-          <button type="button" onClick={() => navigate(-1)}>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate(-1)}
+          >
             Annuler
           </button>
-          <button type="submit">Créer le voyage</button>
+          <button type="submit" className="create-trip-button">
+            Créer le voyage
+          </button>
         </div>
       </form>
     </div>

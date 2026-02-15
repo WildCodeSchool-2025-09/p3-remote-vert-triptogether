@@ -5,15 +5,13 @@ import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
 
-type AuthRequest = import("express").Request & {
+type RequestWithAuth = import("express").Request & {
   auth: {
     sub: string;
-    isAdmin: boolean;
   };
 };
 
 const createVoteSchema = Joi.object({
-  user_id: Joi.number().required(),
   vote: Joi.boolean().required(),
   comment: Joi.string().max(500).allow(null, "").optional(),
 });
@@ -22,19 +20,18 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.tripId);
     if (Number.isNaN(tripId)) {
-      res.status(400).json({ error: "ID de voyage invalide" });
-      return;
+      return res.status(400).json({ error: "ID de voyage invalide" });
     }
 
-    const userId = req.body.user_id || 1;
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
     }
 
     const trip = await tripRepository.read(tripId);
     if (!trip) {
-      res.status(404).json({ error: "Voyage introuvable" });
-      return;
+      return res.status(404).json({ error: "Voyage introuvable" });
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
@@ -67,7 +64,7 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
         id: step.id,
         city: step.city,
         country: step.country,
-        // creator_name: step.creator_name,
+        creator_name: step.creator_name,
         trip_id: step.trip_id,
         status,
         voteStats: {
@@ -96,6 +93,10 @@ const addVote: RequestHandler = async (req, res, next) => {
   try {
     const stepId = Number(req.params.id);
 
+    if (Number.isNaN(stepId)) {
+      return res.status(400).json({ error: "ID d'étape invalide" });
+    }
+
     const { error, value } = createVoteSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
@@ -103,15 +104,13 @@ const addVote: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const { user_id, vote, comment } = value;
-    const userId = user_id || 1;
+    const { vote, comment } = value;
+
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
 
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
-    }
-
-    if (Number.isNaN(stepId)) {
-      return res.status(400).json({ error: "ID d'étape invalide" });
     }
 
     const step = await stepRepository.getStepWithTrip(stepId);
@@ -153,12 +152,10 @@ const addVote: RequestHandler = async (req, res, next) => {
 
 const browseVote: RequestHandler = async (req, res, next) => {
   try {
-    if (typeof req.params.id !== "string") {
-      return res.status(400).json({ error: "Paramètre invalide" });
-    }
+    const stepId = Number(req.params.id);
 
-    const stepId = Number.parseInt(req.params.id);
-    const userId = req.body.user_id || 1;
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
 
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
@@ -208,19 +205,18 @@ const addStepCity: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.tripId);
     if (Number.isNaN(tripId)) {
-      res.status(400).json({ error: "ID de voyage invalide" });
-      return;
+      return res.status(400).json({ error: "ID de voyage invalide" });
     }
 
-    const userId = req.body.user_id || 1;
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
     }
 
     const trip = await tripRepository.read(tripId);
     if (!trip) {
-      res.status(404).json({ error: "Voyage introuvable" });
-      return;
+      return res.status(404).json({ error: "Voyage introuvable" });
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
@@ -234,11 +230,6 @@ const addStepCity: RequestHandler = async (req, res, next) => {
     }
 
     const { city, country, image_url } = req.body;
-    let finalImageUrl = image_url;
-
-    if (!finalImageUrl) {
-      finalImageUrl = await googlePlacesService.getCityImage(city, country);
-    }
 
     if (typeof city !== "string" || typeof country !== "string") {
       return res
@@ -246,11 +237,18 @@ const addStepCity: RequestHandler = async (req, res, next) => {
         .json({ error: "La ville et le pays sont requis." });
     }
 
+    let finalImageUrl = image_url;
+
+    if (!finalImageUrl) {
+      finalImageUrl = await googlePlacesService.getCityImage(city, country);
+    }
+
     const stepId = await stepRepository.createStepCity({
       trip_id: tripId,
       city,
       country,
-      image_url: finalImageUrl || "/images/default-trip.jpg",
+      image_url: finalImageUrl || "/images/default-city.jpg",
+      user_id: userId,
     });
 
     return res.status(201).json({

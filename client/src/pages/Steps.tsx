@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { toast } from "react-toastify";
 import AddStep from "../components/AddTrip";
 import NavTabs from "../components/NavTabs";
 import StepCard from "../components/StepCard";
@@ -7,7 +8,6 @@ import TripInfos from "../components/TripInfos";
 import { useAuth } from "../contexts/AuthContext";
 import type { Step, StepsResponse, TheTrip } from "../types/tripType";
 import "./styles/Steps.css";
-import { toast } from "react-toastify";
 
 type RouteParams = {
   id: string;
@@ -21,17 +21,60 @@ function Steps() {
   const [trip, setTrip] = useState<TheTrip | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
   const [memberCount, setMemberCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadingTrip, setLoadingTrip] = useState(true);
+  const [loadingSteps, setLoadingSteps] = useState(true);
+  const loading = loadingTrip || loadingSteps;
 
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const currentUserId = auth?.user?.id || 0;
-  const token = auth?.token || localStorage.getItem("token");
+  const token = auth?.token;
+
+  const fetchTrip = useCallback(async () => {
+    try {
+      setLoadingTrip(true);
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.status === 401) {
+        if (data.error === "Token expired") {
+          logout();
+          toast.error("Session expirée. Veuillez vous reconnecter.");
+          navigate("/login");
+          return;
+        }
+        logout();
+        toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+        navigate("/login");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Erreur chargement voyage");
+      }
+
+      setTrip(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Impossible de charger le voyage");
+    } finally {
+      setLoadingTrip(false);
+    }
+  }, [tripId, token, logout, navigate]);
 
   const fetchSteps = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoadingSteps(true);
 
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`,
@@ -46,26 +89,30 @@ function Steps() {
 
       const result: StepsResponse = await response.json();
 
+      if (response.status === 401) {
+        logout();
+        navigate("/login");
+        return;
+      }
+
       if (response.status === 400) {
-        navigate("/", {
-          state: {
-            toast: { type: "error", message: "Requête invalide" },
-          },
-        });
+        toast.error("Requête invalide");
+        navigate("/");
         return;
       }
 
       if (response.status === 403) {
-        navigate("/", {
-          state: {
-            toast: { type: "error", message: "Accès non autorisé" },
-          },
-        });
+        toast.error("Accès non autorisé");
+        navigate("/");
         return;
       }
 
+      if (!response.ok) {
+        throw new Error("Erreur chargement étapes");
+      }
+
       if (!("steps" in result)) {
-        setError("Données d'étapes invalides");
+        toast.error("Données d'étapes invalides");
         return;
       }
 
@@ -73,41 +120,16 @@ function Steps() {
       setMemberCount(result.trip.memberCount);
     } catch (err) {
       console.error("Erreur fetch steps:", err);
-      setError("Impossible de charger les étapes");
+      toast.error("Impossible de charger les étapes");
     } finally {
-      setLoading(false);
+      setLoadingSteps(false);
     }
-  }, [tripId, token, navigate]);
-
-  const fetchTrip = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}`,
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          toast.error("Veuillez vous connecter pour accéder à ce voyage.");
-          return;
-        }
-        throw new Error("Erreur chargement voyage");
-      }
-
-      const data = await response.json();
-      setTrip(data);
-    } catch (err) {
-      console.error(err);
-      toast.error("Impossible de charger le voyage");
-    }
-  }, [tripId]);
+  }, [tripId, token, logout, navigate]);
 
   useEffect(() => {
     if (!id || Number.isNaN(tripId)) {
-      navigate("/", {
-        state: {
-          toast: { type: "error", message: "Voyage invalide" },
-        },
-      });
+      toast.error("Voyage invalide");
+      navigate("/");
       return;
     }
 
@@ -121,24 +143,16 @@ function Steps() {
 
   return (
     <>
-      <header>
-        <nav>Trip Together</nav>
-      </header>
-
-      <main>
-        <section id="trip-infos" className="card">
-          <TripInfos trip={trip} />
-        </section>
-
+      {!loading && trip && <TripInfos trip={trip} />}
+      <section className="steps-page">
         <NavTabs />
 
         <AddStep onStepAdded={fetchSteps} />
 
         <section className="steps-list">
           {loading && <p className="loading-text">Chargement des étapes</p>}
-          {error && <p className="error">{error}</p>}
 
-          {!loading && !error && (
+          {!loading && (
             <>
               {pendingSteps.length > 0 && (
                 <div className="steps-section">
@@ -159,6 +173,7 @@ function Steps() {
                         currentUserId={currentUserId}
                         tripId={tripId}
                         memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
                       />
                     ))}
                   </div>
@@ -181,6 +196,7 @@ function Steps() {
                         currentUserId={currentUserId}
                         tripId={tripId}
                         memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
                       />
                     ))}
                   </div>
@@ -203,6 +219,7 @@ function Steps() {
                         currentUserId={currentUserId}
                         tripId={tripId}
                         memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
                       />
                     ))}
                   </div>
@@ -215,7 +232,7 @@ function Steps() {
             </>
           )}
         </section>
-      </main>
+      </section>
     </>
   );
 }

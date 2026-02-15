@@ -46,13 +46,13 @@ class stepRepository {
   async create(
     userId: number,
     stepId: number,
-    vote: 0 | 1,
+    vote: boolean,
     comment: string | null,
   ): Promise<number> {
     const [result] = await databaseClient.query<Result>(
       `INSERT INTO vote (user_id, step_id, vote, comment) 
        VALUES (?, ?, ?, ?)`,
-      [userId, stepId, vote, comment],
+      [userId, stepId, vote ? 1 : 0, comment],
     );
     return result.insertId;
   }
@@ -87,7 +87,7 @@ class stepRepository {
     return rows as VoteWithUser[];
   }
 
-  async getStepsWithVotes(tripId: number) {
+  async getStepsWithVotes(tripId: number): Promise<Rows> {
     const [rows] = await databaseClient.query<Rows>(
       `
       SELECT 
@@ -95,6 +95,7 @@ class stepRepository {
         s.city AS city,
         s.country AS country,
         s.trip_id AS trip_id,
+        u.firstname AS creator_name,
 
         (
           SELECT COUNT(*) 
@@ -122,9 +123,9 @@ class stepRepository {
         ) AS yes_votes
 
       FROM step s
+      JOIN user u ON u.id = s.user_id
       WHERE s.trip_id = ?
       ORDER BY s.id ASC`,
-      // ajouter u.firstname AS creator_name, dans SELECT et JOIN user u ON u.id = s.user_id après FROM step s
       [tripId],
     );
     return rows;
@@ -132,17 +133,10 @@ class stepRepository {
 
   async createStepCity(step: Omit<Step, "id">) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO step (city, country, trip_id, image_url) VALUES (?, ?, ?, ?)",
-      [step.city, step.country, step.trip_id, step.image_url],
+      "INSERT INTO step (city, country, trip_id, image_url, user_id) VALUES (?, ?, ?, ?, ?)",
+      [step.city, step.country, step.trip_id, step.image_url, step.user_id],
     );
     return result.insertId;
-  }
-  async stepExists(stepId: number): Promise<boolean> {
-    const [rows] = await databaseClient.query<Rows>(
-      "SELECT id FROM step WHERE id = ?",
-      [stepId],
-    );
-    return rows.length > 0;
   }
 }
 

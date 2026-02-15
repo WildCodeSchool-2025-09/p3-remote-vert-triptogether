@@ -29,11 +29,7 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-container">
       <div className="navbar-left">
-        <img
-          src="../../public/logos/logo.png"
-          className="navbar-logo"
-          alt="Logo"
-        />
+        <img src="/logos/logo.png" className="navbar-logo" alt="Logo" />
         <div className="website-name">Trip Together</div>
       </div>
 
@@ -59,11 +55,7 @@ export default function Navbar() {
             aria-label="Profil"
             onClick={toggleMenu}
           >
-            <img
-              src="../../public/images/utilisateur.png"
-              className="user-icone"
-              alt=""
-            />
+            <img src="/images/utilisateur.png" className="user-icone" alt="" />
           </button>
 
           <div

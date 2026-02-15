@@ -26,6 +26,7 @@ export type StepWithStatus = {
   city: string;
   country: string;
   trip_id: number;
+  creator_name: string;
   status: "pending" | "validated" | "rejected";
   voteStats: {
     yes: number;

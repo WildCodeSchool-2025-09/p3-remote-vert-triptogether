@@ -4,7 +4,9 @@ import { toast } from "react-toastify";
 import "./styles/CreateTrip.css";
 import "./styles/mobile.css";
 import { useJsApiLoader } from "@react-google-maps/api";
+import { useJsApiLoader } from "@react-google-maps/api";
 import backArrowLogo from "../assets/images/back-arrow-logo.png";
+import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -28,16 +30,22 @@ export default function CreateTrip() {
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const placeAutocompleteRef = useRef<any>(null);
 
+  const inputRef = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const placeAutocompleteRef = useRef<any>(null);
+
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const startAtRef = useRef<HTMLInputElement>(null);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayString = today.toISOString().slice(0, 10);
+
+  const todayString = today.toLocaleDateString("fr-CA");
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
+    libraries: GOOGLE_MAPS_LIBRARIES,
     libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
@@ -124,9 +132,23 @@ export default function CreateTrip() {
       start_at: startAtRef.current?.value,
       end_at: endOfTrip.end_at,
       city: currentCity,
+      city: currentCity,
       country,
       image_url: imageUrl,
     };
+
+    const departureDate = new Date(startAtRef.current.value);
+    const returnDate = new Date(endOfTrip.end_at);
+
+    if (departureDate < today) {
+      toast.error("La date de départ ne peut pas être dans le passé");
+      return;
+    }
+
+    if (returnDate <= departureDate) {
+      toast.error("La date de retour doit être après la date de départ");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -176,7 +198,7 @@ export default function CreateTrip() {
             type="text"
             id="trip-name"
             ref={titleRef}
-            placeholder="Nom du voyage"
+            placeholder="Entrez le nom du voyage"
             required
           />
         </div>
@@ -187,12 +209,15 @@ export default function CreateTrip() {
             type="text"
             id="description"
             ref={descriptionRef}
-            placeholder="Description"
+            placeholder="Entrez la description"
             required
           />
         </div>
 
         <div className="form-group">
+          <label htmlFor="city">Adresse *</label>
+          {/* Conteneur pour le composant Google Places */}
+          <div ref={inputRef} style={{ width: "100%" }} />
           <label htmlFor="city">Adresse *</label>
           {/* Conteneur pour le composant Google Places */}
           <div ref={inputRef} style={{ width: "100%" }} />
@@ -224,10 +249,16 @@ export default function CreateTrip() {
         </div>
 
         <div className="button-container">
-          <button type="button" onClick={() => navigate(-1)}>
+          <button
+            type="button"
+            className="cancel-button"
+            onClick={() => navigate(-1)}
+          >
             Annuler
           </button>
-          <button type="submit">Créer le voyage</button>
+          <button type="submit" className="create-trip-button">
+            Créer le voyage
+          </button>
         </div>
       </form>
     </div>

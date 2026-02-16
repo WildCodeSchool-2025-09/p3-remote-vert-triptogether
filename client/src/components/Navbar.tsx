@@ -36,11 +36,7 @@ export default function Navbar() {
     <nav className="navbar navbar-container">
       <div className="navbar-left">
         <Link to="/" onClick={closeMenu}>
-          <img
-            src="../../public/logos/logo.png"
-            className="navbar-logo"
-            alt="Logo"
-          />
+          <img src="/logos/logo.png" className="navbar-logo" alt="Logo" />
         </Link>
         <Link to="/" onClick={closeMenu}>
           <div className="website-name">Trip Together</div>

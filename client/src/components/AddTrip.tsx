@@ -1,6 +1,9 @@
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useEffect, useRef, useState } from "react";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { useAuth } from "../contexts/AuthContext";
 import "../pages/styles/AddTrip.css";
@@ -16,9 +19,13 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
   const inputRef = useRef<HTMLDivElement>(null);
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   const placeAutocompleteRef = useRef<any>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const placeAutocompleteRef = useRef<any>(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
+    libraries: GOOGLE_MAPS_LIBRARIES,
     libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
@@ -110,6 +117,12 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
       currentCity = (placeAutocompleteRef.current as any).value;
     }
 
+    let currentCity = city;
+    if (!currentCity && placeAutocompleteRef.current) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      currentCity = (placeAutocompleteRef.current as any).value;
+    }
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`,
@@ -120,6 +133,7 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            city: currentCity,
             city: currentCity,
             country,
             user_id,
@@ -140,6 +154,10 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
         placeAutocompleteRef.current.value = "";
       }
 
+      if (placeAutocompleteRef.current) {
+        placeAutocompleteRef.current.value = "";
+      }
+
       onStepAdded();
     } catch (error) {
       console.error(error);
@@ -155,8 +173,14 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
             className="input-container"
             ref={inputRef}
             style={{ width: "100%" }}
+          <label htmlFor="city">Adresse</label>
+          <div
+            className="input-container"
+            ref={inputRef}
+            style={{ width: "100%" }}
           />
         </div>
+
 
         <button type="submit" className="add-btn">
           Ajouter cette étape

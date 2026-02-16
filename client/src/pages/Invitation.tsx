@@ -6,7 +6,7 @@ import BudgetCard from "../components/BudgetCard";
 import ParticipantsCard from "../components/ParticipantsCard";
 import TripInfos from "../components/TripInfos";
 import type { invitationType } from "../types/invitationType";
-import type { Trip } from "../types/tripType";
+import type { TheTrip } from "../types/tripType";
 
 function Invitation() {
   const { id, invitationId } = useParams<{
@@ -14,7 +14,7 @@ function Invitation() {
     invitationId: string;
   }>();
   const [invitation, setInvitation] = useState<invitationType | null>(null);
-  const [mytrip, setmyTrip] = useState<Trip | null>(null);
+  const [mytrip, setmyTrip] = useState<TheTrip | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {

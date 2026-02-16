@@ -1,34 +1,37 @@
 import type { RequestHandler } from "express";
-import type { NewVote, VotesStats } from "../../types/voteType";
+import Joi from "joi";
+import type { StepWithStatus, VotesStats } from "../../types/voteType";
 import * as googlePlacesService from "../services/googlePlacesService";
 import tripRepository from "../trip/tripRepository";
 import stepRepository from "./stepRepository";
 
-type AuthRequest = import("express").Request & {
+type RequestWithAuth = import("express").Request & {
   auth: {
     sub: string;
-    isAdmin: boolean;
   };
 };
 
+const createVoteSchema = Joi.object({
+  vote: Joi.boolean().required(),
+  comment: Joi.string().max(500).allow(null, "").optional(),
+});
+
 const selectStepsByTrip: RequestHandler = async (req, res, next) => {
-  const authReq = req as AuthRequest;
   try {
     const tripId = Number(req.params.tripId);
     if (Number.isNaN(tripId)) {
-      res.status(400).json({ error: "ID de voyage invalide" });
-      return;
+      return res.status(400).json({ error: "ID de voyage invalide" });
     }
 
-    const userId = Number(authReq.auth?.sub);
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
     }
 
     const trip = await tripRepository.read(tripId);
     if (!trip) {
-      res.status(404).json({ error: "Voyage introuvable" });
-      return;
+      return res.status(404).json({ error: "Voyage introuvable" });
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
@@ -41,40 +44,179 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
       });
     }
 
-    const steps = await stepRepository.selectByTrip(tripId, userId);
+    const steps = await stepRepository.getStepsWithVotes(tripId);
+
+    const stepsWithStatus: StepWithStatus[] = steps.map((step) => {
+      const yesVotes = step.yes_votes;
+      const totalVotes = step.total_votes;
+      const memberCount = step.total_members;
+
+      const everyoneVoted = totalVotes === memberCount;
+      const majorityYes = yesVotes > memberCount / 2;
+
+      let status: "pending" | "validated" | "rejected" = "pending";
+
+      if (everyoneVoted) {
+        status = majorityYes ? "validated" : "rejected";
+      }
+
+      return {
+        id: step.id,
+        city: step.city,
+        country: step.country,
+        creator_name: step.creator_name,
+        trip_id: step.trip_id,
+        status,
+        voteStats: {
+          yes: yesVotes,
+          no: totalVotes - yesVotes,
+          total: totalVotes,
+        },
+      };
+    });
 
     return res.status(200).json({
       trip: {
         id: trip.id,
         title: trip.title,
         description: trip.description,
-        city: trip.city,
-        country: trip.country,
-        image_url: trip.image_url,
+        memberCount: steps[0]?.total_members ?? 0,
       },
-      steps,
+      steps: stepsWithStatus,
     });
   } catch (err) {
     next(err);
   }
 };
+
+const addVote: RequestHandler = async (req, res, next) => {
+  try {
+    const stepId = Number(req.params.id);
+
+    if (Number.isNaN(stepId)) {
+      return res.status(400).json({ error: "ID d'étape invalide" });
+    }
+
+    const { error, value } = createVoteSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({
+        error: error.details[0].message,
+      });
+    }
+
+    const { vote, comment } = value;
+
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+
+    if (!userId) {
+      return res.status(403).json({ error: "Non authentifié" });
+    }
+
+    const step = await stepRepository.getStepWithTrip(stepId);
+    if (!step) {
+      return res.status(404).json({ error: "Etape non trouvée" });
+    }
+
+    const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
+      step.trip_id,
+      userId,
+    );
+    if (!isMemberOfTrip) {
+      return res.status(403).json({
+        error: "Vous devez être membre du voyage pour voter",
+      });
+    }
+
+    const hasVoted = await stepRepository.hasUserVoted(userId, stepId);
+    if (hasVoted) {
+      return res.status(409).json({
+        error: "Vous avez déjà voté pour cette étape",
+      });
+    }
+
+    const voteId = await stepRepository.create(
+      userId,
+      stepId,
+      vote,
+      comment || null,
+    );
+
+    const createdVote = await stepRepository.selectByIdWithUser(voteId);
+
+    return res.status(201).json(createdVote);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const browseVote: RequestHandler = async (req, res, next) => {
+  try {
+    const stepId = Number(req.params.id);
+
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+
+    if (!userId) {
+      return res.status(403).json({ error: "Non authentifié" });
+    }
+
+    if (Number.isNaN(stepId)) {
+      return res.status(400).json({ error: "ID d'étape invalide" });
+    }
+
+    const step = await stepRepository.getStepWithTrip(stepId);
+    if (!step) {
+      return res.status(404).json({ error: "Etape non trouvée" });
+    }
+
+    const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
+      step.trip_id,
+      userId,
+    );
+    if (!isMemberOfTrip) {
+      return res.status(403).json({
+        error: "Vous devez être membre du voyage pour voir les votes",
+      });
+    }
+
+    const allVotes = await stepRepository.selectByStep(stepId);
+
+    const yes = allVotes.filter((v) => v.vote).length;
+    const no = allVotes.filter((v) => !v.vote).length;
+
+    const showVoteStats: VotesStats = {
+      step_id: stepId,
+      allVotes,
+      summary: {
+        yes,
+        no,
+        total: allVotes.length,
+      },
+    };
+
+    return res.status(200).json(showVoteStats);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const addStepCity: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.tripId);
     if (Number.isNaN(tripId)) {
-      res.status(400).json({ error: "ID de voyage invalide" });
-      return;
+      return res.status(400).json({ error: "ID de voyage invalide" });
     }
 
-    const userId = req.body.user_id || 1;
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
     }
 
     const trip = await tripRepository.read(tripId);
     if (!trip) {
-      res.status(404).json({ error: "Voyage introuvable" });
-      return;
+      return res.status(404).json({ error: "Voyage introuvable" });
     }
 
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
@@ -88,11 +230,6 @@ const addStepCity: RequestHandler = async (req, res, next) => {
     }
 
     const { city, country, image_url } = req.body;
-    let finalImageUrl = image_url;
-
-    if (!finalImageUrl) {
-      finalImageUrl = await googlePlacesService.getCityImage(city, country);
-    }
 
     if (typeof city !== "string" || typeof country !== "string") {
       return res
@@ -100,11 +237,18 @@ const addStepCity: RequestHandler = async (req, res, next) => {
         .json({ error: "La ville et le pays sont requis." });
     }
 
+    let finalImageUrl = image_url;
+
+    if (!finalImageUrl) {
+      finalImageUrl = await googlePlacesService.getCityImage(city, country);
+    }
+
     const stepId = await stepRepository.createStepCity({
       trip_id: tripId,
       city,
       country,
       image_url: finalImageUrl || "/images/default-city.jpg",
+      user_id: userId,
     });
 
     return res.status(201).json({
@@ -123,121 +267,4 @@ const addStepCity: RequestHandler = async (req, res, next) => {
   }
 };
 
-const addVote: RequestHandler = async (req, res, next) => {
-  try {
-    if (typeof req.params.id !== "string") {
-      return res.status(400).json();
-    }
-    const newVote: NewVote = {
-      user_id: req.body.user_id || 1,
-      step_id: Number.parseInt(req.params.id),
-      vote: req.body.vote,
-      comment: req.body.comment,
-    };
-
-    if (!newVote.user_id) {
-      return res.status(403).json({ error: "Non authentifié" });
-    }
-
-    if (Number.isNaN(newVote.step_id)) {
-      return res.status(400).json({ error: "ID d'étape invalide" });
-    }
-
-    if (typeof newVote.vote !== "boolean") {
-      return res.status(400).json({ error: "Le vote doit être true ou false" });
-    }
-
-    if (
-      newVote.comment !== undefined &&
-      newVote.comment !== null &&
-      typeof newVote.comment !== "string"
-    ) {
-      return res
-        .status(400)
-        .json({ error: "Le commentaire doit être une chaîne de caractères" });
-    }
-
-    const stepExists = await stepRepository.stepExists(newVote.step_id);
-    if (!stepExists) {
-      return res.status(404).json({ error: "Etape non trouvée" });
-    }
-
-    const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
-      newVote.step_id,
-      newVote.user_id,
-    );
-    if (!isMemberOfTrip) {
-      return res
-        .status(403)
-        .json({ error: "Vous devez être membre du voyage pour voter" });
-    }
-
-    const hasVoted = await stepRepository.hasUserVoted(
-      newVote.user_id,
-      newVote.step_id,
-    );
-    if (hasVoted) {
-      return res
-        .status(409)
-        .json({ error: "Vous avez déjà voté pour cette étape" });
-    }
-
-    const voteId = await stepRepository.create(
-      newVote.user_id,
-      newVote.step_id,
-      newVote.vote,
-      newVote.comment,
-    );
-
-    const createdVote = await stepRepository.selectByIdWithUser(voteId);
-
-    return res.status(201).json(createdVote);
-  } catch (err) {
-    next(err);
-  }
-};
-
-const browseVote: RequestHandler = async (req, res, next) => {
-  try {
-    if (typeof req.params.id !== "string") {
-      return res.status(400).json();
-    }
-    const step_id = Number.parseInt(req.params.id);
-    const user_id = req.body.user_id || 1;
-
-    if (!user_id) {
-      return res.status(403).json({ error: "Non authentifié" });
-    }
-
-    if (Number.isNaN(step_id)) {
-      return res.status(400).json({ error: "ID d'étape invalide" });
-    }
-
-    const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
-      step_id,
-      user_id,
-    );
-    if (!isMemberOfTrip) {
-      return res.status(403).json({
-        error: "Vous devez être membre du voyage pour voir les votes",
-      });
-    }
-
-    const allVotes = await stepRepository.selectByStep(step_id);
-
-    const voteStats: VotesStats = {
-      step_id,
-      allVotes,
-      voteStats: {
-        yes: allVotes.filter((v) => v.vote === true).length,
-        no: allVotes.filter((v) => v.vote === false).length,
-      },
-    };
-
-    return res.status(200).json(voteStats);
-  } catch (err) {
-    next(err);
-  }
-};
-
-export { selectStepsByTrip, addVote, browseVote, addStepCity };
+export default { selectStepsByTrip, addVote, browseVote, addStepCity };

@@ -1,23 +1,21 @@
 import { Outlet } from "react-router";
 import { ToastContainer } from "react-toastify";
 import "./pages/styles/Reset.css";
-import "./pages/styles/App.css";
 import Navbar from "./components/Navbar";
 import { useToast } from "./hooks/useToast";
-import "./App.css";
+import "./pages/styles/App.css";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   useToast();
 
   return (
     <>
-      <header>
-        <Navbar />
-      </header>
-
+      <Navbar />
       <main>
         <Outlet />
       </main>
+      <Footer />
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
     </>
   );

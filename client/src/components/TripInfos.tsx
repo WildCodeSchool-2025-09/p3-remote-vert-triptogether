@@ -1,12 +1,12 @@
 import TripCard from "../pages/TripCard";
 import TripInvitation from "../pages/TripInvitation";
-import type { Trip } from "../types/tripType";
+import type { TheTrip } from "../types/tripType";
 import Modal from "./Modal";
 import "../pages/styles/TripInfos.css";
 import { useState } from "react";
 
 type TripInfosProps = {
-  trip: Trip | null;
+  trip: TheTrip | null;
 };
 
 function TripInfos({ trip }: TripInfosProps) {

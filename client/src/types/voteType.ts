@@ -1,5 +1,3 @@
-import type { Trip } from "./tripType";
-
 export type Vote = {
   id: number;
   created_at: string;
@@ -13,29 +11,14 @@ export type Vote = {
 export type VotesStats = {
   step_id: number;
   allVotes: Vote[];
-  voteStats: {
+  summary: {
     yes: number;
     no: number;
+    total: number;
   };
 };
 
 export type CreateVotePayload = {
   vote: boolean;
   comment?: string;
-};
-
-export type Step = {
-  id: number;
-  city: string;
-  country: string;
-  trip_id: number;
-  image_url?: string;
-};
-
-export type StepCardProps = {
-  step: Step;
-  currentUserId: number;
-  tripId: number;
-  isMainDestination?: boolean;
-  trip?: Trip | null;
 };

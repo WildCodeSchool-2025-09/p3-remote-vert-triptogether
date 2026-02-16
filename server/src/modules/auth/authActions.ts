@@ -71,14 +71,20 @@ export const verifyToken: RequestHandler = (req, res, next) => {
   try {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
-      res.status(401).json({ error: "Authorization header is missing" });
-      return;
+      return res.status(401).json({ error: "Authorization header is missing" });
     }
 
     const [type, token] = authHeader.split(" ");
-    if (type !== "Bearer") {
-      res.status(401).json({ error: "Authorization header must be Bearer" });
-      return;
+
+    if (
+      type !== "Bearer" ||
+      !token ||
+      token === "null" ||
+      token === "undefined"
+    ) {
+      return res
+        .status(401)
+        .json({ error: "Authorization header must be a valid Bearer token" });
     }
 
     const decoded = jwt.verify(

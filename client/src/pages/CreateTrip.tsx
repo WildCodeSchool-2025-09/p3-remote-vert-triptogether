@@ -10,7 +10,15 @@ import { useAuth } from "../contexts/AuthContext";
 
 export default function CreateTrip() {
   const { auth } = useAuth();
-
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token") || auth?.token;
+  useEffect(() => {
+    if (!token) return;
+    if (!auth?.token) {
+      toast.error("Vous devez être connecté pour créer un voyage");
+      navigate("/login");
+    }
+  }, [token, auth?.token, navigate]);
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("France");
   const [imageUrl, setImageUrl] = useState("");
@@ -23,7 +31,6 @@ export default function CreateTrip() {
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
   const startAtRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -169,7 +176,6 @@ export default function CreateTrip() {
       >
         <img className="back-arrow" src={backArrowLogo} alt="" />
       </button>
-
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
       <h1>
         Créer un nouveau <span>voyage</span>

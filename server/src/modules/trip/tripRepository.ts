@@ -155,6 +155,13 @@ class TripRepository {
     );
     return rows as Trip[];
   }
+
+  async countTrips() {
+    const [rows] = await databaseClient.query(
+      "SELECT COUNT(*) AS count FROM trip",
+    );
+    return (rows as { count: number }[])[0].count;
+  }
 }
 
 export default new TripRepository();

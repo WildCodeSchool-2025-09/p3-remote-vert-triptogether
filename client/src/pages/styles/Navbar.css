@@ -64,7 +64,7 @@
 }
 
 .navbar-cta {
-  background: #2f5d2f;
+  background: var(--primary-button);
   color: #fff;
   border: none;
   cursor: pointer;

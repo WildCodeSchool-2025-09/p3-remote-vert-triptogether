@@ -13,6 +13,4 @@ router.use("/trips", tripRouter);
 
 router.use("/users", userRouter);
 
-router.use("/trips", tripRouter);
-
 export default router;

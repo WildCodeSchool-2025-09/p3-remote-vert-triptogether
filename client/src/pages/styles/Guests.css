@@ -125,7 +125,7 @@ li:last-child {
 .btn-primary,
 .btn-danger,
 .btn-role {
-  border-radius: 9999px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
   font-size: 13px;
@@ -136,12 +136,12 @@ li:last-child {
 }
 
 .btn-primary {
-  background-color: #166534;
+  background-color: var(--primary-button);
   color: #ffffff;
 }
 
 .btn-primary:hover {
-  background-color: #14532d;
+  background-color: var(--primary-button);
 }
 
 .btn-danger {

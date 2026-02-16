@@ -110,7 +110,7 @@ function TripInvitation({
 
           <article className="tripinvitation-head">
             <p>
-              <img src="../../public/letter-picture.png" alt="" width={80} />
+              <img src="/letter-picture.png" alt="" width={80} />
               Inviter un participant
             </p>
             <p>Invitez une personne à rejoindre ce voyage par email</p>

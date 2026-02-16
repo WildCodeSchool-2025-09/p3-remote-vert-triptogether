@@ -1,182 +1,324 @@
-.tripcard {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  border-radius: 12px;
-  overflow: hidden;
+.step-card {
+  background: #fff;
+  border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-height: 320px;
-  max-width: 300px;
+  overflow: hidden;
   width: 100%;
+  max-width: 100%;
+  justify-self: center;
+  margin: 16px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--body-text);
 }
 
-.tripcard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+.step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgb(0 0 0 / 25%);
 }
 
-.trip-image {
+.step-card img {
+  width: 100%;
   height: 180px;
-  padding: 0.5rem;
-  display: flex;
-  flex-direction: column-reverse;
-  color: rgb(216, 216, 216);
-  background-size: 35%;
-  background-position: 50% 50%;
+  object-fit: cover;
 }
 
-.trip-image h2 {
-  padding: 0.3rem 0.6rem;
-  font-size: 1.1rem;
-  line-height: 1.3;
-  background-color: rgb(0 0 0 / 70%);
-  border-radius: 6px;
-  align-self: flex-start;
+.step-header {
+  padding: 12px 16px;
+}
+
+.step-header h2 {
+  margin: 8px 0 4px;
+  font-family: var(--title-font);
+  font-size: 1.2rem;
+}
+
+.step-header h3 {
   margin: 0;
-  position: relative;
-  z-index: 1;
+  font-size: var(--font-size-XS);
+  color: var(--grey-text);
+  padding: 8px 0 12px;
 }
 
-.trip-image h3 {
-  padding: 0.2rem 0.5rem;
-  font-size: 0.9rem;
-  background-color: rgb(0 0 0 / 60%);
-  border-radius: 4px;
-  align-self: flex-start;
-  margin: 0 0 0.5rem 0;
-  position: relative;
-  z-index: 1;
+#step-header-end {
+  border-bottom: 1px solid black;
+  padding: 12px 0;
 }
 
-.trip-info {
-  padding: 1rem;
+.step-body {
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
 }
 
-/* Accepted Badge Style */
-.accepted-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #e6fffa;
-  color: #047857;
-  border-radius: 9999px;
-  font-size: 0.9rem;
-  font-weight: 500;
-  border: 1px solid #a7f3d0;
-  align-self: flex-start;
-}
-
-.tripcards {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(180px, 1fr));
-  gap: 2rem;
-  padding: 1rem 0;
-  width: 100%;
-  justify-items: center;
-}
-.steps-container {
-  display: flex;
-  gap: 3rem;
-}
-@media (max-width: 1024px) {
-  .tripcards {
-    grid-template-columns: repeat(3, minmax(180px, 1fr));
-    gap: 1.75rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .tripcards {
-    grid-template-columns: repeat(2, minmax(160px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .tripcards {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
-  }
-}
-
-/* Main Destination Dates Styling */
-/* Calendar Section Styling */
-.calendar-section {
-  margin-top: auto; /* Push to bottom */
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  padding: 12px;
-}
-
-.calendar-header {
+.vote-progress {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
-  font-size: 0.85rem;
+}
+
+.vote-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.stat-value {
+  display: flex;
+  gap: 4px;
+  font-size: var(--font-size-XS);
   font-weight: 600;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
-.calendar-inputs {
-  display: flex;
+.stat-value.yes {
+  color: var(--button-hover);
+}
+
+.stat-value.no {
+  color: var(--brown);
   align-items: center;
+}
+
+.stat-value.yes .green-thumb,
+.stat-value.no .brown-thumb {
+  width: 15px;
+  height: 15px;
+}
+
+.vote-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #e5e5e5;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.vote-bar-yes {
+  height: 100%;
+  background-color: var(--button-hover);
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--grey-text);
+}
+
+.stat-total {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.vote-section {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
 }
 
-.calendar-input-group {
+.vote-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.vote-btn {
   flex: 1;
+  padding: 8px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.vote-yes {
+  background-color: var(--light-green);
+  border: 1px solid transparent;
+  color: var(--primary-button);
+  font-weight: 700;
+}
+
+.vote-btn .green-thumb,
+.vote-btn .brown-thumb {
+  width: 18px;
+  height: 18px;
+}
+
+.vote-yes:hover:not(:disabled) {
+  border-color: var(--button-hover);
+}
+
+.vote-no {
+  background-color: var(--light-brown);
+  border: 1px solid transparent;
+  color: var(--brown);
+  font-weight: 700;
+}
+
+.vote-no:hover:not(:disabled) {
+  border-color: var(--brown);
+}
+
+.vote-no-btn,
+.vote-yes-btn {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.vote-yes-btn {
+  align-items: flex-end;
+}
+
+.vote-no-btn {
+  align-items: center;
+}
+
+.vote-comment {
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #d1d5db;
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--grey-text);
+  resize: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vote-comment::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.vote-comment:focus {
+  outline: none;
+  border-color: var(--grey);
+  box-shadow: 0 0 0 2px #d1d5db;
+}
+
+.comment-counter {
+  font-size: 0.75rem;
+  color: #999;
+  text-align: right;
+}
+
+.voted-message {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-}
-
-.calendar-label {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-
-.calendar-date-input {
+  justify-content: center;
+  font-size: 0.9rem;
   width: 100%;
-  border: 1px solid #cbd5e1;
+}
+
+.voted-text {
+  font-weight: bold;
+  width: 100%;
+}
+
+.voted-yes {
+  border: 1px solid var(--button-hover);
+  color: var(--button-hover);
+  background-color: var(--light-green);
+}
+
+.voted-no {
+  border: 1px solid var(--brown);
+  color: var(--brown);
+  background-color: var(--light-brown);
+}
+
+.voted-yes,
+.voted-no {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 5px;
+}
+
+.voted-text img {
+  width: 18px;
+  height: 18px;
+}
+
+.voted-comment {
+  font-style: italic;
+  color: var(--grey-text);
+  margin-top: 12px;
+}
+
+.all-votes-section {
+  margin-top: 8px;
+}
+
+.no-votes-placeholder {
+  margin-top: 10px;
+  min-height: 32px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.toggle-votes-btn {
+  background: none;
+  border: none;
+  color: var(--grey);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.votes-list {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vote-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 6px;
   border-radius: 6px;
-  padding: 6px 8px;
+  background: #f5f5f5;
+}
+
+.vote-yes-item {
+  border-left: 4px solid var(--button-hover);
+}
+
+.vote-no-item {
+  border-left: 4px solid var(--brown);
+}
+
+.vote-user {
+  font-weight: bold;
   font-size: 0.85rem;
-  color: #334155;
-  background-color: white;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  font-family: inherit;
+  margin-right: 2px;
+  display: flex;
+  align-items: center;
 }
 
-.calendar-date-input:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+.vote-value img {
+  height: 15px;
+  width: 15px;
+  margin-left: 5px;
 }
 
-.calendar-separator {
-  color: #cbd5e1;
+.vote-comment-text {
   font-size: 0.8rem;
-  margin-top: 16px; /* Align with input */
+  color: var(--grey-text);
+  margin: 2px 0 0 4px;
 }
 
-/* Fix webkit calendar icon */
-.calendar-date-input::-webkit-calendar-picker-indicator {
-  cursor: pointer;
-  opacity: 0.5;
-  transition: opacity 0.2s;
-}
-
-.calendar-date-input::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
+.vote-date {
+  font-size: 0.7rem;
+  color: #999;
 }

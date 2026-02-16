@@ -8,7 +8,7 @@ import Login from "./pages/Login";
 import MyTrips from "./pages/MyTrips";
 import Register from "./pages/Register";
 import Steps from "./pages/Steps";
-import { Trip } from "./pages/Trip";
+import Trip from "./pages/Trip";
 
 export const router = createBrowserRouter([
   {

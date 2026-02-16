@@ -1,25 +1,41 @@
+import NavTabs from "../components/NavTabs";
+import TripInfos from "../components/TripInfos";
+import { useAuth } from "../contexts/AuthContext";
+import { useToast } from "../hooks/useToast";
+import "./styles/Trip.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
-import NavTabs from "../components/NavTabs";
-import TripInfos from "../components/TripInfos";
-import { useToast } from "../hooks/useToast";
-import "./styles/Trip.css";
-import type { Trip as TripType } from "../types/tripType";
+import StepCard from "../components/StepCard";
+import type { Step, TheTrip } from "../types/tripType";
 
-export function Trip() {
+function Trip() {
   type RouteParams = {
     id: string;
   };
 
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
-  const [trip, setTrip] = useState<TripType | null>(null);
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [memberCount, setMemberCount] = useState(0);
+  const [myTrip, setMyTrip] = useState<TheTrip | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   useToast();
 
+  const { auth } = useAuth();
+  const currentUserId = auth?.user?.id || 0;
+  const token = auth?.token || localStorage.getItem("token");
+
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      toast.error("Veuillez vous connecter");
+      return;
+    }
+
     if (!tripId) {
       navigate("/", {
         state: {
@@ -32,34 +48,115 @@ export function Trip() {
       return;
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    setLoading(true);
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+        const data = await response.json();
+
+        if (response.status === 401) {
+          if (data.error === "Token expired") {
+            localStorage.removeItem("token");
+            navigate("/login");
+            toast.error("Session expirée. Veuillez vous reconnecter.");
             return;
           }
+          toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+          navigate("/login");
+          return;
+        }
+
+        if (!response.ok) {
           throw new Error("Erreur chargement voyage");
         }
-        const data = await response.json();
-        setTrip(data);
+
+        setMyTrip(data);
       })
       .catch((err) => {
         console.error(err);
+        setError("Impossible de charger le voyage");
         toast.error("Impossible de charger le voyage");
+      })
+      .finally(() => setLoading(false));
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (response.status === 401) {
+          if (data.error === "Token expired") {
+            localStorage.removeItem("token");
+            navigate("/login");
+            toast.error("Session expirée. Veuillez vous reconnecter.");
+            return;
+          }
+          toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+          navigate("/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error("Erreur chargement étapes");
+        }
+
+        setSteps(data.steps);
+        setMemberCount(data.trip.memberCount);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger les étapes");
       });
-  }, [tripId, navigate]);
-  console.log(trip);
+  }, [tripId, token, navigate]);
+
+  const validatedSteps = steps.filter((s) => s.status === "validated");
+
   return (
     <>
-      <TripInfos trip={trip} />
-      <main className="page">
+      {!loading && myTrip && <TripInfos trip={myTrip} />}
+      <main className="trip-page">
         <NavTabs />
-        <div className="trip-dashboard">
-          <h2>Tableau de bord</h2>
-          <p>Bienvenue sur le récapitulatif de votre voyage.</p>
-        </div>
+        <section className="steps-section">
+          <h2 className="section-title">Récapitulatif du voyage</h2>
+          <p className="section-subtitle">
+            Voici les étapes validées par les membres
+          </p>
+
+          {loading && <p className="loading-text">Chargement des étapes</p>}
+          {error && <p className="error">{error}</p>}
+
+          {!loading && !error && (
+            <section className="steps-container">
+              {validatedSteps.length > 0 ? (
+                validatedSteps.map((step) => (
+                  <StepCard
+                    key={step.id}
+                    step={step}
+                    currentUserId={currentUserId}
+                    tripId={tripId}
+                    memberCount={memberCount}
+                  />
+                ))
+              ) : (
+                <p className="no-steps">Aucune étape validée pour le moment</p>
+              )}
+            </section>
+          )}
+        </section>
       </main>
     </>
   );
 }
+
+export default Trip;

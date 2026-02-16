@@ -1,5 +1,3 @@
-/* Réutilisation du style de MyTrips pour la cohérence */
-/* Formulaire d'ajout */
 .add-step-form-container {
   display: flex;
   padding-top: 3rem;
@@ -34,6 +32,7 @@
   margin-left: 0.5rem;
 }
 
+/* Style des inputs standards */
 .add-step-form-group input {
   width: 100%;
   padding: 0.8rem 1.2rem;
@@ -58,10 +57,10 @@
   border: none;
   cursor: pointer;
   color: white;
-  background-color: #4caf50; /* Vert comme le bouton "active" de MyTrips */
+  background-color: #4caf50;
   transition: transform 0.2s, background-color 0.2s;
-  height: 48px; /* Alignement avec les inputs */
-  margin-bottom: 1px; /* Ajustement fin */
+  height: 48px;
+  margin-bottom: 1px;
 }
 
 .add-btn:hover {
@@ -71,4 +70,11 @@
 
 .add-btn:active {
   transform: scale(0.98);
+}
+
+gmp-place-autocomplete {
+  background-color: rgb(218, 222, 218);
+  color-scheme: light;
+  border-radius: 9px;
+  border: 0px solid rgb(209, 213, 219);
 }

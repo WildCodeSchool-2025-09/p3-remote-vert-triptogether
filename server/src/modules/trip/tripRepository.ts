@@ -26,6 +26,7 @@ class TripRepository {
 
     return newTripId;
   }
+
   async readTripInfo(id: number): Promise<Trip | null> {
     const [rows] = await databaseClient.query<Rows>(
       `SELECT t.id, t.title, t.description, t.start_at, t.end_at, t.city, t.country, t.image_url, COUNT(i.id) AS participants 
@@ -68,7 +69,8 @@ class TripRepository {
       u.lastname  AS owner_lastname
       FROM trip t
       JOIN user u ON u.id = t.user_id
-      WHERE t.id = ?`,
+      WHERE t.id = ?
+      `,
       [id],
     );
 
@@ -131,14 +133,24 @@ class TripRepository {
     }
 
     const [rows] = await databaseClient.query<Rows>(
-      `SELECT t.*, u.*
-    FROM trip t
-    JOIN user u ON u.id = t.user_id
-    WHERE (t.user_id = ? 
-    OR EXISTS (
-    SELECT 1 FROM invitation i 
-    WHERE i.trip_id = t.id AND i.user_id = ? AND i.status = 'accepted'))
-    ${dateCondition} ORDER BY t.start_at ASC`,
+      `SELECT 
+        t.id, 
+        t.title, 
+        t.description, 
+        t.city, 
+        t.country, 
+        t.start_at, 
+        t.end_at, 
+        t.image_url,
+        u.firstname AS creator_firstname,
+        u.lastname AS creator_lastname
+      FROM trip t
+      JOIN user u ON t.user_id = u.id
+      LEFT JOIN invitation i ON i.trip_id = t.id AND i.user_id = ?
+      WHERE 
+        (t.user_id = ? OR i.status = 'accepted')
+        ${dateCondition}
+      ORDER BY t.start_at ASC`,
       [userId, userId],
     );
     return rows as Trip[];

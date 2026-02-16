@@ -49,11 +49,6 @@ const browseMyTrip: RequestHandler = async (req, res, next) => {
     const participants = await invitationRepository.readParticipate(tripId);
 
     res.json({ ...trip, participants });
-    const authReq = req as unknown as RequestWithAuth;
-    const userId = Number(authReq.auth.sub);
-    const status = (req.query.status as TripStatus) || "futur";
-    const trips = await tripRepository.readByUser(userId, status);
-    res.json(trips);
   } catch (err) {
     next(err);
   }
@@ -144,7 +139,7 @@ const add: RequestHandler = async (req, res, next) => {
       start_at,
       end_at,
       user_id: Number(authReq.auth.sub),
-      image_url: finalImageUrl || "/images/default-trip.jpg",
+      image_url: finalImageUrl || "/images/default-city.jpg",
     };
 
     const insertId = await tripRepository.create(newTrip);

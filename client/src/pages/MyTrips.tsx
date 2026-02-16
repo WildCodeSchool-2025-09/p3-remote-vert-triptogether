@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./styles/Reset.css";
 import "./styles/MyTrips.css";
 import "./styles/StepCard.css";
 import { createPortal } from "react-dom";
@@ -7,7 +6,7 @@ import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
 
-interface Trip {
+interface TheTrip {
   id: number;
   title: string;
   description: string;
@@ -25,7 +24,7 @@ export default function MyTrips() {
     "futur" | "current" | "past" | "all"
   >("all");
 
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [trips, setTrips] = useState<TheTrip[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token") || auth?.token;

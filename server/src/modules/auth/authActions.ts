@@ -1,6 +1,10 @@
 import argon2 from "argon2";
 import type { Request, RequestHandler } from "express";
-import jwt, { type JwtPayload } from "jsonwebtoken";
+import jwt, {
+  JsonWebTokenError,
+  TokenExpiredError,
+  type JwtPayload,
+} from "jsonwebtoken";
 import userRepository from "../user/userRepository";
 
 interface MyPayload extends JwtPayload {
@@ -92,6 +96,15 @@ export const verifyToken: RequestHandler = (req, res, next) => {
     next();
   } catch (err) {
     console.error("JWT Verification Error:", err);
-    return res.status(401).json({ error: "Invalid token" });
+
+    if (err instanceof TokenExpiredError) {
+      return res.status(401).json({ error: "Token expired" });
+    }
+
+    if (err instanceof JsonWebTokenError) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    return res.status(401).json({ error: "Unauthorized" });
   }
 };

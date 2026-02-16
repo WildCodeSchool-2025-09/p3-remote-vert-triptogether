@@ -1,6 +1,6 @@
 #tabs {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   padding: 8px 16px;

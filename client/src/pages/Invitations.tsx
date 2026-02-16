@@ -5,7 +5,7 @@ import Guests from "../components/Guests";
 import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
 import type { Guest, invitationType } from "../types/invitationType";
-import type { Trip } from "../types/tripType";
+import type { TheTrip } from "../types/tripType";
 import "./styles/invitation.css";
 
 type RouteParams = {
@@ -14,7 +14,7 @@ type RouteParams = {
 
 type InvitationsResponse =
   | {
-      trip: Trip & {
+      trip: TheTrip & {
         owner_firstname?: string;
         owner_lastname?: string;
       };
@@ -26,8 +26,8 @@ function Invitations() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
 
-  const [trip, setTrip] = useState<Trip | null>(null);
-  const [mytrip, setmyTrip] = useState<Trip | null>(null);
+  const [trip, setTrip] = useState<TheTrip | null>(null);
+  const [mytrip, setmyTrip] = useState<TheTrip | null>(null);
   const [attendees, setAttendees] = useState<Guest[]>([]);
   const [otherInvitations, setOtherInvitations] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -209,7 +209,7 @@ function Invitations() {
         <NavTabs />
 
         <section id="member-list">
-          {loading && <p>Chargement des membres...</p>}
+          {loading && <p className="loading-text">Chargement des membres</p>}
           {error && <p className="error">{error}</p>}
 
           {!loading && !error && (

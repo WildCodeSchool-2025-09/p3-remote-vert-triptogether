@@ -19,8 +19,8 @@ function Guests(props: GuestsProps) {
   const { title, invited } = props;
 
   return (
-    <article>
-      <h3 className="title-guest">
+    <article className="guests-article">
+      <h3>
         {title} ({invited.length})
       </h3>
       <ul>

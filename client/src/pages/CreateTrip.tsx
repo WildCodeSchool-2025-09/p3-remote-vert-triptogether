@@ -20,7 +20,7 @@ export default function CreateTrip() {
     }
   }, [token, auth?.token, navigate]);
   const [city, setCity] = useState("");
-  const [country, setCountry] = useState("France");
+  const [country, setCountry] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [endOfTrip, setEndOfTrip] = useState({ end_at: "" });
 
@@ -50,48 +50,55 @@ export default function CreateTrip() {
       return;
     }
 
-    const initAutocomplete = () => {
-      // @ts-ignore
-      const autocomplete = new google.maps.places.PlaceAutocompleteElement();
-      placeAutocompleteRef.current = autocomplete;
+    const initAutocomplete = async () => {
+      try {
+        // Importation dynamique de la librairie "places"
+        // @ts-ignore
+        const { PlaceAutocompleteElement } = (await google.maps.importLibrary(
+          "places",
+        )) as google.maps.PlacesLibrary;
 
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      inputRef.current!.innerHTML = "";
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      inputRef.current!.appendChild(autocomplete);
+        // @ts-ignore
+        const autocomplete = new PlaceAutocompleteElement();
+        placeAutocompleteRef.current = autocomplete;
 
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      autocomplete.addEventListener("gmp-places-select", async (event: any) => {
-        const place = event.place;
-        if (!place) return;
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        inputRef.current!.innerHTML = "";
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        inputRef.current!.appendChild(autocomplete);
 
-        await place.fetchFields({
-          fields: ["address_components", "name", "photos"],
-        });
+        autocomplete.addEventListener(
+          "gmp-places-select",
+          // biome-ignore lint/suspicious/noExplicitAny: Google Maps event type
+          async (event: any) => {
+            const place = event.place;
+            if (!place) return;
 
-        const cityName = place.name || "";
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const countryComp = place.address_components?.find((comp: any) =>
-          comp.types.includes("country"),
+            await place.fetchFields({
+              fields: ["address_components", "name", "photos"],
+            });
+
+            const cityName = place.name || "";
+            // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+            const countryComp = place.address_components?.find((comp: any) =>
+              comp.types.includes("country"),
+            );
+            const countryName = countryComp?.long_name;
+            const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 600 }) || "";
+
+            setCity(cityName);
+            if (countryName) setCountry(countryName);
+            setImageUrl(photoUrl);
+          },
         );
-        const countryName = countryComp?.long_name;
-        const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 600 }) || "";
 
-        console.log("Place details fetched:", {
-          cityName,
-          countryName,
-          hasPhoto: !!photoUrl,
+        autocomplete.addEventListener("change", () => {
+          // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+          setCity((autocomplete as any).value);
         });
-
-        setCity(cityName);
-        if (countryName) setCountry(countryName);
-        setImageUrl(photoUrl);
-      });
-
-      autocomplete.addEventListener("change", () => {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setCity((autocomplete as any).value);
-      });
+      } catch (error) {
+        console.error("Error loading Google Maps Places library:", error);
+      }
     };
 
     initAutocomplete();
@@ -107,26 +114,26 @@ export default function CreateTrip() {
       return;
     }
 
-    let currentCity = city;
-    if (!currentCity && placeAutocompleteRef.current) {
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      currentCity = (placeAutocompleteRef.current as any).value;
-    }
-
     if (!titleRef.current || !descriptionRef.current || !startAtRef.current) {
       toast.error("Formulaire incomplet");
       return;
     }
 
-    const newTrip = {
-      title: titleRef.current?.value,
-      description: descriptionRef.current?.value,
-      start_at: startAtRef.current?.value,
-      end_at: endOfTrip.end_at,
-      city: currentCity,
-      country,
-      image_url: imageUrl,
-    };
+    let currentCity = city;
+    if (!currentCity && placeAutocompleteRef.current) {
+      currentCity = (
+        placeAutocompleteRef.current as HTMLElement & { value: string }
+      ).value;
+    }
+
+    let currentCountry = country;
+    if (!currentCountry && currentCity && currentCity.includes(",")) {
+      const parts = currentCity.split(",").map((p) => p.trim());
+      if (parts.length >= 2) {
+        currentCountry = parts[parts.length - 1]; // "Germany" dans "Berlin, Germany"
+        currentCity = parts.slice(0, -1).join(", "); // "Berlin"
+      }
+    }
 
     const departureDate = new Date(startAtRef.current.value);
     const returnDate = new Date(endOfTrip.end_at);
@@ -140,6 +147,28 @@ export default function CreateTrip() {
       toast.error("La date de retour doit être après la date de départ");
       return;
     }
+
+    if (!currentCity || !currentCountry || !endOfTrip.end_at) {
+      toast.error("Veuillez remplir tous les champs obligatoires");
+      console.log("Champs manquants:", {
+        currentCity,
+        country: currentCountry,
+        endOfTrip: endOfTrip.end_at,
+      });
+      return;
+    }
+
+    const newTrip = {
+      title: titleRef.current.value,
+      description: descriptionRef.current.value,
+      start_at: startAtRef.current.value,
+      end_at: endOfTrip.end_at,
+      city: currentCity,
+      country: currentCountry,
+      image_url: imageUrl,
+    };
+
+    console.log("Données du voyage à envoyer:", newTrip);
 
     try {
       const response = await fetch(
@@ -160,8 +189,10 @@ export default function CreateTrip() {
       } else {
         const result = await response.json();
         toast.error(result.error || "Erreur lors de la création");
+        console.error("Erreur serveur:", result);
       }
     } catch (err) {
+      console.error("Erreur:", err);
       toast.error("Impossible de créer le voyage.");
     }
   };

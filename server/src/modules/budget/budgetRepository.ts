@@ -11,20 +11,13 @@ type Expense = {
   category: string;
 };
 
-type ExpenseShare = {
-  id: number;
-  expense_id: number;
-  user_id: number;
-  share_amount: number;
-};
-
-class budgetRepository {
+class BudgetRepository {
   async findExpenseByTrip(tripId: number) {
     const [rows] = await databaseClient.query<Rows>(
       "SELECT * FROM expense where  trip_id = ?",
       [tripId],
     );
-    return rows[0] as Expense;
+    return rows as Expense[];
   }
 
   async create(
@@ -35,7 +28,7 @@ class budgetRepository {
     category_id: number,
   ) {
     const [result] = await databaseClient.query<Result>(
-      "INSERT INTO expense (trip_Id, title, amount, paid_by, category_id) VALUES (?, ?, ?, ?, ?)",
+      "INSERT INTO expense (trip_id, title, amount, paid_by, category_id) VALUES (?, ?, ?, ?, ?)",
       [tripId, title, amount, paid_by, category_id],
     );
     return result.insertId;
@@ -48,4 +41,4 @@ class budgetRepository {
   }
 }
 
-export default new budgetRepository();
+export default new BudgetRepository();

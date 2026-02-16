@@ -18,7 +18,7 @@ type TripInvitationProps = {
   startAt: string;
   endAt: string;
   participants?: number;
-  onClose?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClose?: (e?: React.MouseEvent<HTMLElement>) => void;
 };
 
 function TripInvitation({
@@ -28,6 +28,7 @@ function TripInvitation({
   startAt,
   endAt,
   participants,
+  onClose,
 }: TripInvitationProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -61,6 +62,13 @@ function TripInvitation({
 
   const cancelInvitation = () => {
     setInvitationForm({ email: "", message: "" });
+    if (onClose) onClose();
+  };
+
+  const closeModalOverlay = (e: React.MouseEvent<HTMLElement>) => {
+    if (e.target === e.currentTarget && onClose) {
+      onClose();
+    }
   };
 
   const copyToClipboard = async (text: string) => {
@@ -104,7 +112,12 @@ function TripInvitation({
   console.log(invitationForm);
   return (
     <>
-      <main className="tripinvitation-main">
+      <main
+        className="tripinvitation-main"
+        onClick={closeModalOverlay}
+        tabIndex={-1}
+        onKeyDown={() => {}}
+      >
         <section className="tripinvitation-invitation-form">
           <ToastContainer position="top-right" autoClose={5000} theme="light" />
 

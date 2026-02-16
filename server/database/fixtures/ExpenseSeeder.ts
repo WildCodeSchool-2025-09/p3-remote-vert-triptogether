@@ -1,7 +1,7 @@
 import AbstractSeeder from "./AbstractSeeder";
+import ExpenseCategorySeeder from "./ExpenseCategorySeeder";
 import TripSeeder from "./TripSeeder";
 import UserSeeder from "./UserSeeder";
-import ExpenseCategorySeeder from "./ExpenseCategorySeeder";
 
 class ExpenseSeeder extends AbstractSeeder {
   constructor() {

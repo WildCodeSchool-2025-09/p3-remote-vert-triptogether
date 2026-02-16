@@ -1,9 +1,9 @@
 import express from "express";
 import authRouter from "../auth/router";
+import budgetRouter from "../budget/router";
 import invitationRouter from "../invitation/router";
 import tripRouter from "../trip/router";
 import userRouter from "../user/router";
-import budgetRouter from "../budget/router";
 
 const router = express.Router();
 
@@ -15,5 +15,7 @@ router.use("/trips", tripRouter);
 router.use("/users", userRouter);
 
 router.use("/budget", budgetRouter);
+
+router.use("/expenses", budgetRouter);
 
 export default router;

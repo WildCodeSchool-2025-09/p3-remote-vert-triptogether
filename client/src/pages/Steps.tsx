@@ -1,167 +1,240 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { toast } from "react-toastify";
 import AddStep from "../components/AddTrip";
 import NavTabs from "../components/NavTabs";
 import StepCard from "../components/StepCard";
 import TripInfos from "../components/TripInfos";
 import { useAuth } from "../contexts/AuthContext";
-import type { Trip } from "../types/tripType";
-import type { Step } from "../types/voteType";
-import "./styles/invitations.css";
-import { toast } from "react-toastify";
+import type { Step, StepsResponse, TheTrip } from "../types/tripType";
+import "./styles/Steps.css";
 
 type RouteParams = {
   id: string;
 };
 
-type StepsResponse =
-  | {
-      trip: Trip;
-      steps: Step[];
-    }
-  | { error?: string; message?: string };
-
 function Steps() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
-  const [trip, setTrip] = useState<Trip | null>(null);
-  const [mytrip, setmyTrip] = useState<Trip | null>(null);
+  const navigate = useNavigate();
+
+  const [trip, setTrip] = useState<TheTrip | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [memberCount, setMemberCount] = useState(0);
+  const [loadingTrip, setLoadingTrip] = useState(true);
+  const [loadingSteps, setLoadingSteps] = useState(true);
+  const loading = loadingTrip || loadingSteps;
 
-  const { auth } = useAuth();
+  const { auth, logout } = useAuth();
   const currentUserId = auth?.user?.id || 0;
+  const token = auth?.token;
 
-  const fetchSteps = useCallback(() => {
-    if (!id || Number.isNaN(tripId)) return;
+  const fetchTrip = useCallback(async () => {
+    try {
+      setLoadingTrip(true);
 
-    const token = auth?.token || localStorage.getItem("token");
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        },
+      );
 
-    setLoading(true);
-    setError(null);
+      const data = await response.json();
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    })
-      .then(async (response) => {
-        const result: StepsResponse = await response.json();
-
-        if (response.status === 400) {
-          setError("Requête invalide");
+      if (response.status === 401) {
+        if (data.error === "Token expired") {
+          logout();
+          toast.error("Session expirée. Veuillez vous reconnecter.");
+          navigate("/login");
           return;
         }
+        logout();
+        toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+        navigate("/login");
+        return;
+      }
 
-        if (response.status === 403 || response.status === 401) {
-          setError("Accès non autorisé");
-          return;
-        }
+      if (!response.ok) {
+        throw new Error("Erreur chargement voyage");
+      }
 
-        if (!("steps" in result)) {
-          setError("Données d'étapes invalides");
+      setTrip(data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Impossible de charger le voyage");
+    } finally {
+      setLoadingTrip(false);
+    }
+  }, [tripId, token, logout, navigate]);
 
-          return;
-        }
+  const fetchSteps = useCallback(async () => {
+    try {
+      setLoadingSteps(true);
 
-        setSteps(result.steps);
-        if ("trip" in result) {
-          setTrip(result.trip);
-        }
-      })
-      .catch((err) => {
-        console.error("Ereur fetch steps:", err);
-        setError("Impossible de charger les étapes");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [auth?.token, id, tripId]);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+        },
+      );
+
+      const result: StepsResponse = await response.json();
+
+      if (response.status === 401) {
+        logout();
+        navigate("/login");
+        return;
+      }
+
+      if (response.status === 400) {
+        toast.error("Requête invalide");
+        navigate("/");
+        return;
+      }
+
+      if (response.status === 403) {
+        toast.error("Accès non autorisé");
+        navigate("/");
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error("Erreur chargement étapes");
+      }
+
+      if (!("steps" in result)) {
+        toast.error("Données d'étapes invalides");
+        return;
+      }
+
+      setSteps(result.steps);
+      setMemberCount(result.trip.memberCount);
+    } catch (err) {
+      console.error("Erreur fetch steps:", err);
+      toast.error("Impossible de charger les étapes");
+    } finally {
+      setLoadingSteps(false);
+    }
+  }, [tripId, token, logout, navigate]);
 
   useEffect(() => {
-    fetchSteps();
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
-      .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
-            return;
-          }
-          throw new Error("Erreur chargement voyage");
-        }
-        const data = await response.json();
-        setmyTrip(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Impossible de charger le voyage");
-      });
-  }, [fetchSteps, tripId]);
+    if (!id || Number.isNaN(tripId)) {
+      toast.error("Voyage invalide");
+      navigate("/");
+      return;
+    }
 
-  const mainDestination = steps.find(
-    (step) => trip && step.city === trip.city && step.country === trip.country,
-  );
-  const proposeDestination = steps.filter(
-    (step) => step.id !== mainDestination?.id,
-  );
+    fetchTrip();
+    fetchSteps();
+  }, [id, tripId, fetchTrip, fetchSteps, navigate]);
+
+  const pendingSteps = steps.filter((s) => s.status === "pending");
+  const validatedSteps = steps.filter((s) => s.status === "validated");
+  const rejectedSteps = steps.filter((s) => s.status === "rejected");
 
   return (
     <>
-      <TripInfos trip={mytrip} />
-
-      <main className="page">
+      {!loading && trip && <TripInfos trip={trip} />}
+      <section className="steps-page">
         <NavTabs />
-
-        <section className="step-infos" />
 
         <AddStep onStepAdded={fetchSteps} />
 
-        <section id="steps-list">
-          {loading && <p>Chargement des étapes...</p>}
-          {error && <p className="error">{error}</p>}
+        <section className="steps-list">
+          {loading && <p className="loading-text">Chargement des étapes</p>}
 
-          {!loading && !error && (
-            <div>
-              {steps.length === 0 ? (
-                <p>Aucune étape pour le moment</p>
-              ) : (
-                <div>
-                  {mainDestination && (
-                    <>
-                      <h2>Destination acceptée</h2>
-                      <StepCard
-                        key={mainDestination.id}
-                        step={mainDestination}
-                        currentUserId={currentUserId}
-                        tripId={tripId}
-                        isMainDestination={true}
-                        trip={trip}
-                      />
-                    </>
-                  )}
-                  <h2>Propositions d'étapes</h2>
+          {!loading && (
+            <>
+              {pendingSteps.length > 0 && (
+                <div className="steps-section">
+                  <h2 className="section-title">
+                    Étapes en attente du vote des membres ({pendingSteps.length}
+                    )
+                  </h2>
+                  <p className="section-subtitle">
+                    Votez pour les destinations ci-dessous. <br />
+                    Pour valider une étape, tous les membres doivent avoir voté,
+                    avec une majorité de OUI.
+                  </p>
                   <div className="steps-container">
-                    {proposeDestination.map((step) => (
+                    {pendingSteps.map((step) => (
                       <StepCard
                         key={step.id}
                         step={step}
                         currentUserId={currentUserId}
                         tripId={tripId}
-                        isMainDestination={false}
-                        trip={trip}
+                        memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
                       />
                     ))}
                   </div>
                 </div>
               )}
-            </div>
+
+              {validatedSteps.length > 0 && (
+                <div className="steps-section validated-section">
+                  <h2 className="section-title">
+                    Étapes validées ({validatedSteps.length})
+                  </h2>
+                  <p className="section-subtitle">
+                    Ces étapes ont été approuvées par la majorité.
+                  </p>
+                  <div className="steps-container">
+                    {validatedSteps.map((step) => (
+                      <StepCard
+                        key={step.id}
+                        step={step}
+                        currentUserId={currentUserId}
+                        tripId={tripId}
+                        memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {rejectedSteps.length > 0 && (
+                <div className="steps-section rejected-section">
+                  <h2 className="section-title">
+                    Étapes rejetées ({rejectedSteps.length})
+                  </h2>
+                  <p className="section-subtitle">
+                    Ces étapes n'ont pas obtenu la majorité.
+                  </p>
+                  <div className="steps-container">
+                    {rejectedSteps.map((step) => (
+                      <StepCard
+                        key={step.id}
+                        step={step}
+                        currentUserId={currentUserId}
+                        tripId={tripId}
+                        memberCount={memberCount}
+                        onVoteSuccess={fetchSteps}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {steps.length === 0 && (
+                <p className="no-steps">Aucune étape pour le moment</p>
+              )}
+            </>
           )}
         </section>
-      </main>
+      </section>
     </>
   );
 }
+
 export default Steps;

@@ -26,9 +26,13 @@ CREATE TABLE step (
   city VARCHAR(255) NOT NULL,
   country VARCHAR(255) NOT NULL,
   trip_id INT NOT NULL,
+  user_id INT NOT NULL,
   image_url TEXT,
-  CONSTRAINT fk_destination_trip
+  CONSTRAINT fk_step_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_step_user
+    FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE
 );
 
@@ -74,11 +78,15 @@ CREATE TABLE vote (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   user_id INT NOT NULL,
   step_id INT NOT NULL,
+  vote BOOLEAN NOT NULL,
+  comment VARCHAR(500) NULL,
   CONSTRAINT fk_vote_user
     FOREIGN KEY (user_id) REFERENCES user(id)
     ON DELETE CASCADE,
   CONSTRAINT fk_vote_step
     FOREIGN KEY (step_id) REFERENCES step(id)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT unique_user_vote_step
+    UNIQUE (user_id, step_id)
 );
 

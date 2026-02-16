@@ -17,5 +17,6 @@ export type Step = {
   country: string;
   trip_id: number;
   image_url?: string;
+  user_id: number;
 };
 export type TripStatus = "futur" | "past" | "current";

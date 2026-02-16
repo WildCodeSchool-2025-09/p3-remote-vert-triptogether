@@ -1,10 +1,9 @@
-import { Autocomplete, useJsApiLoader } from "@react-google-maps/api";
-import { useRef, useState } from "react";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
+import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { useAuth } from "../contexts/AuthContext";
 import "../pages/styles/AddTrip.css";
-
-const libraries: "places"[] = ["places"];
 
 interface AddStepProps {
   onStepAdded: () => void;
@@ -14,28 +13,69 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const placeAutocompleteRef = useRef<any>(null);
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || "",
-    libraries,
+    libraries: GOOGLE_MAPS_LIBRARIES,
   });
 
-  const onPlaceChanged = () => {
-    const place = autocompleteRef.current?.getPlace();
-    if (!place) return;
+  useEffect(() => {
+    if (!isLoaded || !inputRef.current) return;
 
-    const cityName = place.name || "";
-    const countryComp = place.address_components?.find((comp) =>
-      comp.types.includes("country"),
-    );
-    const countryName = countryComp?.long_name;
-    const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 600 }) || "";
+    if (placeAutocompleteRef.current) {
+      inputRef.current.appendChild(placeAutocompleteRef.current);
+      return;
+    }
 
-    setCity(cityName);
-    if (countryName) setCountry(countryName);
-    setImageUrl(photoUrl);
-  };
+    const initAutocomplete = () => {
+      // @ts-ignore
+      const autocomplete = new google.maps.places.PlaceAutocompleteElement();
+      placeAutocompleteRef.current = autocomplete;
+
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      inputRef.current!.innerHTML = "";
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      inputRef.current!.appendChild(autocomplete);
+
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      autocomplete.addEventListener("gmp-places-select", async (event: any) => {
+        const place = event.place;
+        if (!place) return;
+
+        await place.fetchFields({
+          fields: ["address_components", "name", "photos"],
+        });
+
+        const cityName = place.name || "";
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        const countryComp = place.address_components?.find((comp: any) =>
+          comp.types.includes("country"),
+        );
+        const countryName = countryComp?.long_name;
+        const photoUrl = place.photos?.[0]?.getUrl({ maxWidth: 400 }) || "";
+
+        console.log("Place details fetched:", {
+          cityName,
+          countryName,
+          hasPhoto: !!photoUrl,
+        });
+
+        setCity(cityName);
+        if (countryName) setCountry(countryName);
+        setImageUrl(photoUrl);
+      });
+
+      autocomplete.addEventListener("change", () => {
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+        setCity((autocomplete as any).value);
+      });
+    };
+
+    initAutocomplete();
+  }, [isLoaded]);
 
   const { auth } = useAuth();
   const { tripId: routeTripId, id } = useParams();
@@ -52,6 +92,12 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
       return;
     }
 
+    let currentCity = city;
+    if (!currentCity && placeAutocompleteRef.current) {
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      currentCity = (placeAutocompleteRef.current as any).value;
+    }
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps`,
@@ -62,7 +108,7 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            city,
+            city: currentCity,
             country,
             user_id,
             image_url: imageUrl,
@@ -78,6 +124,10 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
       setCountry("");
       setImageUrl("");
 
+      if (placeAutocompleteRef.current) {
+        placeAutocompleteRef.current.value = "";
+      }
+
       onStepAdded();
     } catch (error) {
       console.error(error);
@@ -88,48 +138,14 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
     <div className="add-step-form-container">
       <form className="add-step-form" onSubmit={handleAddStep}>
         <div className="add-step-form-group">
-          <label htmlFor="city">Ville</label>
-          {isLoaded ? (
-            <Autocomplete
-              onLoad={(a) => {
-                autocompleteRef.current = a;
-              }}
-              onPlaceChanged={onPlaceChanged}
-            >
-              <input
-                type="text"
-                id="city"
-                name="city"
-                placeholder="Ex: Paris"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
-            </Autocomplete>
-          ) : (
-            <input
-              type="text"
-              id="city"
-              name="city"
-              placeholder="Ex: Paris"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-            />
-          )}
-        </div>
-        <div className="add-step-form-group">
-          <label htmlFor="country">Pays</label>
-          <input
-            type="text"
-            id="country"
-            name="country"
-            placeholder="Ex: France"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            required
+          <label htmlFor="city">Adresse</label>
+          <div
+            className="input-container"
+            ref={inputRef}
+            style={{ width: "100%" }}
           />
         </div>
+
         <button type="submit" className="add-btn">
           Ajouter cette étape
         </button>

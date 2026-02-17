@@ -27,6 +27,7 @@ CREATE TABLE step (
   country VARCHAR(255) NOT NULL,
   trip_id INT NOT NULL,
   user_id INT NOT NULL,
+  is_initial BOOLEAN DEFAULT false,
   image_url TEXT,
   CONSTRAINT fk_step_trip
     FOREIGN KEY (trip_id) REFERENCES trip(id)
@@ -90,3 +91,32 @@ CREATE TABLE vote (
     UNIQUE (user_id, step_id)
 );
 
+CREATE TABLE expense_category (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL UNIQUE
+);
+
+
+CREATE TABLE expense (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  trip_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  date DATE DEFAULT (CURRENT_DATE),
+  paid_by INT NOT NULL,
+  category_id INT NOT NULL,
+  
+  FOREIGN KEY (trip_id) REFERENCES trip(id) ON DELETE CASCADE,
+  FOREIGN KEY (paid_by) REFERENCES user(id) ON DELETE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES expense_category(id)
+);
+
+
+CREATE TABLE expense_share (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  expense_id INT NOT NULL,
+  user_id INT NOT NULL, 
+  share_amount DECIMAL (10,2) NOT NULL,
+  FOREIGN KEY (expense_id) REFERENCES expense(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
+);

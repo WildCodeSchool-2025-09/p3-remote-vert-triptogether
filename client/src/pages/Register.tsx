@@ -42,7 +42,14 @@ function Register() {
       );
 
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/login", {
+          state: {
+            toast: {
+              type: "success",
+              message: "Inscription réussie",
+            },
+          },
+        });
       } else {
         console.info(response);
       }

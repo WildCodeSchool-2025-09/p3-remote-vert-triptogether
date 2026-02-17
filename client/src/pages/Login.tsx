@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { FormEventHandler } from "react";
 import { Link, useNavigate } from "react-router";
 import "./styles/Auth.css";
@@ -10,9 +10,12 @@ function Login() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const { setAuth } = useAuth();
   const navigate = useNavigate();
+  const [error, setError] = useState<string>("");
 
   const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
+    setError("");
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
@@ -31,10 +34,18 @@ function Login() {
         setAuth(data);
         localStorage.setItem("token", data.token);
         localStorage.setItem("auth", JSON.stringify(data));
-        navigate("/");
+        navigate("/", { replace: true });
+        window.scrollTo({ top: 0 });
+      } else if (response.status === 401) {
+        setError("Email ou mot de passe incorrect");
+      } else if (response.status === 403) {
+        setError("Aucun compte associé à cet email");
+      } else {
+        setError("Une erreur est survenue. Veuillez réessayer.");
       }
     } catch (err) {
       console.error(err);
+      setError("Impossible de se connecter au serveur");
     }
   };
 
@@ -46,6 +57,9 @@ function Login() {
           <h1 className="logo-text">Trip Together</h1>
         </div>
         <h2 className="title">Bon retour parmi nous</h2>
+
+        {error && <div className="error-message">{error}</div>}
+
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="input-group">
             <input
@@ -73,7 +87,10 @@ function Login() {
           </button>
         </form>
         <div className="footer-login">
-          Pas encore membre ? <Link to="/register">S'inscrire</Link>
+          Pas encore membre ?
+          <Link to="/register" onClick={() => window.scrollTo({ top: 0 })}>
+            S'inscrire
+          </Link>
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
 import type { Guest, invitationType } from "../types/invitationType";
 import type { TheTrip } from "../types/tripType";
-import "./styles/invitation.css";
+import "./styles/invitations.css";
 
 type RouteParams = {
   id: string;
@@ -114,7 +114,7 @@ function Invitations() {
           id: trip.user_id || 0,
           name: `${trip.owner_firstname ?? ""} ${trip.owner_lastname ?? ""}`.trim(),
           avatarUrl: null,
-          addedAt: trip.start_at || "",
+          addedAt: null,
           role: "organisateur",
         };
 
@@ -205,9 +205,8 @@ function Invitations() {
   return (
     <>
       {!loading && trip && <TripInfos trip={mytrip} />}
-      <main className="page">
+      <div className="page-membre">
         <NavTabs />
-
         <section id="member-list">
           {loading && <p className="loading-text">Chargement des membres</p>}
           {error && <p className="error">{error}</p>}
@@ -259,7 +258,7 @@ function Invitations() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </>
   );
 }

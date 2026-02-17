@@ -4,7 +4,7 @@
   background: rgba(10, 20, 40, 0.75);
   display: flex;
   justify-content: center;
-
+  align-items: center;
   overflow-y: auto;
   z-index: 9999;
 }
@@ -33,4 +33,12 @@
 .modal-close:hover {
   background: rgba(255, 255, 255, 1);
   transform: scale(1.05);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 700px;
+  max-width: 100%;
 }

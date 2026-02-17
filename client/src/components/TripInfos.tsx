@@ -27,13 +27,7 @@ function TripInfos({ trip }: TripInfosProps) {
         style={{
           backgroundImage: `url(${trip.image_url || "/images/villedefault.jpg"})`,
         }}
-      >
-        <div className="header-content">
-          <h1>{trip.title}</h1>
-          <p>{trip.description}</p>
-        </div>
-      </header>
-
+      />
       <section className="trip-trip-infos">
         <article className="trip-tripinfocard">
           {trip && (

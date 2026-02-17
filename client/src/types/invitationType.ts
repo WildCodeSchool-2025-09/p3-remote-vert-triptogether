@@ -19,7 +19,7 @@ export type Guest = {
   id: number;
   name: string;
   avatarUrl?: string | null;
-  addedAt: string;
+  addedAt: string | null;
   role?: "organisateur" | "membre" | "non confirmé";
   inviteState?: "refuse" | "en-attente";
   lastReminderAt?: string | null;

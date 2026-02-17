@@ -19,13 +19,13 @@ export const login: RequestHandler = async (req, res, next) => {
   try {
     const user = await userRepository.readByEmail(req.body.email);
     if (!user) {
-      res.sendStatus(422);
+      res.sendStatus(403);
       return;
     }
 
     const verified = await argon2.verify(user.password, req.body.password);
     if (!verified) {
-      res.sendStatus(422);
+      res.sendStatus(401);
       return;
     }
 

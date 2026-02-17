@@ -45,8 +45,12 @@ function Guests(props: GuestsProps) {
               <div>
                 <p className="name">{invitation.name}</p>
                 <p className="date">
-                  Ajouté le{" "}
-                  {new Date(invitation.addedAt).toLocaleDateString("fr-FR")}
+                  {invitation.addedAt && (
+                    <>
+                      Ajouté le{" "}
+                      {new Date(invitation.addedAt).toLocaleDateString("fr-FR")}
+                    </>
+                  )}
                 </p>
                 {invitation.lastReminderAt && (
                   <p className="date date-small">

@@ -4,7 +4,7 @@ import "./pages/styles/Reset.css";
 import Navbar from "./components/Navbar";
 import { useToast } from "./hooks/useToast";
 import "./pages/styles/App.css";
-import Footer from "./components/Footer/Footer";
+import Footer from "./components/Footer";
 
 function App() {
   useToast();

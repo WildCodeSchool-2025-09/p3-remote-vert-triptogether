@@ -5,6 +5,7 @@ export type Step = {
   trip_id: number;
   status?: "pending" | "validated" | "rejected";
   creator_name: string;
+  is_initial: boolean;
   image_url?: string;
   voteStats?: {
     yes: number;

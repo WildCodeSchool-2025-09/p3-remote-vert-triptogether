@@ -32,7 +32,7 @@
   font-size: 1rem;
   color: #666;
   max-width: 600px;
-  margin: 0 auto 40px;
+  margin: 0 auto 80px;
   line-height: 1.6;
 }
 
@@ -52,14 +52,14 @@
   transition: all 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
-  max-width: 250px;
+  min-width: 394px;
 }
 
 .btn-primairy {
   background-color: var(--primary-button);
   color: var(--white);
   border-color: var(--primary-button);
-  width: 600px;
+  font-size: var(--font-size-M);
 }
 
 .btn-primairy:hover {
@@ -71,6 +71,7 @@
   background-color: var(--white);
   color: var(--primary-button);
   border-color: var(--primary-button);
+  font-size: var(--font-size-M);
 }
 
 .btn-secondairy:hover {

@@ -136,121 +136,125 @@ function StepCard({
         <h3>{step.country}</h3>
         <h3 id="step-header-end">Proposée par {step.creator_name} </h3>
       </article>
-      <article className="step-body">
-        <div className="vote-progress">
-          <div className="vote-stats">
-            <span className="stat-value yes">
-              {thumbsUpLogo} {yesVotes}
-            </span>
-            <span className="stat-value no">
-              {thumbsDownLogo} {noVotes}
-            </span>
-          </div>
-          <div className="vote-bar">
-            <div
-              className="vote-bar-yes"
-              style={{ width: `${yesPercentage}%` }}
-            />
-          </div>
+
+      {step.is_initial ? (
+        <div className="step-initial">
+          <p className="step-initial-msg">Destination initiale</p>
         </div>
-        {allVotes && allVotes.length > 0 ? (
-          <div className="all-votes-section">
-            <button
-              type="button"
-              onClick={() => setShowVotes(!showVotes)}
-              className="toggle-votes-btn"
-            >
-              {showVotes ? "▲ Masquer" : "▼ Voir"} tous les votes (
-              {allVotes.length} / {memberCount})
-            </button>
-            {showVotes && (
-              <div className="votes-list">
-                {allVotes.map((vote) => (
-                  <div
-                    key={vote.id}
-                    className={`vote-item ${vote.vote ? "vote-yes-item" : "vote-no-item"}`}
-                  >
-                    <div className="vote-content">
-                      <p className="vote-user">
-                        {vote.user_name}
-                        <span className="vote-value">
-                          {vote.vote ? thumbsUpLogo : thumbsDownLogo}
-                        </span>
-                      </p>
-                      {vote.comment && (
-                        <p className="vote-comment-text">"{vote.comment}"</p>
-                      )}
-                    </div>
-                    <span className="vote-date">
-                      {new Date(vote.created_at).toLocaleDateString("fr-FR")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div className="no-votes-placeholder">
-            <p className="toggle-votes-btn">En attente de vote</p>
-          </div>
-        )}
-        {error && <p className="error">{error}</p>}
-        {loading ? (
-          <p className="loading-text">Chargement</p>
-        ) : !hasVoted ? (
-          <div className="vote-section">
-            <div className="vote-buttons">
-              <button
-                type="button"
-                onClick={() => handleVote(true)}
-                disabled={alreadyVoted}
-                className="vote-btn vote-yes"
-              >
-                {alreadyVoted ? (
-                  "Envoi..."
-                ) : (
-                  <span className="vote-yes-btn">{thumbsUpLogo} OUI</span>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => handleVote(false)}
-                disabled={alreadyVoted}
-                className="vote-btn vote-no"
-              >
-                {alreadyVoted ? (
-                  "Envoi..."
-                ) : (
-                  <span className="vote-no-btn">{thumbsDownLogo} NON</span>
-                )}
-              </button>
+      ) : (
+        <article className="step-body">
+          <div className="vote-progress">
+            <div className="vote-stats">
+              <span className="stat-value yes">
+                {thumbsUpLogo} {yesVotes}
+              </span>
+              <span className="stat-value no">
+                {thumbsDownLogo} {noVotes}
+              </span>
             </div>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Commentaire (optionnel)"
-              maxLength={500}
-              disabled={alreadyVoted}
-              className="vote-comment"
-              rows={3}
-            />
-            <p className="comment-counter">{comment.length}/500 caractères</p>
+            <div className="vote-bar">
+              <div
+                className="vote-bar-yes"
+                style={{ width: `${yesPercentage}%` }}
+              />
+            </div>
           </div>
-        ) : (
-          <div className="voted-message">
-            <p className="voted-text">
-              {userVote?.vote ? (
-                <span className="voted-yes">{thumbsUpLogo} Voté OUI</span>
-              ) : (
-                <span className="voted-no">{thumbsDownLogo} Voté NON</span>
+          {allVotes && allVotes.length > 0 ? (
+            <div className="all-votes-section">
+              <button
+                type="button"
+                onClick={() => setShowVotes(!showVotes)}
+                className="toggle-votes-btn"
+              >
+                {showVotes ? "▲ Masquer" : "▼ Voir"} tous les votes (
+                {allVotes.length} / {memberCount})
+              </button>
+              {showVotes && (
+                <div className="votes-list">
+                  {allVotes.map((vote) => (
+                    <div
+                      key={vote.id}
+                      className={`vote-item ${vote.vote ? "vote-yes-item" : "vote-no-item"}`}
+                    >
+                      <div className="vote-content">
+                        <p className="vote-user">
+                          {vote.user_name}
+                          <span className="vote-value">
+                            {vote.vote ? thumbsUpLogo : thumbsDownLogo}
+                          </span>
+                        </p>
+                        {vote.comment && (
+                          <p className="vote-comment-text">"{vote.comment}"</p>
+                        )}
+                      </div>
+                      <span className="vote-date">
+                        {new Date(vote.created_at).toLocaleDateString("fr-FR")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               )}
-            </p>
-            {userVote?.comment && (
-              <p className="voted-comment">"{userVote.comment}"</p>
-            )}
-          </div>
-        )}
-      </article>
+            </div>
+          ) : (
+            <div className="no-votes-placeholder">
+              <p className="toggle-votes-btn">En attente de vote</p>
+            </div>
+          )}
+          {error && <p className="error">{error}</p>}
+          {loading ? (
+            <p className="loading-text">Chargement</p>
+          ) : !hasVoted ? (
+            <div className="vote-section">
+              <div className="vote-buttons">
+                <button
+                  type="button"
+                  onClick={() => handleVote(true)}
+                  disabled={alreadyVoted}
+                  className="vote-btn vote-yes"
+                >
+                  {alreadyVoted ? (
+                    "Envoi..."
+                  ) : (
+                    <span className="vote-yes-btn">{thumbsUpLogo} OUI</span>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleVote(false)}
+                  disabled={alreadyVoted}
+                  className="vote-btn vote-no"
+                >
+                  {alreadyVoted ? (
+                    "Envoi..."
+                  ) : (
+                    <span className="vote-no-btn">{thumbsDownLogo} NON</span>
+                  )}
+                </button>
+              </div>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Commentaire (optionnel)"
+                maxLength={500}
+                disabled={alreadyVoted}
+                className="vote-comment"
+                rows={3}
+              />
+              <p className="comment-counter">{comment.length}/500 caractères</p>
+            </div>
+          ) : (
+            <div className="voted-message">
+              <p className="voted-text">
+                {userVote?.vote ? (
+                  <span className="voted-yes">{thumbsUpLogo} Voté OUI</span>
+                ) : (
+                  <span className="voted-no">{thumbsDownLogo} Voté NON</span>
+                )}
+              </p>
+            </div>
+          )}
+        </article>
+      )}
     </div>
   );
 }

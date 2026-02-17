@@ -96,7 +96,8 @@ class stepRepository {
         s.country AS country,
         s.trip_id AS trip_id,
         u.firstname AS creator_name,
-
+        s.is_initial AS is_initial,
+        s.image_url AS image_url,
         (
           SELECT COUNT(*) 
           FROM (

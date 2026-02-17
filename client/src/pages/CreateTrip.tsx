@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import "./styles/CreateTrip.css";
 import "./styles/mobile.css";
 import { useJsApiLoader } from "@react-google-maps/api";
-import backArrowLogo from "../assets/images/back-arrow-logo.png";
+// import backArrowLogo from "../assets/images/back-arrow-logo.png";
 import { GOOGLE_MAPS_LIBRARIES } from "../constants/maps";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -12,13 +12,15 @@ export default function CreateTrip() {
   const { auth } = useAuth();
   const navigate = useNavigate();
   const token = localStorage.getItem("token") || auth?.token;
+
   useEffect(() => {
-    if (!token) return;
-    if (!auth?.token) {
+    const isAuthenticated = token || auth?.token;
+    if (!isAuthenticated) {
       toast.error("Vous devez être connecté pour créer un voyage");
       navigate("/login");
     }
   }, [token, auth?.token, navigate]);
+
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -186,6 +188,7 @@ export default function CreateTrip() {
       if (response.ok) {
         const result = await response.json();
         navigate(`/trip/${result.insertId}`);
+        toast.success("Voyage créé avec succès !");
       } else {
         const result = await response.json();
         toast.error(result.error || "Erreur lors de la création");
@@ -199,14 +202,14 @@ export default function CreateTrip() {
 
   return (
     <div className="create-trip-page">
-      <button
+      {/*<button
         type="button"
         className="button-back-arrow"
         onClick={() => navigate(-1)}
         aria-label="Retour"
       >
         <img className="back-arrow" src={backArrowLogo} alt="" />
-      </button>
+      </button>*/}
       <img src="/logos/logo-airplane.png" alt="logo-avion" />
       <h1>
         Créer un nouveau <span>voyage</span>
@@ -251,6 +254,7 @@ export default function CreateTrip() {
               ref={startAtRef}
               min={todayString}
               required
+              className={!endOfTrip.end_at ? "date-empty" : ""}
             />
           </div>
 
@@ -263,8 +267,15 @@ export default function CreateTrip() {
               onChange={(e) => setEndOfTrip({ end_at: e.target.value })}
               min={todayString}
               required
+              className={!endOfTrip.end_at ? "date-empty" : ""}
             />
           </div>
+        </div>
+        <div>
+          <p className="astuces-container">
+            💡 Vous pourrez inviter des membres et ajouter des destinations une
+            fois le voyage créé. Un voyage nécessite au minimum 2 participants.
+          </p>
         </div>
 
         <div className="button-container">

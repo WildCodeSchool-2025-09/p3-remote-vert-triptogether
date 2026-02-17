@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function Navbar() {
   const navigate = useNavigate();
   const [openNavBar, setOpenNavBar] = useState(false);
-  const { auth, logout } = useAuth();
+  const { auth, logout } = useAuth(); // AJOUTER l'import de useAuth
 
   function navigateToCreateTrip() {
     navigate("/create-trip");
@@ -36,6 +36,7 @@ export default function Navbar() {
     <nav className="navbar navbar-container">
       <div className="navbar-left">
         <Link to="/" onClick={closeMenu}>
+          {/* Attention au chemin de l'image, c'est souvent "/logos/logo.png" sans "public" */}
           <img src="/logos/logo.png" className="navbar-logo" alt="Logo" />
         </Link>
         <Link to="/" onClick={closeMenu}>
@@ -50,35 +51,44 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-right">
-        <button
-          type="button"
-          className="navbar-cta"
-          onClick={navigateToCreateTrip}
-        >
-          C'est parti !
-        </button>
-
-        <div className="navbar-profile">
+        {/* Bouton "C'est parti !" visible SEULEMENT si connecté */}
+        {auth && (
           <button
             type="button"
-            className="navbar-profile-Button"
-            aria-label="Profil"
-            onClick={toggleMenu}
+            className="navbar-cta"
+            onClick={navigateToCreateTrip}
           >
-            <img src="/images/utilisateur.png" className="user-icone" alt="" />
+            C'est parti !
           </button>
+        )}
 
-          <div
-            className={`navbar-menu ${openNavBar ? "is-open" : ""}`}
-            role="menu"
-          >
-            <div className="navbar-username">
-              {auth ? (
-                <>
-                  <li>
+        <div className="navbar-profile">
+          {auth ? (
+            /* --- SI CONNECTÉ : Affiche le bouton profil + menu --- */
+            /* Enveloppe ton bloc existant ici */
+            <div>
+              <button
+                type="button"
+                className="navbar-profile-Button"
+                aria-label="Profil"
+                onClick={toggleMenu}
+              >
+                <img
+                  src="/images/utilisateur.png"
+                  className="user-icone"
+                  alt=""
+                />
+              </button>
+
+              <div
+                className={`navbar-menu ${openNavBar ? "is-open" : ""}`}
+                role="menu"
+              >
+                <div className="navbar-username">
+                  <div className="navbar-username">
                     {hello()} {auth.user.firstname}
-                  </li>
-                  <li>
+                  </div>
+                  <div>
                     <Link
                       className="navbar-menuLink"
                       to="/account"
@@ -86,29 +96,33 @@ export default function Navbar() {
                     >
                       Mon compte
                     </Link>
-                  </li>
-                  <li>
-                    <button type="button" onClick={closelogout}>
+                  </div>
+                  <div>
+                    <button
+                      type="button"
+                      onClick={closelogout}
+                      className="navbar-logout-btn"
+                    >
                       Logout
                     </button>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li>
-                    <Link to="/login" onClick={closeMenu}>
-                      Login
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/register" onClick={closeMenu}>
-                      Register
-                    </Link>
-                  </li>
-                </>
-              )}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            /* --- SI PAS CONNECTÉ : Affiche les liens directs (plus besoin de menu caché) --- */
+            <div className="navbar-auth-links">
+              <Link to="/login" className="navbar-auth-link">
+                Se connecter
+              </Link>
+              <Link
+                to="/register"
+                className="navbar-auth-link navbar-auth-register"
+              >
+                Créer un compte
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>

@@ -10,6 +10,7 @@ import MyTrips from "./pages/MyTrips";
 import Register from "./pages/Register";
 import Steps from "./pages/Steps";
 import Trip from "./pages/Trip";
+import TripBudgetPage from "./pages/TripBudgetPage";
 
 export const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
       {
         path: "trip/:id/invitation/:invitationId",
         element: <Invitation />,
+      },
+      {
+        path: "trip/:id/budget",
+        element: <TripBudgetPage />,
       },
     ],
   },

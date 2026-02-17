@@ -57,14 +57,13 @@
   font-family: var(--body-text);
   font-size: var(--font-size-S);
   color: #8b8b8b;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .navbar-cta {
-  background: var(--primary-button);
+  background: #2f5d2f;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -102,6 +101,7 @@
   padding: 0;
   place-items: center;
   overflow: hidden;
+  transition: transform 220ms ease, border-radius 220ms ease;
 }
 
 .user-icone {
@@ -122,10 +122,17 @@
   border-radius: 0.75rem;
   padding: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  z-index: 50000;
 }
 
 .navbar-menu.is-open {
-  display: block;
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-profile:has(.navbar-menu.is-open) .navbar-profile-Button {
+  transform: scale(1.2);
+  border-radius: 1rem;
 }
 
 .navbar-username {
@@ -133,9 +140,16 @@
   font-family: var(--body-text);
   font-size: var(--font-size-S);
   padding: 0.5rem;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 0.5rem;
 }
 
-.navbar-menuLink {
+.navbar-menu-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-menu-link {
   display: block;
   font-weight: 200;
   font-family: var(--body-text);
@@ -146,6 +160,62 @@
   color: #111;
 }
 
-.navbar-menuLink:hover {
+.navbar-menu-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-menu-links button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 200;
+  font-family: var(--body-text);
+  font-size: var(--font-size-S);
+  color: #111;
+  border-top: 1px solid #e8e8e8;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.navbar-menu-link:hover,
+.navbar-menu-links button:hover {
   background: #f3f3f3;
+}
+/* ================= AUTH LINKS ================= */
+
+.navbar-auth-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.navbar-auth-link {
+  text-decoration: none;
+  font-family: var(--body-text);
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+
+.navbar-auth-link:hover {
+  color: #2f5d2f; /* Ta couleur verte */
+}
+
+.navbar-auth-register {
+  background-color: #2f5d2f; /* Ta couleur verte */
+  color: white !important;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: opacity 0.2s;
+}
+
+.navbar-auth-register:hover {
+  opacity: 0.9;
 }

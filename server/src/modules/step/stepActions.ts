@@ -47,6 +47,23 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
     const steps = await stepRepository.getStepsWithVotes(tripId);
 
     const stepsWithStatus: StepWithStatus[] = steps.map((step) => {
+      if (step.is_initial) {
+        return {
+          id: step.id,
+          city: step.city,
+          country: step.country,
+          creator_name: step.creator_name,
+          trip_id: step.trip_id,
+          is_initial: step.is_initial,
+          status: "validated" as const,
+          voteStats: {
+            yes: step.total_members,
+            no: step.total_votes,
+            total: step.yes_votes,
+          },
+        };
+      }
+
       const yesVotes = step.yes_votes;
       const totalVotes = step.total_votes;
       const memberCount = step.total_members;
@@ -64,6 +81,7 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
         id: step.id,
         city: step.city,
         country: step.country,
+        image_url: step.image_url,
         creator_name: step.creator_name,
         trip_id: step.trip_id,
         status,

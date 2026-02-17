@@ -38,7 +38,7 @@ export default function Navbar() {
         <Link to="/" onClick={closeMenu}>
           {/* Attention au chemin de l'image, c'est souvent "/logos/logo.png" sans "public" */}
           <img
-            src="../../public/logos/logo.png"
+            src="/public/logos/logo.png"
             className="navbar-logo"
             alt="Logo"
           />
@@ -81,7 +81,7 @@ export default function Navbar() {
                 onClick={toggleMenu}
               >
                 <img
-                  src="../../public/images/utilisateur.png"
+                  src="/public/images/utilisateur.png"
                   className="user-icone"
                   alt=""
                 />

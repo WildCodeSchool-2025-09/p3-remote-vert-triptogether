@@ -21,7 +21,7 @@ function StepCard({
   const { auth, logout } = useAuth();
   const token = auth?.token;
 
-  const stepImage = `https://www.sourcesplash.com/i/random?q=city&id=${step.id}`;
+  const stepImage = step.image_url || "/images/default-city.jpg";
   const thumbsUpLogo = (
     <img src="/logos/green-thumb.png" className="green-thumb" alt="Oui" />
   );
@@ -130,13 +130,23 @@ function StepCard({
 
   return (
     <div className="step-card">
-      <img src={stepImage} alt={`Vue de ${step.city}`} />
+      <img
+        src={stepImage}
+        alt={`Vue de ${step.city}`}
+        className="step-bg-img"
+        referrerPolicy="no-referrer"
+        style={{
+          minHeight: "180px",
+          display: "block",
+          backgroundColor: "#f0f0f0",
+          objectFit: "cover",
+        }}
+      />{" "}
       <article className="step-header">
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
         <h3 id="step-header-end">Proposée par {step.creator_name} </h3>
       </article>
-
       {step.is_initial ? (
         <div className="step-initial">
           <p className="step-initial-msg">Destination initiale</p>

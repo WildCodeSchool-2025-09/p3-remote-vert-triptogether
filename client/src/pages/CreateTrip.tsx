@@ -195,7 +195,7 @@ export default function CreateTrip() {
         console.error("Erreur serveur:", result);
       }
     } catch (err) {
-      console.error("Erreur:", err);
+      console.error(err);
       toast.error("Impossible de créer le voyage.");
     }
   };

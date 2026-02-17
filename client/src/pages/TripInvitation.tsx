@@ -28,6 +28,7 @@ function TripInvitation({
   startAt,
   endAt,
   participants,
+  onClose,
 }: TripInvitationProps) {
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
@@ -59,8 +60,15 @@ function TripInvitation({
     }));
   };
 
-  const cancelInvitation = () => {
+  const cancelInvitation = (e: React.MouseEvent<HTMLButtonElement>) => {
     setInvitationForm({ email: "", message: "" });
+    if (onClose) onClose(e);
+  };
+
+  const closeModalOverlay = (e: React.MouseEvent<HTMLElement>) => {
+    if (e.target === e.currentTarget && onClose) {
+      onClose(e);
+    }
   };
 
   const copyToClipboard = async (text: string) => {
@@ -104,7 +112,12 @@ function TripInvitation({
 
   return (
     <>
-      <main className="tripinvitation-main">
+      <main
+        className="tripinvitation-main"
+        onClick={closeModalOverlay}
+        tabIndex={-1}
+        onKeyDown={() => {}}
+      >
         <section className="tripinvitation-invitation-form">
           <ToastContainer position="top-right" autoClose={5000} theme="light" />
 
@@ -163,7 +176,7 @@ function TripInvitation({
               className="tripinvitation-btn-send-invitation"
               disabled={loading}
             >
-              {loading ? "Envoi..." : "Envoyer l'invitation"}
+              {loading ? "Copie..." : "Copier le lien d'invitation"}
             </button>
 
             <button

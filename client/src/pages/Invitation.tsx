@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import "./styles/invitation.css";
-import BudgetCard from "../components/BudgetCard";
-import ParticipantsCard from "../components/ParticipantsCard";
 import TripInfos from "../components/TripInfos";
 import type { invitationType } from "../types/invitationType";
 import type { TheTrip } from "../types/tripType";
@@ -165,15 +163,10 @@ function Invitation() {
     <>
       <TripInfos trip={mytrip} />
       <main className="invitation-main">
-        <section className="invitation-other-informations">
-          <BudgetCard />
-
-          <ParticipantsCard />
-        </section>
         <article id="invitation" className="invitation-card">
-          <p className="invitation-text">Vous avez été invité·e par</p>
+          <p className="invitation-text">Vous avez été invité par</p>
           <img
-            src="/mini-profile-pic.png"
+            src="/profile-pic-logo.png"
             alt={invitation?.creator_firstname}
             className="invitation-avatar"
           />

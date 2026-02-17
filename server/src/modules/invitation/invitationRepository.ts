@@ -109,6 +109,16 @@ class invitationRepository {
   }
 
   async deleteInvitation(tripId: number, userId: number): Promise<boolean> {
+    // await databaseClient.query(
+    //   `
+    //   DELETE FROM vote v
+    //   JOIN step s ON v.step_id = s.id
+    //   WHERE v.user_id = ?
+    //   AND s.trip_id = ?
+    //   `,
+    //   [userId, tripId]
+    // );
+
     const [result] = await databaseClient.query<Result>(
       `
       DELETE FROM invitation

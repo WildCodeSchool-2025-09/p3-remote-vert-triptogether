@@ -54,6 +54,7 @@ const selectStepsByTrip: RequestHandler = async (req, res, next) => {
           country: step.country,
           creator_name: step.creator_name,
           trip_id: step.trip_id,
+          image_url: step.image_url,
           is_initial: step.is_initial,
           status: "validated" as const,
           voteStats: {
@@ -225,18 +226,15 @@ const addStepCity: RequestHandler = async (req, res, next) => {
     if (Number.isNaN(tripId)) {
       return res.status(400).json({ error: "ID de voyage invalide" });
     }
-
     const authReq = req as RequestWithAuth;
     const userId = Number(authReq.auth.sub);
     if (!userId) {
       return res.status(403).json({ error: "Non authentifié" });
     }
-
     const trip = await tripRepository.read(tripId);
     if (!trip) {
       return res.status(404).json({ error: "Voyage introuvable" });
     }
-
     const isMemberOfTrip = await tripRepository.isUserMemberOfTrip(
       tripId,
       userId,
@@ -246,21 +244,16 @@ const addStepCity: RequestHandler = async (req, res, next) => {
         error: "Vous devez être membre du voyage pour ajouter une étape",
       });
     }
-
     const { city, country, image_url } = req.body;
-
     if (typeof city !== "string" || typeof country !== "string") {
       return res
         .status(400)
         .json({ error: "La ville et le pays sont requis." });
     }
-
     let finalImageUrl = image_url;
-
     if (!finalImageUrl) {
       finalImageUrl = await googlePlacesService.getCityImage(city, country);
     }
-
     const stepId = await stepRepository.createStepCity({
       trip_id: tripId,
       city,
@@ -268,7 +261,6 @@ const addStepCity: RequestHandler = async (req, res, next) => {
       image_url: finalImageUrl || "/images/default-city.jpg",
       user_id: userId,
     });
-
     return res.status(201).json({
       trip: {
         id: trip.id,
@@ -278,7 +270,16 @@ const addStepCity: RequestHandler = async (req, res, next) => {
         country: trip.country,
         image_url: trip.image_url,
       },
-      stepId,
+      step: {
+        id: stepId,
+        city,
+        country,
+        image_url: finalImageUrl || "/images/default-city.jpg",
+        trip_id: tripId,
+        creator_name: "Vous",
+        status: "pending",
+        voteStats: { yes: 0, no: 0, total: 0 },
+      },
     });
   } catch (err) {
     next(err);

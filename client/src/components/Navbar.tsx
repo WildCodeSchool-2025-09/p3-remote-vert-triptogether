@@ -14,7 +14,7 @@ export default function Navbar() {
   }
 
   function toggleMenu() {
-    setOpenNavBar((v) => !v);
+    setOpenNavBar((openNavBar) => !openNavBar);
   }
 
   function closeMenu() {
@@ -37,7 +37,11 @@ export default function Navbar() {
       <div className="navbar-left">
         <Link to="/" onClick={closeMenu}>
           {/* Attention au chemin de l'image, c'est souvent "/logos/logo.png" sans "public" */}
-          <img src="/logos/logo.png" className="navbar-logo" alt="Logo" />
+          <img
+            src="../../public/logos/logo.png"
+            className="navbar-logo"
+            alt="Logo"
+          />
         </Link>
         <Link to="/" onClick={closeMenu}>
           <div className="website-name">Trip Together</div>
@@ -62,10 +66,13 @@ export default function Navbar() {
           </button>
         )}
 
-        <div className="navbar-profile">
+        <div
+          className="navbar-profile"
+          onMouseEnter={() => setOpenNavBar(true)}
+          onMouseLeave={() => setOpenNavBar(false)}
+        >
           {auth ? (
             /* --- SI CONNECTÉ : Affiche le bouton profil + menu --- */
-            /* Enveloppe ton bloc existant ici */
             <div>
               <button
                 type="button"
@@ -74,7 +81,7 @@ export default function Navbar() {
                 onClick={toggleMenu}
               >
                 <img
-                  src="/images/utilisateur.png"
+                  src="../../public/images/utilisateur.png"
                   className="user-icone"
                   alt=""
                 />
@@ -85,42 +92,44 @@ export default function Navbar() {
                 role="menu"
               >
                 <div className="navbar-username">
-                  <div className="navbar-username">
+                  <li>
                     {hello()} {auth.user.firstname}
-                  </div>
-                  <div>
+                  </li>
+                  <li className="navbar-menu-links">
                     <Link
-                      className="navbar-menuLink"
+                      className="navbar-menu-link navbar-menuLink"
                       to="/account"
                       onClick={closeMenu}
                     >
                       Mon compte
                     </Link>
-                  </div>
-                  <div>
                     <button
                       type="button"
+                      className="logout-by navbar-logout-btn"
                       onClick={closelogout}
-                      className="navbar-logout-btn"
                     >
                       Logout
                     </button>
-                  </div>
+                  </li>
                 </div>
               </div>
             </div>
           ) : (
             /* --- SI PAS CONNECTÉ : Affiche les liens directs (plus besoin de menu caché) --- */
             <div className="navbar-auth-links">
-              <Link to="/login" className="navbar-auth-link">
-                Se connecter
-              </Link>
-              <Link
-                to="/register"
-                className="navbar-auth-link navbar-auth-register"
-              >
-                Créer un compte
-              </Link>
+              <li>
+                <Link to="/login" className="navbar-auth-link">
+                  Se connecter
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/register"
+                  className="navbar-auth-link navbar-auth-register"
+                >
+                  Créer un compte
+                </Link>
+              </li>
             </div>
           )}
         </div>

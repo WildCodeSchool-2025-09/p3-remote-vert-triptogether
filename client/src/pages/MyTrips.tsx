@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./styles/MyTrips.css";
 import "./styles/StepCard.css";
-import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { useAuth } from "../contexts/AuthContext";
@@ -106,47 +105,44 @@ export default function MyTrips() {
       </div>
 
       <div className="tripcards">
-        {trips.length > 0
-          ? trips.map((trip) => (
-              <Link
-                to={`/trip/${trip.id}`}
-                key={trip.id}
-                className="tripcard-link"
-              >
-                <div className="tripcard">
-                  <div
-                    className="tripcard-image"
-                    style={{ position: "relative" }}
-                  >
-                    <img
-                      src={trip.image_url || "/images/default-city.jpg"}
-                      alt={trip.title}
-                      className="trip-bg-img"
-                    />
-                    <h2>{trip.title}</h2>
-                  </div>
-                  <div>
-                    <div className="trip-info">
-                      <p>
-                        <img src="/images/location-icon.png" alt="" />
-                        {trip.city}, {trip.country}
-                      </p>
-                      <p>
-                        <img src="/images/calendar-icon.png" alt="" />
-                        {formatDateStart(trip.start_at)} -{" "}
-                        {formatDate(trip.end_at)}
-                      </p>
-                    </div>
+        {trips.length > 0 ? (
+          trips.map((trip) => (
+            <Link
+              to={`/trip/${trip.id}`}
+              key={trip.id}
+              className="tripcard-link"
+            >
+              <div className="tripcard">
+                <div
+                  className="tripcard-image"
+                  style={{ position: "relative" }}
+                >
+                  <img
+                    src={trip.image_url || "/images/default-city.jpg"}
+                    alt={trip.title}
+                    className="trip-bg-img"
+                  />
+                  <h2>{trip.title}</h2>
+                </div>
+                <div>
+                  <div className="trip-info">
+                    <p>
+                      <img src="/images/location-icon.png" alt="" />
+                      {trip.city}, {trip.country}
+                    </p>
+                    <p>
+                      <img src="/images/calendar-icon.png" alt="" />
+                      {formatDateStart(trip.start_at)} -{" "}
+                      {formatDate(trip.end_at)}
+                    </p>
                   </div>
                 </div>
-              </Link>
-            ))
-          : createPortal(
-              <p className="no-trips">
-                Aucun voyage trouvé pour cette catégorie.
-              </p>,
-              document.body,
-            )}
+              </div>
+            </Link>
+          ))
+        ) : (
+          <p className="no-trips">Aucun voyage trouvé pour cette catégorie.</p>
+        )}
       </div>
     </>
   );

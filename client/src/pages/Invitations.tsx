@@ -220,7 +220,7 @@ function Invitations() {
                 delete={setdeleteInvitation}
               />
               <Guests
-                title="Invité·e·s"
+                title="Invités"
                 invited={otherInvitations}
                 type="others"
               />

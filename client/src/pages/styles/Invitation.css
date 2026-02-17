@@ -45,11 +45,12 @@
 }
 
 .invitation-inviter-name {
+  text-align: center;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #1e293b;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, black 0%, black 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,7 +65,8 @@
   padding: 1.25rem;
   background: #f8fafc;
   border-radius: 16px;
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid rgba(0, 0, 0, 0.423);
+  border-right: 4px solid rgba(0, 0, 0, 0.427);
 }
 
 .invitation-actions {
@@ -96,12 +98,12 @@
 .invitation-btn-primary {
   background: var(--primary-button);
   color: white;
-  box-shadow: 0 4px 14px 0 var(--primary-button);
+  box-shadow: 0 1px 1px 0 var(--primary-button);
 }
 
 .invitation-btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px 0 var(--primary-button);
+  box-shadow: 0 4px 5px 0 var(--primary-button);
 }
 
 .invitation-btn-outline {

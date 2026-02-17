@@ -7,6 +7,9 @@
   flex-direction: column;
   align-items: center;
   font-family: var(--body-text);
+  width: 100%;
+  border-radius: 50px;
+  height: 100vh;
 }
 
 .tripinvitation-head {
@@ -32,6 +35,8 @@
 }
 
 .tripinvitation-trip-infos {
+  text-align: center;
+  line-height: 1.3;
   border: 1px solid rgba(0, 0, 0, 0.16);
   width: 55%;
   max-width: 650px;
@@ -54,10 +59,9 @@
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
-  width: auto;
+  width: 100%;
   max-width: 1000px;
-  padding: 1.5rem 0.2rem;
-  border: 1px solid black;
+  border: 3px solid rgba(62, 62, 62, 0.54);
   border-radius: 50px;
   background-color: white;
   font-size: 1.5rem;
@@ -92,14 +96,14 @@
 .tripinvitation-message-form > textarea {
   border: 1px solid rgba(0, 0, 0, 0.16);
   border-radius: 10px;
-  height: 163px;
+  height: 80px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   padding: 0.5rem;
 }
 
 .tripinvitation-btn-send-invitation,
 .tripinvitation-btn-cancel-invitation {
-  width: 180px;
+  width: 200px;
   height: 50px;
   border-radius: 10px;
   font-family: var(--body-text);
@@ -116,6 +120,7 @@
 
 .tripinvitation-btn-cancel-invitation {
   border: 1px solid rgba(0, 0, 0, 0.16);
+  margin-bottom: 10px;
 }
 
 .tripinvitation-btn-send-invitation:hover,

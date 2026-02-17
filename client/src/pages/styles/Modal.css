@@ -37,8 +37,7 @@
 
 .modal-content {
   background: white;
-  border-radius: 16px;
-  padding: 2rem;
-  width: 700px;
+  border-radius: 50px;
+  width: 600px;
   max-width: 100%;
 }

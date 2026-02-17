@@ -24,7 +24,28 @@ export default function MyTrips() {
   >("all");
 
   const [trips, setTrips] = useState<TheTrip[]>([]);
-
+  const handleDeleteTrip = async (e: React.MouseEvent, tripId: number) => {
+    e.preventDefault(); // Empêche le clic sur le lien vers le voyage
+    if (!window.confirm("Voulez-vous vraiment supprimer ce voyage ?")) return;
+    try {
+      const token = localStorage.getItem("token") || auth?.token;
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (response.ok) {
+        setTrips((prev) => prev.filter((t) => t.id !== tripId));
+        toast.success("Voyage supprimé");
+      } else {
+        toast.error("Erreur lors de la suppression");
+      }
+    } catch {
+      toast.error("Erreur réseau");
+    }
+  };
   useEffect(() => {
     const token = localStorage.getItem("token") || auth?.token;
     if (!token) {
@@ -113,6 +134,14 @@ export default function MyTrips() {
               className="tripcard-link"
             >
               <div className="tripcard">
+                <button
+                  type="button"
+                  className="delete-trip-btn"
+                  onClick={(e) => handleDeleteTrip(e, trip.id)}
+                  title="Supprimer ce voyage"
+                >
+                  <img src="/logos/trash-icon.png" alt="Supprimer" />
+                </button>
                 <div
                   className="tripcard-image"
                   style={{ position: "relative" }}

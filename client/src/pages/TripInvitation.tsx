@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import "./styles/Invitation.css";
 import "./styles/TripInvitation.css";
@@ -119,8 +119,6 @@ function TripInvitation({
         onKeyDown={() => {}}
       >
         <section className="tripinvitation-invitation-form">
-          <ToastContainer position="top-right" autoClose={5000} theme="light" />
-
           <article className="tripinvitation-head">
             <p>
               <img src="/letter-picture.png" alt="" width={80} />

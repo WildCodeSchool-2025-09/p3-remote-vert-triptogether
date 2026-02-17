@@ -1,12 +1,19 @@
 import "../pages/styles/AddExpenseForm.css";
 import { useState } from "react";
 
+type Member = {
+  id: number;
+  firstname?: string;
+  email?: string;
+};
+
 type AddExpenseFormProps = {
   tripId: number;
+  members: Member[];
   onSuccess: () => void;
 };
 
-function AddExpenseForm({ tripId, onSuccess }: AddExpenseFormProps) {
+function AddExpenseForm({ tripId, members, onSuccess }: AddExpenseFormProps) {
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -39,7 +46,7 @@ function AddExpenseForm({ tripId, onSuccess }: AddExpenseFormProps) {
         throw new Error(errorData.message || "Erreur création dépense");
       }
 
-      onSuccess(); // ferme la modale + refresh
+      onSuccess();
     } catch (error) {
       console.error(error);
     }
@@ -83,9 +90,11 @@ function AddExpenseForm({ tripId, onSuccess }: AddExpenseFormProps) {
         required
       >
         <option value="">Payé par</option>
-        <option value="1">Cindy</option>
-        <option value="2">Marie</option>
-        <option value="3">Lucas</option>
+        {members.map((member) => (
+          <option key={member.id} value={member.id}>
+            {member.firstname || member.email}
+          </option>
+        ))}
       </select>
 
       <button type="submit">Enregistrer</button>

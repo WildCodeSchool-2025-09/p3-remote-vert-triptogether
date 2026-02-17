@@ -118,6 +118,7 @@
   background-color: white;
   border-radius: 12px;
   overflow: hidden;
+  position: relative; /* Ajouté pour positionner le bouton à l'intérieur */
 
   font-size: 0.95rem;
   cursor: pointer;
@@ -180,6 +181,49 @@
   height: 16px;
   margin-right: 6px;
   vertical-align: middle;
+}
+/* Bouton supprimer (corbeille) sur la carte voyage */
+.delete-trip-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(0, 0, 0, 0.05); /* Bordure subtile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ombre plus douce */
+  cursor: pointer;
+  opacity: 0; /* Caché par défaut */
+  transform: translateY(-5px); /* Petite animation d'arrivée */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 20; /* Toujours au-dessus */
+}
+
+.tripcard:hover .delete-trip-btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.delete-trip-btn:hover {
+  background-color: #ff3b30; /* Rouge iOS */
+  border-color: #ff3b30;
+  transform: scale(1.1);
+  box-shadow: 0 6px 12px rgba(255, 59, 48, 0.3);
+}
+
+.delete-trip-btn img {
+  width: 18px;
+  height: 18px;
+  display: block;
+  transition: filter 0.2s;
+}
+
+.delete-trip-btn:hover img {
+  filter: brightness(0) invert(1); /* Icône devient blanche au survol */
 }
 
 /* ================= RESPONSIVE ================= */

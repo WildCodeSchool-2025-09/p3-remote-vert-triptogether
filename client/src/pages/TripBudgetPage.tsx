@@ -7,6 +7,7 @@ import Modal from "../components/Modal";
 import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
 import "../pages/styles/TripBugdetPage.css";
+import { useAuth } from "../contexts/AuthContext";
 import type { TheTrip } from "../types/tripType";
 
 type BudgetSummaryData = {
@@ -24,6 +25,12 @@ type Expense = {
   date: string;
 };
 
+type Member = {
+  id: number;
+  firstname?: string;
+  email?: string;
+};
+
 function TripBudgetPage() {
   const { id } = useParams();
   const tripId = Number(id);
@@ -34,10 +41,13 @@ function TripBudgetPage() {
     balance: 0,
   });
 
+  const { auth } = useAuth();
+
   const [trip, setTrip] = useState<TheTrip | null>(null);
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [members, setMembers] = useState<Member[]>([]);
 
   const getTrip = useCallback(async () => {
     try {
@@ -57,20 +67,21 @@ function TripBudgetPage() {
     }
   }, [tripId]);
 
-  const getBudgetSummary = useCallback(async () => {
+  const getMembers = useCallback(async () => {
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/budget`,
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/members`,
       );
 
       if (!response.ok) {
-        throw new Error("Erreur lors du chargement du budget");
+        throw new Error("Erreur chargement participants");
       }
 
       const data = await response.json();
-      setSummary(data);
+      console.log("MEMBERS DATA:", data);
+      setMembers(data);
     } catch (error) {
-      toast.error("Erreur chargement budget");
+      toast.error("Erreur chargement participants");
     }
   }, [tripId]);
 
@@ -91,12 +102,27 @@ function TripBudgetPage() {
     }
   }, [tripId]);
 
+  const getSummary = useCallback(async () => {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/expenses/${tripId}/summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${auth?.token}`,
+        },
+      },
+    );
+
+    const data = await response.json();
+    setSummary(data);
+  }, [tripId, auth]);
+
   useEffect(() => {
     if (!tripId) return;
     getTrip();
-    getBudgetSummary();
+    getMembers();
     getExpenses();
-  }, [tripId, getTrip, getBudgetSummary, getExpenses]);
+    getSummary();
+  }, [tripId, getTrip, getMembers, getExpenses, getSummary]);
 
   return (
     <>
@@ -149,9 +175,9 @@ function TripBudgetPage() {
         <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
           <AddExpenseForm
             tripId={tripId}
+            members={members}
             onSuccess={() => {
               setIsModalOpen(false);
-              getBudgetSummary();
               getExpenses();
             }}
           />

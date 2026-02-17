@@ -162,6 +162,28 @@ class TripRepository {
     );
     return (rows as { count: number }[])[0].count;
   }
+
+  async findMembersByTrip(tripId: number) {
+    const [rows] = await databaseClient.query(
+      `
+    SELECT u.id, u.firstname, u.email
+    FROM user u
+    WHERE u.id = (
+      SELECT user_id FROM trip WHERE id = ?
+    )
+
+    UNION
+
+    SELECT u.id, u.firstname, u.email
+    FROM user u
+    JOIN invitation i ON i.user_id = u.id
+    WHERE i.trip_id = ? AND i.status = 'accepted'
+    `,
+      [tripId, tripId],
+    );
+
+    return rows;
+  }
 }
 
 export default new TripRepository();

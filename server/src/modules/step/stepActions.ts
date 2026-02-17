@@ -219,7 +219,24 @@ const browseVote: RequestHandler = async (req, res, next) => {
     next(err);
   }
 };
-
+const deleteStep: RequestHandler = async (req, res, next) => {
+  try {
+    const stepId = Number(req.params.stepId);
+    const tripId = Number(req.params.tripId);
+    const authReq = req as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+    // Vérifier si l'étape existe
+    const step = await stepRepository.getStepWithTrip(stepId);
+    if (!step) return res.status(404).json({ error: "Étape introuvable" });
+    // Vérifier que l'utilisateur est bien le propriétaire du voyage
+    const isOwner = await tripRepository.isOwner(tripId, userId);
+    if (!isOwner) return res.status(403).json({ error: "Non autorisé" });
+    await stepRepository.delete(stepId);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
 const addStepCity: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.tripId);
@@ -286,4 +303,10 @@ const addStepCity: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { selectStepsByTrip, addVote, browseVote, addStepCity };
+export default {
+  selectStepsByTrip,
+  addVote,
+  browseVote,
+  addStepCity,
+  deleteStep,
+};

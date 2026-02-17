@@ -1,5 +1,8 @@
 import type { RequestHandler } from "express";
 import budgetRepository from "../budget/budgetRepository";
+import expenseShareRepository from "../expenseShare/expenseShareRepository";
+import expenseShareService from "../expenseShare/expenseShareService";
+import tripRepository from "../trip/tripRepository";
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -27,24 +30,47 @@ const add: RequestHandler = async (req, res, next) => {
       return;
     }
 
-    if (!title || !amount || !paid_by || !category_id) {
+    if (!title || amount == null || !paid_by || !category_id) {
       res
         .status(400)
         .json({ error: "Titre, montant, payeur, et catégorie requis" });
       return;
     }
 
-    const budget = await budgetRepository.create(
+    const numericAmount = Number(amount);
+    if (Number.isNaN(numericAmount) || numericAmount <= 0) {
+      res.status(400).json({ error: "Montant invalide" });
+      return;
+    }
+
+    // 1- Crée la dépense
+    const expenseId = await budgetRepository.create(
       tripId,
       title,
-      amount,
-      paid_by,
-      category_id,
+      numericAmount,
+      Number(paid_by),
+      Number(category_id),
+    );
+
+    // 2- Récupère les membres du voyage
+    const members = await tripRepository.findMembersByTrip(tripId);
+    const participantIds = (members as { id: number }[]).map((m) => m.id);
+
+    if (participantIds.length === 0) {
+      res.status(400).json({ error: "Aucun participant pour ce voyage" });
+      return;
+    }
+
+    // 3- Crée les shares égaux
+    await expenseShareService.createEqualShares(
+      expenseId,
+      numericAmount,
+      participantIds,
     );
 
     res.status(201).json({
-      id: budget,
-      message: "Dépense ajoutée avec succès",
+      id: expenseId,
+      message: "Dépense ajoutée et répartie avec succès",
     });
   } catch (err) {
     next(err);
@@ -60,4 +86,42 @@ const browse: RequestHandler = async (_req, res, next) => {
   }
 };
 
-export default { read, add, browse };
+const getExpensesByTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+
+    const expenses = await budgetRepository.findByTrip(tripId);
+
+    res.json(expenses);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur récupération dépenses" });
+  }
+};
+
+const getSummary: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+    const userId = Number(req.auth?.sub); // si tu utilises ton middleware auth
+
+    if (Number.isNaN(tripId) || Number.isNaN(userId)) {
+      res.status(400).json({ error: "Paramètres invalides" });
+      return;
+    }
+
+    const total = await budgetRepository.sumTotalByTrip(tripId);
+    const paid = await budgetRepository.sumPaidByUser(tripId, userId);
+    const owed = await expenseShareRepository.sumSharesByUser(tripId, userId);
+
+    res.json({
+      total,
+      paid,
+      owed,
+      balance: paid - owed,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { read, add, browse, getExpensesByTrip, getSummary };

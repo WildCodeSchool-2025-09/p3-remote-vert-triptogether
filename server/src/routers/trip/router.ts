@@ -9,13 +9,19 @@ const router = express.Router();
 
 router.get("/count", tripActions.count);
 router.get("/info/:id", tripActions.read);
+
+router.get("/:id/members", tripActions.getMembersByTrip);
+
+router.get("/countries", tripActions.browse);
+router.get("/", tripActions.browse);
+
+router.get("/:id", tripActions.browseMyTrip);
+
 router.post("/:id/invitations", invitationActions.add);
 
-router.get("/", tripActions.browse);
-router.get("/:id", tripActions.browseMyTrip);
-router.get("/countries", tripActions.browse);
 router.post("/", verifyToken, tripActions.add);
 router.delete("/:id", verifyToken, tripActions.delate);
+router.delete("/:tripId/steps/:stepId", verifyToken, stepActions.deleteStep);
 
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
 router.get(

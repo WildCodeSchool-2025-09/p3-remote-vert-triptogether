@@ -6,7 +6,7 @@ import { useAuth } from "../contexts/AuthContext";
 export default function Navbar() {
   const navigate = useNavigate();
   const [openNavBar, setOpenNavBar] = useState(false);
-  const { auth, logout } = useAuth(); // AJOUTER l'import de useAuth
+  const { auth, logout } = useAuth();
 
   function navigateToCreateTrip() {
     navigate("/create-trip");
@@ -36,12 +36,7 @@ export default function Navbar() {
     <nav className="navbar navbar-container">
       <div className="navbar-left">
         <Link to="/" onClick={closeMenu}>
-          {/* Attention au chemin de l'image, c'est souvent "/logos/logo.png" sans "public" */}
-          <img
-            src="../../public/logos/logo.png"
-            className="navbar-logo"
-            alt="Logo"
-          />
+          <img src="/logos/logo.png" className="navbar-logo" alt="Logo" />
         </Link>
         <Link to="/" onClick={closeMenu}>
           <div className="website-name">Trip Together</div>
@@ -55,14 +50,13 @@ export default function Navbar() {
       </div>
 
       <div className="navbar-right">
-        {/* Bouton "C'est parti !" visible SEULEMENT si connecté */}
         {auth && (
           <button
             type="button"
             className="navbar-cta"
             onClick={navigateToCreateTrip}
           >
-            C'est parti !
+            Crée ton voyage !
           </button>
         )}
 
@@ -72,7 +66,6 @@ export default function Navbar() {
           onMouseLeave={() => setOpenNavBar(false)}
         >
           {auth ? (
-            /* --- SI CONNECTÉ : Affiche le bouton profil + menu --- */
             <div>
               <button
                 type="button"
@@ -81,7 +74,7 @@ export default function Navbar() {
                 onClick={toggleMenu}
               >
                 <img
-                  src="../../public/images/utilisateur.png"
+                  src="/images/utilisateur.png"
                   className="user-icone"
                   alt=""
                 />
@@ -115,7 +108,6 @@ export default function Navbar() {
               </div>
             </div>
           ) : (
-            /* --- SI PAS CONNECTÉ : Affiche les liens directs (plus besoin de menu caché) --- */
             <div className="navbar-auth-links">
               <li>
                 <Link to="/login" className="navbar-auth-link">

@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import type { StepCardProps } from "../types/tripType";
 import type { CreateVotePayload, Vote, VotesStats } from "../types/voteType";
 import "../pages/styles/StepCard.css";
+import { toast } from "react-toastify";
 
 function StepCard({
   step,
@@ -127,6 +128,26 @@ function StepCard({
   const noVotes = step.voteStats?.no ?? 0;
   const totalVotes = yesVotes + noVotes;
   const yesPercentage = totalVotes === 0 ? 0 : (yesVotes / totalVotes) * 100;
+  const handleDeleteStep = async () => {
+    if (!window.confirm("Supprimer cette étape ?")) return;
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/steps/${step.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      if (response.ok) {
+        if (onVoteSuccess) onVoteSuccess(); // Rafraîchit la liste
+        toast.success("Étape supprimée");
+      }
+    } catch {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
 
   return (
     <div className="step-card">
@@ -143,6 +164,15 @@ function StepCard({
         }}
       />{" "}
       <article className="step-header">
+        {!step.is_initial && (
+          <button
+            type="button"
+            onClick={handleDeleteStep}
+            className="delete-step-btn"
+          >
+            <img src="/logos/trash-icon.png" alt="Supprimer" />
+          </button>
+        )}
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
         <h3 id="step-header-end">Proposée par {step.creator_name} </h3>

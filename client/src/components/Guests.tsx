@@ -38,7 +38,8 @@ function Guests(props: GuestsProps) {
                   <span>👤</span>
                 ) : (
                   <span className="avatar-initial">
-                    {invitation.name.charAt(0)}
+                    <span>👤</span>
+                    {/*invitation.name.charAt(0)*/}
                   </span>
                 )}
               </div>

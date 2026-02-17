@@ -20,6 +20,15 @@ class BudgetRepository {
     return rows as Expense[];
   }
 
+  async findByTrip(tripId: number) {
+    const [rows] = await databaseClient.query(
+      "SELECT * FROM expense WHERE trip_id = ? ORDER BY id DESC",
+      [tripId],
+    );
+
+    return rows;
+  }
+
   async create(
     tripId: number,
     title: string,
@@ -38,6 +47,24 @@ class BudgetRepository {
     const [rows] = await databaseClient.query<Rows>("select * from expense");
 
     return rows as Expense[];
+  }
+
+  async sumTotalByTrip(tripId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT SUM(amount) as total FROM expense WHERE trip_id = ?",
+      [tripId],
+    );
+
+    return Number(rows[0]?.total || 0);
+  }
+
+  async sumPaidByUser(tripId: number, userId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      "SELECT SUM(amount) as total FROM expense WHERE trip_id = ? AND paid_by = ?",
+      [tripId, userId],
+    );
+
+    return Number(rows[0]?.total || 0);
   }
 }
 

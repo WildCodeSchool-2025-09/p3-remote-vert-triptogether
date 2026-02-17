@@ -154,6 +154,23 @@ const add: RequestHandler = async (req, res, next) => {
   }
 };
 
+const getMembersByTrip: RequestHandler = async (req, res, next) => {
+  try {
+    const tripId = Number(req.params.id);
+
+    if (Number.isNaN(tripId)) {
+      res.status(400).json({ error: "ID invalide" });
+      return;
+    }
+
+    const members = await tripRepository.findMembersByTrip(tripId);
+
+    res.status(200).json(members);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export default {
   browse,
   browseTheTrip,
@@ -162,4 +179,5 @@ export default {
   delate,
   add,
   count,
+  getMembersByTrip,
 };

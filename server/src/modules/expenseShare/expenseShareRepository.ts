@@ -31,6 +31,20 @@ class ExpenseShareRepository {
       [expenseId],
     );
   }
+
+  async sumSharesByUser(tripId: number, userId: number) {
+    const [rows] = await databaseClient.query<Rows>(
+      `
+    SELECT SUM(es.share_amount) as total
+    FROM expense_share es
+    JOIN expense e ON e.id = es.expense_id
+    WHERE e.trip_id = ? AND es.user_id = ?
+    `,
+      [tripId, userId],
+    );
+
+    return Number(rows[0]?.total || 0);
+  }
 }
 
 export default new ExpenseShareRepository();

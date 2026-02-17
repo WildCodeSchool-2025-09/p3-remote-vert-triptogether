@@ -86,6 +86,13 @@ class stepRepository {
     );
     return rows as VoteWithUser[];
   }
+  async delete(stepId: number): Promise<number> {
+    const [result] = await databaseClient.query<Result>(
+      "DELETE FROM step WHERE id = ?",
+      [stepId],
+    );
+    return result.affectedRows;
+  }
 
   async getStepsWithVotes(tripId: number): Promise<Rows> {
     const [rows] = await databaseClient.query<Rows>(

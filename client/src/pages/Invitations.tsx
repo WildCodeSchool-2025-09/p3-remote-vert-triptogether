@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Guests from "../components/Guests";
 import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
+import { useAuth } from "../contexts/AuthContext";
 import type { Guest, invitationType } from "../types/invitationType";
 import type { TheTrip } from "../types/tripType";
 import "./styles/invitation.css";
@@ -25,6 +26,7 @@ type InvitationsResponse =
 function Invitations() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const { auth } = useAuth();
 
   const [trip, setTrip] = useState<TheTrip | null>(null);
   const [mytrip, setmyTrip] = useState<TheTrip | null>(null);
@@ -52,7 +54,13 @@ function Invitations() {
 
     setLoading(true);
     setError(null);
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    const token = auth?.token || localStorage.getItem("token");
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
 
       .then(async (response) => {
         if (!response.ok) {
@@ -70,7 +78,11 @@ function Invitations() {
         toast.error("Impossible de charger le voyage");
       });
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
       .then(async (response) => {
         const result: InvitationsResponse = await response.json();
 
@@ -153,17 +165,22 @@ function Invitations() {
       .finally(() => {
         setLoading(false);
       });
-  }, [tripId, navigate]);
+  }, [tripId, navigate, auth?.token]);
 
   const removeParticipant = (userId: number) => {
     if (!tripId) return;
 
     setIsDeleting(true);
 
+    const token = auth?.token || localStorage.getItem("token");
+
     fetch(
       `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
       {
         method: "DELETE",
+        headers: {
+          Authorization: token ? `Bearer ${token}` : "",
+        },
       },
     )
       .then(async (response) => {

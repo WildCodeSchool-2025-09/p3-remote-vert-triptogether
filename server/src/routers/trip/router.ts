@@ -12,10 +12,18 @@ router.get("/info/:id", tripActions.read);
 router.post("/:id/invitations", invitationActions.add);
 
 router.get("/", tripActions.browse);
-router.get("/:id", tripActions.browseMyTrip);
+router.get("/:id", verifyToken, tripActions.browseMyTrip);
+
 router.get("/countries", tripActions.browse);
 router.post("/", verifyToken, tripActions.add);
 router.delete("/:id", verifyToken, tripActions.delate);
+router.get(
+  "/:id/invitations",
+  verifyToken,
+  invitationActions.selectInvitationsByTrip,
+);
+router.get("/:tripId/steps", verifyToken, stepActions.selectStepsByTrip);
+router.post("/:tripId/steps", verifyToken, stepActions.addStepCity);
 
 router.get("/:id/invitations", invitationActions.selectInvitationsByTrip);
 router.get(

@@ -39,6 +39,14 @@ const browseTheTrip: RequestHandler = async (req, res, next) => {
 const browseMyTrip: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
+    const authReq = req as unknown as RequestWithAuth;
+    const userId = Number(authReq.auth.sub);
+
+    const isMember = await tripRepository.isUserMemberOfTrip(tripId, userId);
+    if (!isMember) {
+      res.sendStatus(403);
+      return;
+    }
 
     const trip = await tripRepository.read(tripId);
     if (trip == null) {

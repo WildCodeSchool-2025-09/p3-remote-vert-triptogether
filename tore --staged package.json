@@ -1,0 +1,26 @@
+[1mdiff --git a/package.json b/package.json[m
+[1mindex cda5f8b..79f49f9 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -10,10 +10,7 @@[m
+     "type": "git",[m
+     "url": "git+https://github.com/  (hit Enter to use an empty string)/p3-remote-vert-triptogether.git"[m
+   },[m
+[31m-  "workspaces": [[m
+[31m-    "client",[m
+[31m-    "server"[m
+[31m-  ],[m
+[32m+[m[32m  "workspaces": ["client", "server"],[m
+   "scripts": {[m
+     "build": "npm run build --workspaces --if-present",[m
+     "check": "biome check --error-on-warnings --no-errors-on-unmatched --staged . && npm run check-types --workspaces --if-present",[m
+[36m@@ -37,9 +34,5 @@[m
+     "@commitlint/config-conventional": "^19.8.0",[m
+     "concurrently": "^9.1.2",[m
+     "validate-branch-name": "^1.3.2"[m
+[31m-  },[m
+[31m-  "dependencies": {[m
+[31m-    "argon2": "^0.44.0",[m
+[31m-    "jsonwebtoken": "^9.0.3"[m
+   }[m
+ }[m

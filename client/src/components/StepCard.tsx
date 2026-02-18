@@ -129,9 +129,13 @@ function StepCard({
   const yesPercentage = totalVotes === 0 ? 0 : (yesVotes / totalVotes) * 100;
 
   return (
-    <div className="step-card">
-      <img src={stepImage} alt={`Vue de ${step.city}`} />
-      <article className="step-header">
+    <div className="tripcard">
+      <article
+        className="trip-image"
+        style={{
+          backgroundImage: `url(${step.image_url || "/images/default-city.jpg"})`,
+        }}
+      >
         <h2>{step.city}</h2>
         <h3>{step.country}</h3>
         <h3 id="step-header-end">Proposée par {step.creator_name} </h3>

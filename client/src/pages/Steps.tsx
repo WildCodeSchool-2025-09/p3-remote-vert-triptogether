@@ -17,7 +17,7 @@ function Steps() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
   const navigate = useNavigate();
-
+const [myTrip, setMyTrip] = useState<TheTrip | null>(null);
   const [trip, setTrip] = useState<TheTrip | null>(null);
   const [steps, setSteps] = useState<Step[]>([]);
   const [memberCount, setMemberCount] = useState(0);
@@ -127,6 +127,36 @@ function Steps() {
   }, [tripId, token, logout, navigate]);
 
   useEffect(() => {
+    fetchSteps();
+    const token = auth?.token || localStorage.getItem("token");
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : "",
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
+            return;
+          }
+          throw new Error("Erreur chargement voyage");
+        }
+        const data = await response.json();
+        setMyTrip(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Impossible de charger le voyage");
+      });
+  }, [fetchSteps, tripId, auth?.token]);
+    if (!id || Number.isNaN(tripId)) {
+      toast.error("Voyage invalide");
+      navigate("/");
+      return;
+    }
+useEffect(() => {
     if (!id || Number.isNaN(tripId)) {
       toast.error("Voyage invalide");
       navigate("/");

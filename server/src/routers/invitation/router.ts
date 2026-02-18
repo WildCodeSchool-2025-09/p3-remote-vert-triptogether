@@ -1,4 +1,5 @@
-const express = require("express");
+import express from "express";
+import { verifyToken } from "../../modules/auth/authActions";
 
 const router = express.Router();
 
@@ -10,8 +11,8 @@ router.get(
   invitationServices.checkExpirationDate,
   invitationActions.read,
 );
-router.patch("/:id", invitationActions.edit);
+router.patch("/:id", verifyToken, invitationActions.edit);
 
-router.delete("/:tripId/:userId", invitationActions.delate);
+router.delete("/:tripId/:userId", verifyToken, invitationActions.delate);
 
 export default router;

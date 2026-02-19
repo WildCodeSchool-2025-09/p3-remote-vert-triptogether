@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { toast } from "react-toastify";
 import "./styles/invitation.css";
 import TripInfos from "../components/TripInfos";
+import { useAuth } from "../contexts/AuthContext";
 import type { invitationType } from "../types/invitationType";
 import type { TheTrip } from "../types/tripType";
 
@@ -14,17 +15,13 @@ function Invitation() {
   const [invitation, setInvitation] = useState<invitationType | null>(null);
   const [mytrip, setmyTrip] = useState<TheTrip | null>(null);
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   useEffect(() => {
     if (!invitationId) {
-      navigate("/", {
-        state: {
-          toast: {
-            type: "error",
-            message: "Invitation invalide",
-          },
-        },
-      });
+      toast.error("Invitation invalide");
+      navigate("/");
+      return;
     }
 
     fetch(`${import.meta.env.VITE_API_URL}/api/trips/${id}`)
@@ -50,71 +47,35 @@ function Invitation() {
         const invitation = await response.json();
 
         if (response.status === 400) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
+          toast.error(invitation.message);
+          navigate("/");
         }
 
         if (response.status === 403) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
+          toast.error(invitation.message);
+          navigate("/");
         }
 
         if (response.status === 404) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
+          toast.error(invitation.message);
+          navigate("/");
         }
 
         if (response.status === 409) {
-          navigate(`/trip/${invitation.trip_id}`, {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
+          toast.error(invitation.message);
+          navigate("/");
         }
 
         if (response.status === 410) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: invitation.message,
-              },
-            },
-          });
+          toast.error(invitation.message);
+          navigate("/");
         }
 
         setInvitation(invitation);
       })
       .catch(() => {
-        navigate("/", {
-          state: {
-            toast: {
-              type: "error",
-              message: "Invitation introuvable ou accès non autorisé",
-            },
-          },
-        });
+        toast.error("Invitation introuvable ou accès non autorisé");
+        navigate("/");
       });
   }, [navigate, invitationId, id]);
 
@@ -136,23 +97,11 @@ function Invitation() {
       }
 
       if (status === "accepted") {
-        navigate(`/trip/${id ?? invitation?.trip_id}`, {
-          state: {
-            toast: {
-              type: "success",
-              message: "Invitation acceptée",
-            },
-          },
-        });
+        toast.success("Invitation acceptée");
+        navigate(`/trip/${id ?? invitation?.trip_id}`);
       } else {
-        navigate("/", {
-          state: {
-            toast: {
-              type: "error",
-              message: "Invitation refusée",
-            },
-          },
-        });
+        toast.error("Invitation refusée");
+        navigate("/");
       }
     } catch (err) {
       toast.error("Erreur lors du traitement de l'invitation");
@@ -164,7 +113,7 @@ function Invitation() {
       <TripInfos trip={mytrip} />
       <main className="invitation-main">
         <article id="invitation" className="invitation-card">
-          <p className="invitation-text">Vous avez été invité par</p>
+          <p className="invitation-text">{`${auth?.user.firstname ?? ""}, vous avez été invité au voyage de`}</p>
           <img
             src="/profile-pic-logo.png"
             alt={invitation?.creator_firstname}

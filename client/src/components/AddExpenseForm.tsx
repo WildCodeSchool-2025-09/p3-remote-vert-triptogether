@@ -1,5 +1,6 @@
 import "../pages/styles/AddExpenseForm.css";
 import { useState } from "react";
+import { useAuth } from "../contexts/AuthContext";
 
 type Member = {
   id: number;
@@ -14,6 +15,7 @@ type AddExpenseFormProps = {
 };
 
 function AddExpenseForm({ tripId, members, onSuccess }: AddExpenseFormProps) {
+  const { auth } = useAuth();
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -22,6 +24,16 @@ function AddExpenseForm({ tripId, members, onSuccess }: AddExpenseFormProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!auth?.token) {
+      console.error("Utilisateur non authentifié");
+      return;
+    }
+
+    if (!title || !amount || !categoryId || !paidBy) {
+      console.error("Champs manquants");
+      return;
+    }
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/expenses/${tripId}`,
@@ -29,6 +41,7 @@ function AddExpenseForm({ tripId, members, onSuccess }: AddExpenseFormProps) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${auth.token}`,
           },
           body: JSON.stringify({
             tripId,
@@ -79,9 +92,10 @@ function AddExpenseForm({ tripId, members, onSuccess }: AddExpenseFormProps) {
       >
         <option value="">Choisir une catégorie</option>
         <option value="1">Transport</option>
-        <option value="2">Logement</option>
-        <option value="3">Nourriture</option>
-        <option value="4">Activité</option>
+        <option value="2">Nourriture</option>
+        <option value="3">Logement</option>
+        <option value="4">Autre</option>
+        <option value="5">Activité</option>
       </select>
 
       <select

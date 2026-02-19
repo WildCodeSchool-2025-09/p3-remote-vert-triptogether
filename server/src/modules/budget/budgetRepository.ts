@@ -1,6 +1,12 @@
 import databaseClient from "../../../database/client";
 import type { Result, Rows } from "../../../database/client";
 
+type ExpenseShare = {
+  user_id: number;
+  firstname: string;
+  share_amount: number;
+};
+
 type Expense = {
   id: number;
   trip_id: number;
@@ -8,7 +14,9 @@ type Expense = {
   amount: number;
   date: string;
   paid_by: number;
-  category: string;
+  paid_by_name?: string;
+  category_name?: string;
+  shares?: ExpenseShare[];
 };
 
 class BudgetRepository {
@@ -22,11 +30,45 @@ class BudgetRepository {
 
   async findByTrip(tripId: number) {
     const [rows] = await databaseClient.query(
-      "SELECT * FROM expense WHERE trip_id = ? ORDER BY id DESC",
+      `
+    SELECT 
+  e.*,
+  ec.name AS category_name,
+  u.firstname AS paid_by_name
+FROM expense e
+JOIN expense_category ec ON ec.id = e.category_id
+JOIN user u ON u.id = e.paid_by
+WHERE e.trip_id = ?
+ORDER BY e.id DESC
+    `,
       [tripId],
     );
 
-    return rows;
+    const expenses = rows as Expense[];
+
+    for (const expense of expenses) {
+      const shares = await this.findSharesByExpense(expense.id);
+      expense.shares = shares;
+    }
+
+    return expenses;
+  }
+
+  async findSharesByExpense(expenseId: number) {
+    const [rows] = await databaseClient.query(
+      `
+    SELECT 
+      es.user_id,
+      u.firstname,
+      es.share_amount
+    FROM expense_share es
+    JOIN user u ON u.id = es.user_id
+    WHERE es.expense_id = ?
+    `,
+      [expenseId],
+    );
+
+    return rows as ExpenseShare[];
   }
 
   async create(
@@ -65,6 +107,10 @@ class BudgetRepository {
     );
 
     return Number(rows[0]?.total || 0);
+  }
+
+  async delete(expenseId: number) {
+    await databaseClient.query("DELETE FROM expense WHERE id = ?", [expenseId]);
   }
 }
 

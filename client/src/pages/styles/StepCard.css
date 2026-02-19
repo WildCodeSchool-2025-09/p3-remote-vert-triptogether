@@ -372,11 +372,15 @@
   transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(255, 59, 48, 0.3);
 }
-.delete-step-btn img {
-  width: 16px;
-  height: 16px;
-  transition: filter 0.2s;
+.delete-trip-btn svg,
+.delete-step-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: #666;
+  transition: fill 0.2s ease;
 }
-.delete-step-btn:hover img {
-  filter: brightness(0) invert(1);
+
+.delete-trip-btn:hover svg,
+.delete-step-btn:hover svg {
+  fill: white;
 }

@@ -151,7 +151,7 @@ export default function AddStep({ onStepAdded }: AddStepProps) {
     <div className="add-step-form-container">
       <form className="add-step-form" onSubmit={handleAddStep}>
         <div className="add-step-form-group">
-          <label htmlFor="city">Adresse</label>
+          <label htmlFor="city">Lieu</label>
           <div
             className="input-container"
             ref={inputRef}

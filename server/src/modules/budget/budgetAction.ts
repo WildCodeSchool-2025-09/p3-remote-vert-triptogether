@@ -102,7 +102,7 @@ const getExpensesByTrip: RequestHandler = async (req, res, next) => {
 const getSummary: RequestHandler = async (req, res, next) => {
   try {
     const tripId = Number(req.params.id);
-    const userId = Number(req.auth?.sub); // si tu utilises ton middleware auth
+    const userId = Number(req.auth?.sub);
 
     if (Number.isNaN(tripId) || Number.isNaN(userId)) {
       res.status(400).json({ error: "Paramètres invalides" });
@@ -124,4 +124,20 @@ const getSummary: RequestHandler = async (req, res, next) => {
   }
 };
 
-export default { read, add, browse, getExpensesByTrip, getSummary };
+const remove: RequestHandler = async (req, res, next) => {
+  try {
+    const expenseId = Number(req.params.id);
+
+    if (Number.isNaN(expenseId)) {
+      return res.status(400).json({ error: "ID invalide" });
+    }
+
+    await budgetRepository.delete(expenseId);
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export default { read, add, browse, getExpensesByTrip, getSummary, remove };

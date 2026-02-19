@@ -40,3 +40,10 @@
   transition: opacity .1s ease-out;
   cursor: pointer;
 }
+
+@media (min-width: 768px) {
+  .tripcard-component {
+    width: 30vw; /* On peut reprendre le vw ici si tu aimes ce look sur PC */
+    height: 25vh;
+  }
+}

@@ -32,7 +32,8 @@
   font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 1.5rem;
-  line-height: 1.5;
+  justify-content: center;
+  line-height: 1.5rem;
 }
 
 .invitation-avatar {

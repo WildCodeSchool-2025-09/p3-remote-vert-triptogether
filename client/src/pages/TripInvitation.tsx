@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 import "./styles/Invitation.css";
 import "./styles/TripInvitation.css";
@@ -112,82 +112,77 @@ function TripInvitation({
 
   return (
     <>
-      <main
-        className="tripinvitation-main"
+      <section
+        className="tripinvitation-invitation-form"
         onClick={closeModalOverlay}
         tabIndex={-1}
         onKeyDown={() => {}}
       >
-        <section className="tripinvitation-invitation-form">
-          <article className="tripinvitation-head">
-            <p>
-              <img src="/letter-picture.png" alt="" width={80} />
-              Inviter un participant
-            </p>
-            <p>Invitez une personne à rejoindre ce voyage par email</p>
-          </article>
+        <ToastContainer position="top-right" autoClose={5000} theme="light" />
 
-          <article className="tripinvitation-bg-image" />
+        <article className="tripinvitation-head">
+          <p>
+            <img src="/letter-picture.png" alt="" width={80} />
+            Inviter un participant
+          </p>
+          <p>Invitez une personne à rejoindre ce voyage par email</p>
+        </article>
 
-          <article className="tripinvitation-trip-infos">
-            <h2>{title}</h2>
-            <p className="tripcard-location">
-              {city}, {country}
-            </p>
-            <p className="tripcard-dates">
-              {formatDate(startAt)} - {formatDate(endAt)}
-            </p>
-            <p className="tripcard-participants">
-              {participants} participant(s)
-            </p>
-          </article>
+        <article className="tripinvitation-bg-image" />
 
-          <form
-            onSubmit={sendInvitation}
-            className="tripinvitation-form-inputs"
+        <article className="tripinvitation-trip-infos">
+          <h2>{title}</h2>
+          <p className="tripcard-location">
+            {city}, {country}
+          </p>
+          <p className="tripcard-dates">
+            {formatDate(startAt)} - {formatDate(endAt)}
+          </p>
+          <p className="tripcard-participants">{participants} participant(s)</p>
+        </article>
+
+        <form onSubmit={sendInvitation} className="tripinvitation-form-inputs">
+          <label className="tripinvitation-email-form">
+            Adresse email*
+            <input
+              type="email"
+              name="email"
+              value={invitationForm.email}
+              onChange={updateInvitationForm}
+              required
+              placeholder="janedoe@caramail.com"
+            />
+          </label>
+
+          <label className="tripinvitation-message-form">
+            Message
+            <textarea
+              name="message"
+              value={invitationForm.message}
+              onChange={updateInvitationForm}
+              required
+              placeholder="Type your message here"
+            />
+          </label>
+
+          <button
+            type="submit"
+            className="tripinvitation-btn-send-invitation"
+            disabled={loading}
           >
-            <label className="tripinvitation-email-form">
-              Adresse email*
-              <input
-                type="email"
-                name="email"
-                value={invitationForm.email}
-                onChange={updateInvitationForm}
-                required
-                placeholder="janedoe@caramail.com"
-              />
-            </label>
+            {loading ? "Copie..." : "Copier le lien d'invitation"}
+          </button>
 
-            <label className="tripinvitation-message-form">
-              Message
-              <textarea
-                name="message"
-                value={invitationForm.message}
-                onChange={updateInvitationForm}
-                required
-                placeholder="Type your message here"
-              />
-            </label>
-
-            <button
-              type="submit"
-              className="tripinvitation-btn-send-invitation"
-              disabled={loading}
-            >
-              {loading ? "Copie..." : "Copier le lien d'invitation"}
-            </button>
-
-            <button
-              type="button"
-              className="tripinvitation-btn-cancel-invitation"
-              onClick={cancelInvitation}
-              disabled={loading}
-            >
-              Annuler
-            </button>
-          </form>
-        </section>
-      </main>
+          <button
+            type="button"
+            className="tripinvitation-btn-cancel-invitation"
+            onClick={cancelInvitation}
+            disabled={loading}
+          >
+            Annuler
+          </button>
+        </form>
+      </section>
     </>
   );
 }

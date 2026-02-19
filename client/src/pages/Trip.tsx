@@ -1,7 +1,6 @@
 import NavTabs from "../components/NavTabs";
 import TripInfos from "../components/TripInfos";
 import { useAuth } from "../contexts/AuthContext";
-import { useToast } from "../hooks/useToast";
 import "./styles/Trip.css";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
@@ -23,7 +22,6 @@ function Trip() {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  useToast();
 
   const { auth } = useAuth();
   const currentUserId = auth?.user?.id || 0;

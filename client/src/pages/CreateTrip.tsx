@@ -240,7 +240,7 @@ export default function CreateTrip() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="city">Adresse *</label>
+          <label htmlFor="city">Lieu *</label>
           {/* Conteneur pour le composant Google Places */}
           <div ref={inputRef} style={{ width: "100%" }} />
         </div>
